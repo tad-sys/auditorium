@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Régie Auditorium - Musée de l'Armée</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; }
+        .font-prestige { font-family: 'Cinzel', serif; }
+        .gradient-musee { background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%); }
+        .card-premium { background: white; border-radius: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .hidden { display: none !important; }
+        #login-modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 100000; background: rgba(0,0,0,0.9); 
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); 
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        function ouvrirModal() { document.getElementById('login-modal').style.display = 'flex'; }
+        function fermerModal() { document.getElementById('login-modal').style.display = 'none'; }
+    </script>
+
+    <nav class="gradient-musee text-white p-5 shadow-2xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i class="fa-solid fa-building-columns text-amber-500 text-2xl"></i>
+                <h1 class="font-prestige text-xl tracking-widest">Auditorium Austerlitz</h1>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="ouvrirModal()" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20 transition-all cursor-pointer">Accès Régisseur</button>
+                <button id="btn-logout" onclick="handleLogout()" class="hidden text-[10px] font-black uppercase bg-white text-red-900 px-6 py-2 rounded-full shadow-lg">Déconnexion</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="login-modal">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl mx-4">
+            <h3 class="font-prestige text-xl text-center mb-6 text-red-900 border-b pb-4 italic">Identification Régie</h3>
+            <div class="space-y-4">
+                <input type="email" id="adm-email" placeholder="Email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                <input type="password" id="adm-pass" placeholder="Mot de passe" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                <button onclick="tenterConnexion()" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg">Entrer</button>
+                <button onclick="fermerModal()" class="w-full text-slate-400 text-[10px] font-bold uppercase mt-2">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="vue-client" class="max-w-5xl mx-auto py-12 px-4 space-y-8">
+        <form id="main-form" class="space-y-8">
+            <div class="card-premium p-8">
+                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3"><i class="fa-solid fa-address-card"></i> Identification & Contact</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="text" id="organisme" placeholder="Organisme" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    <input type="text" id="nom_evenement" placeholder="Nom de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    <input type="text" id="point_contact" placeholder="Responsable" required class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="email" id="contact_email" placeholder="Email" required class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <input type="tel" id="contact_tel" placeholder="Téléphone" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    </div>
+                    <input type="date" id="date_evenement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="time" id="heure_orga" title="Orga" class="p-2 border rounded-xl font-bold italic">
+                        <input type="time" id="heure_public" title="Public" class="p-2 border rounded-xl font-bold italic">
+                        <input type="time" id="heure_fin" title="Fin" class="p-2 border rounded-xl font-bold italic">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-premium p-8">
+                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 italic"><i class="fa-solid fa-users-gear mr-2"></i>Accueil & Logistique</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Participants</label>
+                        <input type="number" id="nb_participants" placeholder="0" class="w-full p-4 bg-slate-50 border rounded-2xl text-2xl font-black text-red-900 outline-none">
+                        <label class="flex items-center gap-2 mt-4 cursor-pointer"><input type="checkbox" id="wifi_public" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase">Wifi Public</span></label>
+                    </div>
+                    <div id="acc_list" class="space-y-2 bg-slate-50 p-4 rounded-xl border">
+                        <p class="font-bold text-[10px] uppercase text-slate-400 italic">Lieux d'Accueil</p>
+                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Hall Orient"> Hall Orient</label>
+                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Auditorium"> Auditorium</label>
+                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Table/Desk"> Table / Desk</label>
+                    </div>
+                    <div id="vest_list" class="space-y-2 bg-slate-50 p-4 rounded-xl border">
+                        <p class="font-bold text-[10px] uppercase text-slate-400 italic">Vestiaires</p>
+                        <label class="flex gap-2 text-xs"><input type="checkbox" value="SAS Auditorium"> SAS Auditorium</label>
+                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Salle des Cadets"> Salle des Cadets</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card-premium p-8 border-l-8 border-orange-500">
+                    <h3 class="text-orange-700 font-bold uppercase text-xs mb-4 italic">Mobilier Scène</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="number" id="nb_chaises" placeholder="Chaises" class="p-3 border rounded-xl font-bold">
+                        <input type="number" id="nb_tables" placeholder="Tables" class="p-3 border rounded-xl font-bold">
+                    </div>
+                </div>
+                <div class="card-premium p-8 border-l-8 border-blue-600">
+                    <h3 class="text-blue-800 font-bold uppercase text-xs mb-4 italic">Technique</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <input type="number" id="micros_hf" placeholder="HF" class="p-3 border rounded-xl font-bold">
+                        <input type="number" id="micros_filaires" placeholder="Filaires" class="p-3 border rounded-xl font-bold">
+                    </div>
+                    <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600">
+                        <label class="flex gap-2 cursor-pointer"><input type="checkbox" value="Visio"> Visio</label>
+                        <label class="flex gap-2 cursor-pointer"><input type="checkbox" value="Captation"> Captation</label>
+                        <label class="flex gap-2 cursor-pointer"><input type="checkbox" value="Record"> Record</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-premium p-8 border-l-8 border-amber-600 bg-amber-50/20">
+                <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic">Espace Salle des Cadets</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <label class="flex items-center gap-4 p-5 bg-amber-50 rounded-2xl border border-amber-100 cursor-pointer">
+                        <input type="checkbox" id="cadets_retrans" class="w-6 h-6 accent-amber-700">
+                        <span class="text-xs font-black uppercase text-amber-900 tracking-tighter">Retransmission Auditorium</span>
+                    </label>
+                    <textarea id="cadets_notes" placeholder="Notes Salle des Cadets..." class="w-full p-4 bg-slate-50 border rounded-2xl h-24 text-sm"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="w-full gradient-musee text-white py-6 rounded-full text-xl font-black uppercase tracking-[0.3em] shadow-2xl">Envoyer la fiche</button>
+        </form>
+    </div>
+
+    <div id="vue-admin" class="hidden max-w-7xl mx-auto py-12 px-4 space-y-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 card-premium p-8"><canvas id="chartMonths" height="120"></canvas></div>
+            <div class="card-premium p-8"><canvas id="chartRadar"></canvas></div>
+        </div>
+        <div id="admin-list" class="grid grid-cols-1 gap-6"></div>
+    </div>
+
+    <script>
+        const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co';
+        const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
+        const _supa = supabase.createClient(S_URL, S_KEY);
+        let charts = {};
+
+        async function tenterConnexion() {
+            const email = document.getElementById('adm-email').value;
+            const password = document.getElementById('adm-pass').value;
+            const { error } = await _supa.auth.signInWithPassword({ email, password });
+            if (error) alert("Erreur d'accès");
+            else { fermerModal(); basculerVueAdmin(); }
+        }
+
+        function basculerVueAdmin() {
+            document.getElementById('vue-client').classList.add('hidden');
+            document.getElementById('vue-admin').classList.remove('hidden');
+            document.getElementById('btn-logout').classList.remove('hidden');
+            chargerDonnees();
+        }
+
+        async function chargerDonnees() {
+            const { data, error } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
+            if (data) { renderList(data); initCharts(data); }
+        }
+
+        function renderList(data) {
+            document.getElementById('admin-list').innerHTML = data.map(d => {
+                const dateObj = new Date(d.date_evenement);
+                const dateLocale = dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                
+                return `
+                <div class="card-premium overflow-hidden border-t-4 border-red-900">
+                    <div class="p-6 bg-slate-50 flex justify-between items-center border-b">
+                        <div>
+                            <span class="bg-red-900 text-white px-3 py-1 rounded-full text-[10px] font-bold mr-3 italic">${dateLocale}</span>
+                            <span class="font-black uppercase text-xl text-slate-800">${d.nom_evenement}</span>
+                            <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase italic">${d.organisme}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="genererPDF('${d.id}')" class="bg-slate-900 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase">PDF</button>
+                            <button onclick="supprimerDefinitif('${d.id}')" class="text-red-600 border border-red-100 p-2 rounded-full hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 text-[11px]">
+                        <div><p class="font-black text-red-900 uppercase italic mb-1">Logistique</p><p>Participants: ${d.nb_participants}</p><p>Accueil: ${d.lieux_accueil?.join(', ') || '/'}</p></div>
+                        <div class="border-l pl-4"><p class="font-black text-orange-600 uppercase italic mb-1">Mobilier</p><p>Chaises: ${d.nb_chaises} | Tables: ${d.nb_tables}</p></div>
+                        <div class="border-l pl-4"><p class="font-black text-blue-600 uppercase italic mb-1">Technique</p><p>HF: ${d.micros_hf_regie} | Fil: ${d.micros_filaires_scene}</p></div>
+                        <div class="border-l pl-4 bg-amber-50 p-2 rounded-xl"><p class="font-black text-amber-800 uppercase italic mb-1">Cadets</p><p>Retrans: ${d.cadets_retransmission ? 'Oui' : 'Non'}</p></div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        async function supprimerDefinitif(id) {
+            if(confirm("Confirmer la suppression irréversible ?")) {
+                // Utilisation de .eq('id', id) qui est la méthode la plus robuste
+                const { error } = await _supa
+                    .from('demandes_auditorium')
+                    .delete()
+                    .eq('id', id);
+
+                if (!error) { 
+                    alert("Suppression réussie.");
+                    await chargerDonnees(); // On attend que la liste se mette à jour
+                } else { 
+                    console.error("Erreur Supabase:", error);
+                    alert("Erreur lors de la suppression : " + error.message); 
+                }
+            }
+        }
+
+        async function genererPDF(id) {
+            const { data: d } = await _supa.from('demandes_auditorium').select('*').eq('id', id).single();
+            const win = window.open('', '', 'width=800,height=900');
+            win.document.write(`
+                <html><head><title>Fiche Technique</title>
+                <style>body{font-family:sans-serif;padding:30px;line-height:1.4;} h1{color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:10px;} .s{margin:15px 0; padding:12px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;} .l{font-weight:900; color:#7f1d1d; font-size:10px; text-transform:uppercase; margin-bottom:5px; display:block;}</style>
+                </head><body>
+                <h1>Fiche Technique : ${d.nom_evenement}</h1>
+                <p><strong>Organisme:</strong> ${d.organisme} | <strong>Date:</strong> ${d.date_evenement}</p>
+                <div class="s"><span class="l">Horaires</span>Orga: ${d.heure_orga} | Public: ${d.heure_public} | Fin: ${d.heure_fin}</div>
+                <div class="s" style="border-left:5px solid #f97316;"><span class="l">Mobilier Scène</span>Chaises: ${d.nb_chaises} | Tables: ${d.nb_tables}</div>
+                <div class="s"><span class="l">Logistique & Accueil</span>Participants: ${d.nb_participants} | Accueil: ${d.lieux_accueil?.join(', ') || '/'}<br>Vestiaire: ${d.lieux_vestiaire?.join(', ') || '/'}</div>
+                <div class="s" style="border-left:5px solid #2563eb;"><span class="l">Technique</span>HF: ${d.micros_hf_regie} | Filaires: ${d.micros_filaires_scene} | Options: ${d.options_tech?.join(', ') || '/'}</div>
+                <div class="s" style="background:#fffbeb; border-left:5px solid #d97706;"><span class="l">Salle des Cadets</span>Retransmission: ${d.cadets_retransmission ? 'Oui' : 'Non'}<br>Notes: ${d.cadets_notes || '/'}</div>
+                <script>window.onload=function(){window.print();window.close();}<\/script></body></html>
+            `);
+            win.document.close();
+        }
+
+        function initCharts(data) {
+            const yearsInvolved = [...new Set(data.map(d => new Date(d.date_evenement).getFullYear()))].sort().join(', ');
+            
+            const ctxBar = document.getElementById('chartMonths').getContext('2d');
+            const months = Array(12).fill(0);
+            data.forEach(d => months[new Date(d.date_evenement).getMonth()]++);
+            if(charts.bar) charts.bar.destroy();
+            charts.bar = new Chart(ctxBar, { 
+                type: 'bar', 
+                data: { 
+                    labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Juil','Aoû','Sep','Oct','Nov','Déc'], 
+                    datasets: [{ label: 'Événements en ' + yearsInvolved, data: months, backgroundColor: '#7f1d1d' }] 
+                } 
+            });
+
+            const ctxRadar = document.getElementById('chartRadar').getContext('2d');
+            const total = data.length || 1;
+            const kpi = [
+                data.reduce((acc, d) => acc + (d.micros_hf_regie || 0), 0) / total,
+                data.reduce((acc, d) => acc + (d.micros_filaires_scene || 0), 0) / total,
+                data.filter(d => d.options_tech?.includes('Visio')).length,
+                data.filter(d => d.options_tech?.includes('Captation')).length
+            ];
+            if(charts.radar) charts.radar.destroy();
+            charts.radar = new Chart(ctxRadar, { 
+                type: 'radar', 
+                data: { 
+                    labels: ['HF', 'Fil', 'Visio', 'Capt.'], 
+                    datasets: [{ label: 'Moyenne Technique ' + yearsInvolved, data: kpi, backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d' }] 
+                } 
+            });
+        }
+
+        document.getElementById('main-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const payload = {
+                organisme: document.getElementById('organisme').value,
+                nom_evenement: document.getElementById('nom_evenement').value,
+                point_contact: document.getElementById('point_contact').value,
+                contact_email: document.getElementById('contact_email').value,
+                contact_tel: document.getElementById('contact_tel').value,
+                date_evenement: document.getElementById('date_evenement').value,
+                heure_orga: document.getElementById('heure_orga').value,
+                heure_public: document.getElementById('heure_public').value,
+                heure_fin: document.getElementById('heure_fin').value,
+                nb_participants: parseInt(document.getElementById('nb_participants').value) || 0,
+                wifi_public: document.getElementById('wifi_public').checked,
+                lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
+                lieux_vestiaire: Array.from(document.querySelectorAll('#vest_list input:checked')).map(i => i.value),
+                nb_chaises: parseInt(document.getElementById('nb_chaises').value) || 0,
+                nb_tables: parseInt(document.getElementById('nb_tables').value) || 0,
+                micros_hf_regie: parseInt(document.getElementById('micros_hf').value) || 0,
+                micros_filaires_scene: parseInt(document.getElementById('micros_filaires').value) || 0,
+                options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value),
+                cadets_retransmission: document.getElementById('cadets_retrans').checked,
+                cadets_notes: document.getElementById('cadets_notes').value
+            };
+            const { error } = await _supa.from('demandes_auditorium').insert([payload]);
+            if (!error) { alert("✓ Fiche transmise avec succès !"); location.reload(); }
+        };
+
+        function handleLogout() { _supa.auth.signOut(); location.reload(); }
+    </script>
+</body>
+</html>
