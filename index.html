@@ -36,7 +36,7 @@
                 <h1 class="font-prestige text-xl tracking-widest">Auditorium Austerlitz</h1>
             </div>
             <div class="flex gap-3">
-                <button onclick="ouvrirModal()" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20 transition-all cursor-pointer">Accès Régisseur</button>
+                <button onclick="ouvrirModal()" id="btn-login-trigger" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20 transition-all cursor-pointer">Accès Régisseur</button>
                 <button id="btn-logout" onclick="handleLogout()" class="hidden text-[10px] font-black uppercase bg-white text-red-900 px-6 py-2 rounded-full shadow-lg">Déconnexion</button>
             </div>
         </div>
@@ -90,7 +90,7 @@
                         <label class="flex gap-2 text-xs"><input type="checkbox" value="Table/Desk"> Table / Desk</label>
                     </div>
                     <div id="vest_list" class="space-y-2 bg-slate-50 p-4 rounded-xl border">
-                        <p class="font-bold text-[10px] uppercase text-slate-400 italic">Vestiaires</p>
+                        <p class="font-bold text-[10px] uppercase text-slate-400 italic">Espaces Vestiaire</p>
                         <label class="flex gap-2 text-xs"><input type="checkbox" value="SAS Auditorium"> SAS Auditorium</label>
                         <label class="flex gap-2 text-xs"><input type="checkbox" value="Salle des Cadets"> Salle des Cadets</label>
                     </div>
@@ -112,19 +112,19 @@
                         <input type="number" id="micros_filaires" placeholder="Filaires" class="p-3 border rounded-xl font-bold">
                     </div>
                     <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600">
-                        <label class="flex gap-2 cursor-pointer"><input type="checkbox" value="Visio"> Visio</label>
-                        <label class="flex gap-2 cursor-pointer"><input type="checkbox" value="Captation"> Captation</label>
-                        <label class="flex gap-2 cursor-pointer"><input type="checkbox" value="Record"> Record</label>
+                        <label class="flex gap-2"><input type="checkbox" value="Visio"> Visio</label>
+                        <label class="flex gap-2"><input type="checkbox" value="Captation"> Captation</label>
+                        <label class="flex gap-2"><input type="checkbox" value="Record"> Record</label>
                     </div>
                 </div>
             </div>
 
             <div class="card-premium p-8 border-l-8 border-amber-600 bg-amber-50/20">
-                <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic">Espace Salle des Cadets</h3>
+                <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic">Salle des Cadets</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <label class="flex items-center gap-4 p-5 bg-amber-50 rounded-2xl border border-amber-100 cursor-pointer">
                         <input type="checkbox" id="cadets_retrans" class="w-6 h-6 accent-amber-700">
-                        <span class="text-xs font-black uppercase text-amber-900 tracking-tighter">Retransmission Auditorium</span>
+                        <span class="text-xs font-black uppercase text-amber-900">Retransmission Auditorium</span>
                     </label>
                     <textarea id="cadets_notes" placeholder="Notes Salle des Cadets..." class="w-full p-4 bg-slate-50 border rounded-2xl h-24 text-sm"></textarea>
                 </div>
@@ -143,16 +143,18 @@
     </div>
 
     <script>
-        const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co';
-        const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
+        // CONFIGURATION SUPABASE
+        const S_URL = 'VOTRE_URL'; 
+        const S_KEY = 'VOTRE_CLE';
         const _supa = supabase.createClient(S_URL, S_KEY);
         let charts = {};
 
+        // GESTION CONNEXION
         async function tenterConnexion() {
             const email = document.getElementById('adm-email').value;
             const password = document.getElementById('adm-pass').value;
             const { error } = await _supa.auth.signInWithPassword({ email, password });
-            if (error) alert("Erreur d'accès");
+            if (error) alert("Erreur d'accès : " + error.message);
             else { fermerModal(); basculerVueAdmin(); }
         }
 
@@ -160,93 +162,112 @@
             document.getElementById('vue-client').classList.add('hidden');
             document.getElementById('vue-admin').classList.remove('hidden');
             document.getElementById('btn-logout').classList.remove('hidden');
+            document.getElementById('btn-login-trigger').classList.add('hidden');
             chargerDonnees();
         }
 
         async function chargerDonnees() {
             const { data, error } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
+            if (error) console.error(error);
             if (data) { renderList(data); initCharts(data); }
         }
 
+        // AFFICHAGE DE LA LISTE ADMIN
         function renderList(data) {
-            document.getElementById('admin-list').innerHTML = data.map(d => {
-                const dateObj = new Date(d.date_evenement);
-                const dateLocale = dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                
-                return `
+            document.getElementById('admin-list').innerHTML = data.map(d => `
                 <div class="card-premium overflow-hidden border-t-4 border-red-900">
                     <div class="p-6 bg-slate-50 flex justify-between items-center border-b">
                         <div>
-                            <span class="bg-red-900 text-white px-3 py-1 rounded-full text-[10px] font-bold mr-3 italic">${dateLocale}</span>
+                            <span class="bg-red-900 text-white px-3 py-1 rounded-full text-[10px] font-bold mr-3 italic">${d.date_evenement}</span>
                             <span class="font-black uppercase text-xl text-slate-800">${d.nom_evenement}</span>
                             <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase italic">${d.organisme}</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="genererPDF('${d.id}')" class="bg-slate-900 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase">PDF</button>
-                            <button onclick="supprimerDefinitif('${d.id}')" class="text-red-600 border border-red-100 p-2 rounded-full hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="genererPDF('${d.id}')" class="bg-slate-900 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase shadow">PDF</button>
+                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-2 rounded-full hover:bg-red-50 transition-colors">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 text-[11px]">
-                        <div><p class="font-black text-red-900 uppercase italic mb-1">Logistique</p><p>Participants: ${d.nb_participants}</p><p>Accueil: ${d.lieux_accueil?.join(', ') || '/'}</p></div>
-                        <div class="border-l pl-4"><p class="font-black text-orange-600 uppercase italic mb-1">Mobilier</p><p>Chaises: ${d.nb_chaises} | Tables: ${d.nb_tables}</p></div>
-                        <div class="border-l pl-4"><p class="font-black text-blue-600 uppercase italic mb-1">Technique</p><p>HF: ${d.micros_hf_regie} | Fil: ${d.micros_filaires_scene}</p></div>
-                        <div class="border-l pl-4 bg-amber-50 p-2 rounded-xl"><p class="font-black text-amber-800 uppercase italic mb-1">Cadets</p><p>Retrans: ${d.cadets_retransmission ? 'Oui' : 'Non'}</p></div>
+                        <div>
+                            <p class="font-black text-red-900 uppercase italic mb-1">Logistique</p>
+                            <p>Participants: <strong>${d.nb_participants}</strong></p>
+                            <p>Accueil: ${d.lieux_accueil?.join(', ') || '/'}</p>
+                        </div>
+                        <div class="border-l pl-4">
+                            <p class="font-black text-orange-600 uppercase italic mb-1">Mobilier</p>
+                            <p>Chaises: <strong>${d.nb_chaises}</strong></p>
+                            <p>Tables: <strong>${d.nb_tables}</strong></p>
+                        </div>
+                        <div class="border-l pl-4">
+                            <p class="font-black text-blue-600 uppercase italic mb-1">Technique</p>
+                            <p>HF: <strong>${d.micros_hf_regie}</strong> | Fil: <strong>${d.micros_filaires_scene}</strong></p>
+                            <p>Options: ${d.options_tech?.join(', ') || '/'}</p>
+                        </div>
+                        <div class="border-l pl-4 bg-amber-50 p-2 rounded-xl">
+                            <p class="font-black text-amber-800 uppercase italic mb-1">Cadets</p>
+                            <p>Retrans: ${d.cadets_retransmission ? 'OUI' : 'NON'}</p>
+                        </div>
                     </div>
                 </div>
-            `}).join('');
+            `).join('');
         }
 
-        async function supprimerDefinitif(id) {
-            if(confirm("Confirmer la suppression irréversible ?")) {
-                // Utilisation de .eq('id', id) qui est la méthode la plus robuste
+        // --- FONCTION SUPPRESSION (MISE À JOUR) ---
+        async function supprimerLigne(id) {
+            if(confirm("Voulez-vous vraiment supprimer cet événement ?")) {
                 const { error } = await _supa
                     .from('demandes_auditorium')
                     .delete()
                     .eq('id', id);
 
-                if (!error) { 
-                    alert("Suppression réussie.");
-                    await chargerDonnees(); // On attend que la liste se mette à jour
-                } else { 
-                    console.error("Erreur Supabase:", error);
-                    alert("Erreur lors de la suppression : " + error.message); 
+                if (error) {
+                    alert("Erreur de suppression : " + error.message);
+                } else {
+                    alert("✓ Événement supprimé.");
+                    await chargerDonnees(); // Recharge la liste pour mettre à jour l'écran
                 }
             }
         }
 
+        // GENERATION PDF
         async function genererPDF(id) {
             const { data: d } = await _supa.from('demandes_auditorium').select('*').eq('id', id).single();
             const win = window.open('', '', 'width=800,height=900');
             win.document.write(`
-                <html><head><title>Fiche Technique</title>
-                <style>body{font-family:sans-serif;padding:30px;line-height:1.4;} h1{color:#7f1d1d; border-bottom:2px solid #7f1d1d; padding-bottom:10px;} .s{margin:15px 0; padding:12px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;} .l{font-weight:900; color:#7f1d1d; font-size:10px; text-transform:uppercase; margin-bottom:5px; display:block;}</style>
+                <html><head><title>Fiche Technique - ${d.nom_evenement}</title>
+                <style>
+                    body{font-family:sans-serif;padding:40px; color:#333;} 
+                    h1{color:#7f1d1d; border-bottom:3px solid #7f1d1d; text-transform:uppercase; margin-bottom:10px;}
+                    .section{margin:20px 0; padding:15px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;}
+                    .label{font-weight:900; color:#7f1d1d; font-size:11px; text-transform:uppercase; display:block; margin-bottom:5px;}
+                    .grid{display:grid; grid-template-cols: 1fr 1fr; gap:20px;}
+                    .highlight{font-weight:bold; color:#000;}
+                </style>
                 </head><body>
-                <h1>Fiche Technique : ${d.nom_evenement}</h1>
-                <p><strong>Organisme:</strong> ${d.organisme} | <strong>Date:</strong> ${d.date_evenement}</p>
-                <div class="s"><span class="l">Horaires</span>Orga: ${d.heure_orga} | Public: ${d.heure_public} | Fin: ${d.heure_fin}</div>
-                <div class="s" style="border-left:5px solid #f97316;"><span class="l">Mobilier Scène</span>Chaises: ${d.nb_chaises} | Tables: ${d.nb_tables}</div>
-                <div class="s"><span class="l">Logistique & Accueil</span>Participants: ${d.nb_participants} | Accueil: ${d.lieux_accueil?.join(', ') || '/'}<br>Vestiaire: ${d.lieux_vestiaire?.join(', ') || '/'}</div>
-                <div class="s" style="border-left:5px solid #2563eb;"><span class="l">Technique</span>HF: ${d.micros_hf_regie} | Filaires: ${d.micros_filaires_scene} | Options: ${d.options_tech?.join(', ') || '/'}</div>
-                <div class="s" style="background:#fffbeb; border-left:5px solid #d97706;"><span class="l">Salle des Cadets</span>Retransmission: ${d.cadets_retransmission ? 'Oui' : 'Non'}<br>Notes: ${d.cadets_notes || '/'}</div>
+                <h1>${d.nom_evenement}</h1>
+                <p><strong>Organisme :</strong> ${d.organisme} | <strong>Date :</strong> ${d.date_evenement}</p>
+                <div class="grid">
+                    <div class="section"><span class="label">Horaires</span>Orga: ${d.heure_orga} | Public: ${d.heure_public} | Fin: ${d.heure_fin}</div>
+                    <div class="section"><span class="label">Contact</span>${d.point_contact} (${d.contact_tel || d.contact_email})</div>
+                </div>
+                <div class="section"><span class="label">Mobilier Scène</span>Chaises: <span class="highlight">${d.nb_chaises}</span> | Tables: <span class="highlight">${d.nb_tables}</span></div>
+                <div class="section"><span class="label">Logistique</span>Participants: <span class="highlight">${d.nb_participants}</span><br>Accueil: ${d.lieux_accueil?.join(', ') || '/'}</div>
+                <div class="section"><span class="label">Technique</span>HF: ${d.micros_hf_regie} | Filaires: ${d.micros_filaires_scene}<br>Options: ${d.options_tech?.join(', ') || '/'}</div>
+                <div class="section" style="background:#fffbeb;"><span class="label">Salle des Cadets</span>Retransmission: ${d.cadets_retransmission ? 'OUI' : 'NON'}<br>Notes: ${d.cadets_notes || '/'}</div>
                 <script>window.onload=function(){window.print();window.close();}<\/script></body></html>
             `);
             win.document.close();
         }
 
+        // STATISTIQUES
         function initCharts(data) {
-            const yearsInvolved = [...new Set(data.map(d => new Date(d.date_evenement).getFullYear()))].sort().join(', ');
-            
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
             const months = Array(12).fill(0);
-            data.forEach(d => months[new Date(d.date_evenement).getMonth()]++);
+            data.forEach(d => { if(d.date_evenement) months[new Date(d.date_evenement).getMonth()]++; });
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { 
-                type: 'bar', 
-                data: { 
-                    labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Juil','Aoû','Sep','Oct','Nov','Déc'], 
-                    datasets: [{ label: 'Événements en ' + yearsInvolved, data: months, backgroundColor: '#7f1d1d' }] 
-                } 
-            });
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'], datasets: [{ label: 'Événements par mois', data: months, backgroundColor: '#7f1d1d' }] } });
 
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
             const total = data.length || 1;
@@ -257,17 +278,15 @@
                 data.filter(d => d.options_tech?.includes('Captation')).length
             ];
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { 
-                type: 'radar', 
-                data: { 
-                    labels: ['HF', 'Fil', 'Visio', 'Capt.'], 
-                    datasets: [{ label: 'Moyenne Technique ' + yearsInvolved, data: kpi, backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d' }] 
-                } 
-            });
+            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['Mics HF', 'Mics Fil', 'Visio', 'Captation'], datasets: [{ label: 'Usage Technique Moyen', data: kpi, backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d' }] } });
         }
 
+        // ENVOI DU FORMULAIRE
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true; btn.innerText = "ENVOI EN COURS...";
+
             const payload = {
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
@@ -290,8 +309,15 @@
                 cadets_retransmission: document.getElementById('cadets_retrans').checked,
                 cadets_notes: document.getElementById('cadets_notes').value
             };
+
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (!error) { alert("✓ Fiche transmise avec succès !"); location.reload(); }
+            if (!error) { 
+                alert("✓ Fiche transmise avec succès !"); 
+                location.reload(); 
+            } else { 
+                alert("Erreur lors de l'envoi : " + error.message);
+                btn.disabled = false; btn.innerText = "ENVOYER LA FICHE";
+            }
         };
 
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
