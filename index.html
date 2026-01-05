@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Régie Auditorium - Système Master</title>
+    <title>Régie Auditorium - Système Expert - Musée de l'Armée</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,144 +12,224 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;700;900&display=swap');
-        :root { --primary: #7f1d1d; --accent: #d4af37; --slate-dark: #0f172a; }
-        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; margin: 0; }
+        :root { --primary: #7f1d1d; --accent: #d4af37; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; margin: 0; }
         .font-prestige { font-family: 'Cinzel', serif; }
         .gradient-musee { background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%); }
-        .card-premium { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; transition: all 0.4s ease; }
-        .card-premium:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 25px 50px -12px rgba(127, 29, 29, 0.5); }
-        .input-dark { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 1.2rem; border-radius: 1.2rem; width: 100%; outline: none; transition: 0.3s; }
-        .input-dark:focus { border-color: var(--accent); background: rgba(255,255,255,0.1); }
+        .card-premium { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 2.5rem; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-premium:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 30px 60px -12px rgba(127, 29, 29, 0.5); }
+        .input-premium { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 1.2rem; border-radius: 1.2rem; width: 100%; transition: 0.3s; outline: none; }
+        .input-premium:focus { border-color: var(--accent); background: rgba(255,255,255,0.12); box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); }
         .hidden { display: none !important; }
-        .modal-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
-        .calendar-day { background: #0f172a; min-height: 110px; padding: 10px; }
-        .calendar-event { background: var(--primary); font-size: 8px; padding: 3px; border-radius: 4px; margin-top: 2px; border-left: 3px solid var(--accent); cursor: pointer; }
+        .status-badge { padding: 4px 12px; border-radius: 99px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+        .modal-full { position: fixed; inset: 0; z-index: 9999; background: rgba(2, 6, 23, 0.98); display: none; align-items: center; justify-content: center; backdrop-filter: blur(25px); padding: 20px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: rgba(255,255,255,0.1); border-radius: 1.5rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        .calendar-day { background: #1e293b; min-height: 120px; padding: 12px; transition: 0.3s; }
+        .calendar-day:hover { background: #334155; }
+        .calendar-event { background: var(--primary); font-size: 8px; padding: 4px 8px; border-radius: 6px; margin-top: 4px; border-left: 4px solid var(--accent); cursor: pointer; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body>
 
-    <nav class="gradient-musee p-6 sticky top-0 z-50 border-b border-amber-500/30">
+    <nav class="gradient-musee p-6 sticky top-0 z-[100] border-b border-amber-500/30 shadow-2xl">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-6">
-                <i class="fa-solid fa-building-columns text-amber-500 text-4xl"></i>
+                <div class="bg-white/10 p-3 rounded-2xl border border-white/20"><i class="fa-solid fa-building-columns text-amber-500 text-3xl"></i></div>
                 <div>
-                    <h1 class="font-prestige text-2xl tracking-widest text-white uppercase">Auditorium Austerlitz</h1>
-                    <p class="text-[10px] font-black tracking-[0.4em] text-amber-500 uppercase italic">Régie Technique - Musée de l'Armée</p>
+                    <h1 class="font-prestige text-2xl tracking-[0.2em] text-white">Auditorium Austerlitz</h1>
+                    <p class="text-[9px] font-black tracking-[0.5em] text-amber-500/90 uppercase">Régie Technique - Musée de l'Armée</p>
                 </div>
             </div>
             
             <div class="flex gap-4 items-center">
-                <div id="admin-filters" class="hidden flex gap-2">
-                    <select id="f-year" onchange="chargerDonnees()" class="input-dark py-2 text-[10px] w-24">
+                <div id="admin-tools" class="hidden flex gap-3">
+                    <select id="sel-year" onchange="chargerDonnees()" class="input-premium py-2 text-[10px] w-24">
                         <option value="2025" selected>2025</option><option value="2026">2026</option>
                     </select>
-                    <select id="f-month" onchange="chargerDonnees()" class="input-dark py-2 text-[10px] w-36">
+                    <select id="sel-month" onchange="chargerDonnees()" class="input-premium py-2 text-[10px] w-36">
                         <option value="all">Tous les mois</option>
                         <option value="01">Janvier</option><option value="02">Février</option><option value="03">Mars</option>
                         <option value="04">Avril</option><option value="05">Mai</option><option value="06">Juin</option>
                         <option value="07">Juillet</option><option value="08">Août</option><option value="09">Septembre</option>
                         <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
                     </select>
+                    <button onclick="document.getElementById('modal-calendar').style.display='flex'" class="bg-amber-500 text-red-950 px-6 py-2 rounded-full font-black uppercase text-[10px] hover:bg-white transition-all shadow-lg">Planning</button>
                 </div>
-                <button id="btn-open-planning" onclick="document.getElementById('modal-planning').style.display='flex'" class="hidden bg-amber-500 text-red-950 px-6 py-2 rounded-full font-black uppercase text-[10px]">Planning</button>
-                <button onclick="document.getElementById('login-modal').style.display='flex'" id="btn-login-trigger" class="border border-white/40 px-6 py-2 rounded-full font-black uppercase text-[10px]">Accès Régisseur</button>
-                <button id="btn-logout" onclick="location.reload()" class="hidden bg-white text-red-900 px-6 py-2 rounded-full font-black uppercase text-[10px]">Déconnexion</button>
+                <button onclick="document.getElementById('login-modal').style.display='flex'" id="btn-login" class="border border-white/40 px-6 py-2 rounded-full font-black uppercase text-[10px] hover:bg-white/10">Accès Régisseur</button>
+                <button id="btn-logout" onclick="location.reload()" class="hidden bg-white text-red-900 px-6 py-2 rounded-full font-black uppercase text-[10px]">Quitter</button>
             </div>
         </div>
     </nav>
 
-    <div id="vue-client" class="max-w-5xl mx-auto py-16 px-6 space-y-12">
-        <form id="form-complet" class="space-y-12">
-            <div class="card-premium p-10 border-t-8 border-red-900">
-                <h3 class="font-prestige text-amber-500 text-lg mb-8 uppercase italic">1. Manifestation</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <input type="text" id="organisme" placeholder="Client / Organisme" required class="input-dark">
-                    <input type="text" id="nom_evenement" placeholder="Nom de l'événement" required class="input-dark">
-                    <input type="text" id="point_contact" placeholder="Responsable" required class="input-dark">
-                    <input type="email" id="contact_email" placeholder="Email de contact" required class="input-dark">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-amber-500 ml-2">Date de l'événement</label>
-                        <input type="date" id="date_evenement" required class="input-dark font-bold text-amber-500">
+    <div id="vue-client" class="max-w-6xl mx-auto py-20 px-6 space-y-16">
+        <form id="form-expert" class="space-y-16">
+            <div class="card-premium p-12 border-t-[10px] border-red-900 relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 text-[12rem] font-black text-white/5 italic select-none">01</div>
+                <h2 class="font-prestige text-2xl text-amber-500 mb-10 flex items-center gap-4 relative z-10 italic">
+                    <i class="fa-solid fa-file-signature text-3xl"></i> Identification de la manifestation
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10">
+                    <div class="space-y-3">
+                        <label class="text-[10px] font-black uppercase opacity-50 ml-2 italic">Client / Organisme</label>
+                        <input type="text" id="organisme" placeholder="Ex: Direction du Musée" required class="input-premium">
                     </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="text-center"><label class="text-[8px] font-black mb-1 block">Arrivée Orga</label><input type="time" id="h_orga" required class="input-dark text-center p-2"></div>
-                        <div class="text-center"><label class="text-[8px] font-black mb-1 block">Public</label><input type="time" id="h_public" required class="input-dark text-center p-2"></div>
-                        <div class="text-center"><label class="text-[8px] font-black mb-1 block">Fin Presta</label><input type="time" id="h_fin" required class="input-dark text-center p-2"></div>
+                    <div class="space-y-3">
+                        <label class="text-[10px] font-black uppercase opacity-50 ml-2 italic">Nom de l'événement</label>
+                        <input type="text" id="nom_evenement" placeholder="Ex: Assemblée Générale 2025" required class="input-premium">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black uppercase text-amber-500 ml-2 italic">Date de l'événement</label>
+                            <input type="date" id="date_evenement" required class="input-premium font-bold text-amber-500">
+                        </div>
+                        <div class="space-y-3 text-center">
+                            <label class="text-[10px] font-black uppercase opacity-50 block italic">Participants (Max 145)</label>
+                            <input type="number" id="nb_participants" value="0" class="input-premium text-center font-black">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3 bg-black/30 p-6 rounded-[2rem] border border-white/5 shadow-inner">
+                        <div class="text-center">
+                            <label class="text-[8px] font-black uppercase text-amber-500 mb-2 block italic">Arrivée Orga</label>
+                            <input type="time" id="h_orga" required class="input-premium p-2 text-center text-xs">
+                        </div>
+                        <div class="text-center">
+                            <label class="text-[8px] font-black uppercase text-amber-500 mb-2 block italic">Public</label>
+                            <input type="time" id="h_public" required class="input-premium p-2 text-center text-xs">
+                        </div>
+                        <div class="text-center">
+                            <label class="text-[8px] font-black uppercase text-amber-500 mb-2 block italic">Fin</label>
+                            <input type="time" id="h_fin" required class="input-premium p-2 text-center text-xs">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="card-premium p-8">
-                    <h3 class="font-prestige text-amber-500 text-sm mb-6 uppercase">2. Espaces & Mobilier</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between bg-white/5 p-4 rounded-xl">
-                            <span class="text-xs font-bold">Participants (Max 145)</span>
-                            <input type="number" id="n_part" value="0" class="bg-transparent w-16 text-right font-black text-amber-500 outline-none">
-                        </div>
-                        <div class="flex items-center justify-between bg-white/5 p-4 rounded-xl">
-                            <span class="text-xs font-bold">Chaises sur scène</span>
-                            <input type="number" id="n_chaises" value="0" max="6" class="bg-transparent w-16 text-right font-black outline-none">
-                        </div>
-                        <div id="lieux-checks" class="grid grid-cols-2 gap-2 mt-4">
-                            <label class="flex items-center gap-2 text-[10px]"><input type="checkbox" value="Hall Orient"> Hall Orient</label>
-                            <label class="flex items-center gap-2 text-[10px]"><input type="checkbox" value="Auditorium"> Auditorium</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-premium p-8">
-                    <h3 class="font-prestige text-amber-500 text-sm mb-6 uppercase">3. Audio & Régie</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between bg-white/5 p-4 rounded-xl">
-                            <span class="text-xs font-bold">Micros HF (Sennheiser)</span>
-                            <input type="number" id="n_hf" value="0" max="2" class="bg-transparent w-16 text-right font-black outline-none">
-                        </div>
-                        <label class="flex items-center gap-4 p-4 bg-blue-900/20 border border-blue-500/30 rounded-xl cursor-pointer">
-                            <input type="checkbox" id="wifi_p" class="w-5 h-5 accent-blue-500">
-                            <span class="text-xs font-black uppercase tracking-tighter">Activer Wifi Public</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="card-premium p-10 space-y-6">
+                    <h3 class="font-prestige text-amber-500 text-sm uppercase italic border-b border-white/10 pb-4">Espaces Accueil</h3>
+                    <div id="lieux_list" class="space-y-3">
+                        <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition-all border border-transparent hover:border-white/20">
+                            <input type="checkbox" value="Hall Orient" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase tracking-wider">Hall Orient</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition-all border border-transparent hover:border-white/20">
+                            <input type="checkbox" value="Auditorium" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase tracking-wider">Auditorium</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition-all border border-transparent hover:border-white/20">
+                            <input type="checkbox" value="Table Accueil" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase tracking-wider">Table Accueil</span>
                         </label>
                     </div>
                 </div>
+
+                <div class="card-premium p-10 space-y-6">
+                    <h3 class="font-prestige text-amber-500 text-sm uppercase italic border-b border-white/10 pb-4">Vestiaires</h3>
+                    <div id="vestiaire_list" class="space-y-3">
+                        <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer">
+                            <input type="checkbox" value="SAS Auditorium" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase">SAS Auditorium</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer">
+                            <input type="checkbox" value="Salle Cadets" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase">Salle Cadets</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer">
+                            <input type="checkbox" value="Salle Turenne" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase">Salle Turenne</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card-premium p-10 space-y-6">
+                    <h3 class="font-prestige text-amber-500 text-sm uppercase italic border-b border-white/10 pb-4">Matériel Scène</h3>
+                    <div class="flex items-center justify-between bg-white/5 p-4 rounded-xl border border-white/5">
+                        <span class="text-[10px] font-black uppercase opacity-60">Chaises (max 6)</span>
+                        <input type="number" id="nb_chaises" value="0" max="6" class="bg-transparent w-12 text-right font-black text-amber-500">
+                    </div>
+                    <div class="flex items-center justify-between bg-white/5 p-4 rounded-xl border border-white/5">
+                        <span class="text-[10px] font-black uppercase opacity-60">Tables (max 2)</span>
+                        <input type="number" id="nb_tables" value="0" max="2" class="bg-transparent w-12 text-right font-black text-amber-500">
+                    </div>
+                    <label class="flex items-center gap-4 p-4 bg-blue-900/20 border border-blue-500/30 rounded-2xl cursor-pointer mt-6">
+                        <input type="checkbox" id="wifi_public" class="w-6 h-6 accent-blue-500">
+                        <span class="text-[10px] font-black uppercase text-blue-300">Wifi Public Inclus</span>
+                    </label>
+                </div>
             </div>
 
-            <button type="submit" class="w-full gradient-musee p-10 rounded-3xl text-3xl font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-[1.01] transition-all">Transmettre à la régie</button>
+            <div class="card-premium p-12">
+                <h3 class="font-prestige text-amber-500 text-lg mb-10 uppercase italic flex items-center gap-4">
+                    <i class="fa-solid fa-headset text-3xl"></i> Régie & Besoins Techniques
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="space-y-3 p-6 bg-white/5 rounded-[2rem] border border-white/5">
+                        <label class="text-[9px] font-black uppercase opacity-50 block italic">Micros HF (Main)</label>
+                        <input type="number" id="micros_hf" value="0" max="2" class="input-premium text-center">
+                    </div>
+                    <div class="space-y-3 p-6 bg-white/5 rounded-[2rem] border border-white/5">
+                        <label class="text-[9px] font-black uppercase opacity-50 block italic">Micros Filaires</label>
+                        <input type="number" id="micros_filaires" value="0" max="2" class="input-premium text-center">
+                    </div>
+                    <label class="flex items-center gap-4 p-6 bg-white/5 rounded-[2rem] border border-white/5 cursor-pointer">
+                        <input type="checkbox" id="captation_video" class="w-6 h-6 accent-red-900">
+                        <span class="text-[9px] font-black uppercase">Enregistrement / Captation</span>
+                    </label>
+                    <label class="flex items-center gap-4 p-6 bg-white/5 rounded-[2rem] border border-white/5 cursor-pointer">
+                        <input type="checkbox" id="visio" class="w-6 h-6 accent-red-900">
+                        <span class="text-[9px] font-black uppercase">Visioconférence / Streaming</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full gradient-musee p-12 rounded-[3rem] text-4xl font-black uppercase tracking-[0.4em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all">
+                Transmettre au régisseur
+            </button>
         </form>
     </div>
 
-    <div id="vue-admin" class="hidden max-w-7xl mx-auto py-12 px-6 space-y-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 card-premium p-8">
-                <h3 class="font-prestige text-amber-500 mb-6 uppercase text-center tracking-widest">Analyse Radar des Besoins</h3>
-                <div style="height: 380px;"><canvas id="radarMaster"></canvas></div>
+    <div id="vue-admin" class="hidden max-w-7xl mx-auto py-16 px-6 space-y-16">
+        <div class="flex justify-between items-end border-b-2 border-red-900 pb-10">
+            <div>
+                <h2 class="font-prestige text-5xl text-white uppercase tracking-tighter italic">Tableau de bord</h2>
+                <p class="text-amber-500 font-black uppercase text-xs tracking-[0.5em] mt-3">Gestion de l'auditorium austerlitz</p>
             </div>
-            <div class="card-premium p-8 flex flex-col items-center justify-center text-center">
-                <div class="text-7xl font-black text-amber-500" id="stat-total">0</div>
-                <div class="text-[10px] font-black uppercase tracking-[0.3em] opacity-50 mt-2">Dossiers ce mois</div>
-                <div class="mt-8 pt-8 border-t border-white/10 w-full space-y-4">
-                    <div class="flex justify-between text-[10px] font-black"><span>AUDIO HF</span><span id="stat-hf" class="text-amber-500">0</span></div>
-                    <div class="flex justify-between text-[10px] font-black"><span>WIFI PUBLIC</span><span id="stat-wifi" class="text-blue-400">0</span></div>
+            <div class="flex gap-6">
+                <div class="bg-white/5 p-6 rounded-[2rem] border border-white/10 text-center min-w-[160px] shadow-2xl">
+                    <span class="block text-4xl font-black text-amber-500" id="stat-count">0</span>
+                    <span class="text-[9px] font-black uppercase opacity-40">Dossiers</span>
                 </div>
             </div>
         </div>
-        <div id="admin-list" class="space-y-6"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="lg:col-span-2 card-premium p-10">
+                <h3 class="font-prestige text-amber-500 mb-8 uppercase text-center italic">Intensité Technique (Moyenne)</h3>
+                <div style="height: 450px;"><canvas id="radarChart"></canvas></div>
+            </div>
+            <div class="space-y-6">
+                <div class="card-premium p-8 bg-red-950/20 border-red-900/40">
+                    <h4 class="font-black text-xs uppercase mb-6 text-red-500 italic">Rappel Régie</h4>
+                    <p class="text-[11px] leading-relaxed opacity-70 italic font-medium">L'auditorium dispose de 145 places. Toute demande de captation doit être validée par le service audiovisuel J-7.</p>
+                </div>
+                <div id="quick-stats" class="grid grid-cols-1 gap-4">
+                    </div>
+            </div>
+        </div>
+
+        <div id="admin-list" class="grid grid-cols-1 gap-8">
+            </div>
     </div>
 
-    <div id="modal-planning" class="modal-overlay">
-        <div class="card-premium w-full max-w-5xl p-10 relative">
-            <button onclick="document.getElementById('modal-planning').style.display='none'" class="absolute top-6 right-6 text-3xl opacity-50 hover:opacity-100">&times;</button>
-            <h3 class="font-prestige text-2xl text-amber-500 mb-8">Planning de l'Auditorium</h3>
+    <div id="modal-calendar" class="modal-full">
+        <div class="card-premium w-full max-w-6xl p-12 relative overflow-hidden">
+            <button onclick="document.getElementById('modal-calendar').style.display='none'" class="absolute top-10 right-10 text-4xl text-white/40 hover:text-white transition-all">&times;</button>
+            <h2 class="font-prestige text-3xl text-amber-500 mb-10 italic">Planning de l'Auditorium</h2>
             <div id="calendar-body" class="calendar-grid"></div>
         </div>
     </div>
 
-    <div id="login-modal" class="modal-overlay">
-        <div class="card-premium p-12 max-w-md w-full border-2 border-amber-500/30">
-            <h3 class="font-prestige text-center text-2xl mb-8">Accès Sécurisé</h3>
-            <div class="space-y-6">
-                <input type="email" id="adm-email" placeholder="Email" class="input-dark">
-                <input type="password" id="adm-pass" placeholder="Mot de passe" class="input-dark">
-                <button type="button" id="btn-auth-submit" class="w-full gradient-musee py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl">Connexion</button>
+    <div id="login-modal" class="modal-full">
+        <div class="card-premium p-16 max-w-md w-full border-2 border-amber-500/20 shadow-[0_0_100px_rgba(127,29,29,0.3)]">
+            <h3 class="font-prestige text-center text-3xl mb-10 text-white italic uppercase tracking-widest">Espace Sécurisé</h3>
+            <div class="space-y-8">
+                <input type="email" id="adm-email" placeholder="Identifiant" class="input-premium">
+                <input type="password" id="adm-pass" placeholder="Mot de passe" class="input-premium">
+                <button type="button" id="btn-auth-submit" class="w-full gradient-musee py-6 rounded-2xl font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] active:scale-95 transition-all">Connexion</button>
             </div>
         </div>
     </div>
@@ -159,187 +239,274 @@
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
         let allEvents = [];
-        let radarChart = null;
+        let radarChartInstance = null;
 
+        // AUTHENTICATION LOGIC
         document.getElementById('btn-auth-submit').addEventListener('click', async () => {
             const email = document.getElementById('adm-email').value;
             const password = document.getElementById('adm-pass').value;
             const { data, error } = await _supa.auth.signInWithPassword({ email, password });
-            if (error) alert(error.message);
-            else {
+            
+            if (error) {
+                alert("Identifiants incorrects : " + error.message);
+            } else {
                 document.getElementById('login-modal').style.display = 'none';
-                activerEspaceRegie();
+                basculerInterfaceAdmin();
             }
         });
 
-        function activerEspaceRegie() {
+        async function basculerInterfaceAdmin() {
             document.getElementById('vue-client').classList.add('hidden');
             document.getElementById('vue-admin').classList.remove('hidden');
-            document.getElementById('admin-filters').classList.remove('hidden');
+            document.getElementById('admin-tools').classList.remove('hidden');
             document.getElementById('btn-logout').classList.remove('hidden');
-            document.getElementById('btn-open-planning').classList.remove('hidden');
-            document.getElementById('btn-login-trigger').classList.add('hidden');
-            chargerDonnees();
+            document.getElementById('btn-login').classList.add('hidden');
+            await chargerDonnees();
         }
 
         async function chargerDonnees() {
-            const { data } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
+            const { data, error } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
             if (data) {
                 allEvents = data;
-                const filtered = filtrerParPeriode();
-                renderList(filtered);
-                updateRadar(filtered);
-                renderCalendar(filtered);
+                appliquerFiltres();
             }
         }
 
-        function filtrerParPeriode() {
-            const y = document.getElementById('f-year').value;
-            const m = document.getElementById('f-month').value;
-            return allEvents.filter(d => d.date_evenement.startsWith(y) && (m === 'all' || d.date_evenement.split('-')[1] === m));
+        function appliquerFiltres() {
+            const year = document.getElementById('sel-year').value;
+            const month = document.getElementById('sel-month').value;
+            
+            const filtered = allEvents.filter(d => {
+                const isYear = d.date_evenement.startsWith(year);
+                const isMonth = month === 'all' || d.date_evenement.split('-')[1] === month;
+                return isYear && isMonth;
+            });
+
+            document.getElementById('stat-count').innerText = filtered.length;
+            renderList(filtered);
+            updateRadar(filtered);
+            renderCalendar(filtered);
         }
 
         function renderList(data) {
-            document.getElementById('stat-total').innerText = data.length;
-            document.getElementById('stat-hf').innerText = data.reduce((acc, d) => acc + (d.micros_hf || 0), 0);
-            document.getElementById('stat-wifi').innerText = data.filter(d => d.wifi_public).length;
-
             const container = document.getElementById('admin-list');
+            if (data.length === 0) {
+                container.innerHTML = `<div class="p-20 text-center bg-white/5 rounded-[3rem] border-2 border-dashed border-white/10 text-white/30 font-black uppercase tracking-widest italic">Aucun dossier trouvé</div>`;
+                return;
+            }
+
             container.innerHTML = data.map(d => `
-                <div class="card-premium p-8 border-l-[15px] border-red-900 flex flex-col lg:flex-row justify-between items-center gap-8">
-                    <div class="flex items-center gap-8">
-                        <div class="text-center bg-white/5 p-5 rounded-3xl min-w-[130px] border border-white/10 shadow-2xl">
-                            <div class="text-3xl font-black text-amber-500">${d.date_evenement.split('-').reverse().slice(0,2).join('/')}</div>
-                            <div class="text-[9px] font-black uppercase opacity-60 mt-1">${d.heure_orga} - ${d.heure_fin}</div>
-                        </div>
-                        <div>
-                            <h4 class="font-prestige text-xl text-white uppercase">${d.nom_evenement}</h4>
-                            <p class="text-[10px] font-black uppercase text-amber-500 italic tracking-widest">${d.organisme}</p>
-                            <div class="flex gap-4 mt-4 text-[9px] font-bold">
-                                <span class="bg-white/5 px-3 py-1 rounded-full"><i class="fa-solid fa-users mr-1"></i> ${d.nb_participants}</span>
-                                <span class="bg-white/5 px-3 py-1 rounded-full"><i class="fa-solid fa-microphone mr-1"></i> ${d.micros_hf} HF</span>
+                <div class="card-premium overflow-hidden border-l-[20px] border-red-900 group">
+                    <div class="p-10 flex flex-col lg:flex-row items-center gap-10">
+                        <div class="bg-white/10 text-white p-8 rounded-[2.5rem] text-center min-w-[150px] border border-white/10 shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                            <span class="block text-[10px] font-black uppercase opacity-50 mb-2 italic">Session</span>
+                            <span class="block text-3xl font-black italic">${d.date_evenement.split('-').reverse().slice(0,2).join('/')}</span>
+                            <div class="mt-4 pt-4 border-t border-white/10">
+                                <span class="block text-[10px] font-black uppercase text-amber-500 italic">${d.h_orga} — ${d.h_fin}</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <a href="mailto:${d.contact_email}" class="bg-blue-600/20 text-blue-400 p-5 rounded-2xl hover:bg-blue-600 hover:text-white transition-all">
-                            <i class="fa-solid fa-envelope text-xl"></i>
-                        </a>
-                        <button onclick="genererPDFMaster('${d.id}')" class="bg-white/10 text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center gap-3 hover:bg-amber-500 hover:text-red-950 transition-all">
-                            <i class="fa-solid fa-file-pdf text-xl"></i> PDF
-                        </button>
-                        <button onclick="supprimerDossier('${d.id}')" class="bg-red-900/30 text-red-500 p-5 rounded-2xl hover:bg-red-600 hover:text-white transition-all">
-                            <i class="fa-solid fa-trash text-xl"></i>
-                        </button>
+
+                        <div class="flex-grow space-y-6">
+                            <div>
+                                <h3 class="font-prestige text-3xl text-white uppercase group-hover:text-amber-500 transition-colors">${d.nom_evenement}</h3>
+                                <p class="text-amber-600 font-black text-xs uppercase italic tracking-[0.2em] mt-2">${d.organisme}</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="bg-black/20 p-4 rounded-2xl border border-white/5">
+                                    <span class="block text-[8px] font-black opacity-40 uppercase">Audio HF / Fil</span>
+                                    <span class="text-sm font-bold text-white">${d.micros_hf || 0} HF / ${d.micros_filaires || 0} Fil</span>
+                                </div>
+                                <div class="bg-black/20 p-4 rounded-2xl border border-white/5">
+                                    <span class="block text-[8px] font-black opacity-40 uppercase">Scène (C/T)</span>
+                                    <span class="text-sm font-bold text-white">${d.nb_chaises || 0} Chaises / ${d.nb_tables || 0} Tables</span>
+                                </div>
+                                <div class="bg-black/20 p-4 rounded-2xl border border-white/5">
+                                    <span class="block text-[8px] font-black opacity-40 uppercase">Vidéo / Visio</span>
+                                    <span class="text-sm font-bold ${d.captation_video || d.visio ? 'text-red-500' : 'text-white/40'}">${d.captation_video ? 'OUI (Cap)' : ''} ${d.visio ? 'OUI (Visio)' : 'NON'}</span>
+                                </div>
+                                <div class="bg-black/20 p-4 rounded-2xl border border-white/5">
+                                    <span class="block text-[8px] font-black opacity-40 uppercase">Accès Wifi</span>
+                                    <span class="text-sm font-bold ${d.wifi_public ? 'text-blue-500' : 'text-white/40'}">${d.wifi_public ? 'ACTIVÉ' : 'AUCUN'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-4 min-w-[240px]">
+                            <button onclick="genererPDFExpert('${d.id}')" class="gradient-musee text-white p-6 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-4 shadow-xl hover:shadow-red-900/40 transition-all">
+                                <i class="fa-solid fa-file-pdf text-2xl text-amber-500"></i> Fiche Expert PDF
+                            </button>
+                            <div class="flex gap-4">
+                                <a href="mailto:${d.contact_email}" class="flex-grow bg-blue-600/20 text-blue-400 p-5 rounded-2xl text-center border border-blue-600/30 hover:bg-blue-600 hover:text-white transition-all">
+                                    <i class="fa-solid fa-paper-plane text-xl"></i>
+                                </a>
+                                <button onclick="supprimerDossier('${d.id}')" class="bg-red-900/20 text-red-500 p-5 rounded-2xl border border-red-900/30 hover:bg-red-600 hover:text-white transition-all">
+                                    <i class="fa-solid fa-trash-can text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
 
         function updateRadar(data) {
-            const ctx = document.getElementById('radarMaster').getContext('2d');
-            const metrics = {
-                affluence: data.reduce((acc, d) => acc + (d.nb_participants || 0), 0) / (data.length * 145 || 1) * 100,
-                audio: data.reduce((acc, d) => acc + (d.micros_hf || 0), 0) / (data.length * 2 || 1) * 100,
-                mobilier: data.reduce((acc, d) => acc + (d.nb_chaises || 0), 0) / (data.length * 6 || 1) * 100,
-                connect: data.filter(d => d.wifi_public).length / (data.length || 1) * 100
-            };
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            const metrics = { affluence: 0, audio: 0, mobilier: 0, connect: 0 };
+            
+            data.forEach(d => {
+                metrics.affluence += (d.nb_participants || 0) / 145;
+                metrics.audio += ((d.micros_hf || 0) + (d.micros_filaires || 0)) / 4;
+                metrics.mobilier += ((d.nb_chaises || 0) + (d.nb_tables || 0)) / 8;
+                metrics.connect += (d.wifi_public || d.visio) ? 1 : 0;
+            });
 
-            if (radarChart) radarChart.destroy();
-            radarChart = new Chart(ctx, {
+            const values = Object.values(metrics).map(v => (v / (data.length || 1)) * 100);
+
+            if (radarChartInstance) radarChartInstance.destroy();
+            radarChartInstance = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['CAPACITÉ SALLE', 'RESOURCES AUDIO', 'MOBILIER SCÈNE', 'WIFI / CONNECT'],
+                    labels: ['Taux Occupation', 'Intensité Audio', 'Besoin Mobilier', 'Connectivité'],
                     datasets: [{
-                        data: Object.values(metrics),
+                        label: 'Indice Technique',
+                        data: values,
                         backgroundColor: 'rgba(212, 175, 55, 0.2)',
                         borderColor: '#d4af37',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#fff'
+                        borderWidth: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#d4af37',
+                        pointRadius: 6
                     }]
                 },
                 options: { 
-                    scales: { r: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: '#fff', font: { size: 11, weight: 'bold' } } } },
+                    scales: { r: { 
+                        beginAtZero: true, max: 100, 
+                        grid: { color: 'rgba(255,255,255,0.1)' }, 
+                        angleLines: { color: 'rgba(255,255,255,0.1)' },
+                        pointLabels: { color: '#fff', font: { size: 12, weight: 'bold', family: 'Cinzel' } }
+                    }},
                     plugins: { legend: { display: false } }
                 }
             });
         }
 
-        async function supprimerDossier(id) {
-            if(confirm("Confirmer la suppression définitive ?")) {
-                await _supa.from('demandes_auditorium').delete().eq('id', id);
-                chargerDonnees();
-            }
-        }
-
-        window.genererPDFMaster = function(id) {
-            const d = allEvents.find(item => item.id === id);
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // PAGE 1 : BESOINS
-            doc.setFont("helvetica", "bold"); doc.setFontSize(10);
-            doc.text("Musée de l'Armée - Invalides", 15, 15);
-            doc.setFontSize(15); doc.setTextColor(127, 29, 29);
-            doc.text("AUDITORIUM AUSTERLITZ", 105, 25, { align: "center" });
-            doc.setFontSize(10); doc.setTextColor(0);
-            doc.text(`Manifestation : ${d.nom_evenement}`, 15, 45);
-            doc.text(`Organisme : ${d.organisme}`, 15, 52);
-            doc.text(`Date : ${d.date_evenement}`, 15, 59);
-            doc.text(`Horaires : ${d.heure_orga} - ${d.heure_fin}`, 15, 66);
-            
-            doc.setFillColor(240, 240, 240); doc.rect(15, 80, 180, 7, 'F');
-            doc.text("DÉTAILS TECHNIQUES", 18, 85);
-            doc.text(`Participants : ${d.nb_participants}`, 15, 95);
-            doc.text(`Micros HF : ${d.micros_hf}`, 15, 102);
-            doc.text(`Wifi Public : ${d.wifi_public ? 'Activé' : 'Désactivé'}`, 15, 109);
-
-            doc.setFontSize(6); doc.setTextColor(100);
-            doc.text("RGPD : Vos données sont collectées pour la gestion de l'événement... Contact : rgpd@musee-armee.fr", 15, 280, { maxWidth: 180 });
-
-            // PAGE 2 : GRILLE
-            doc.addPage();
-            doc.setFontSize(12); doc.setTextColor(0);
-            doc.text("GRILLE DE DÉROULÉ TECHNIQUE", 105, 20, { align: "center" });
-            doc.autoTable({
-                startY: 30,
-                head: [['Heure', 'Séquence', 'Projection', 'Commentaires']],
-                body: Array(14).fill(['', '', '', '']),
-                theme: 'grid',
-                headStyles: { fillColor: [127, 29, 29] }
-            });
-
-            doc.save(`Fiche_Regie_${d.nom_evenement}.pdf`);
-        };
-
         function renderCalendar(data) {
             const body = document.getElementById('calendar-body');
             body.innerHTML = '';
             for(let i=1; i<=31; i++) {
-                const events = data.filter(d => parseInt(d.date_evenement.split('-')[2]) === i);
-                body.innerHTML += `<div class="calendar-day"><span class="text-[9px] opacity-30">${i}</span>${events.map(e => `<div class="calendar-event">${e.nom_evenement}</div>`).join('')}</div>`;
+                const dayEvents = data.filter(d => parseInt(d.date_evenement.split('-')[2]) === i);
+                body.innerHTML += `
+                    <div class="calendar-day">
+                        <span class="text-[10px] font-black opacity-20 block mb-2">${i}</span>
+                        ${dayEvents.map(e => `<div class="calendar-event" title="${e.nom_evenement}">${e.nom_evenement}</div>`).join('')}
+                    </div>
+                `;
             }
         }
 
-        document.getElementById('form-complet').onsubmit = async (e) => {
+        async function supprimerDossier(id) {
+            if(confirm("Confirmer la suppression définitive de ce dossier technique ?")) {
+                const { error } = await _supa.from('demandes_auditorium').delete().eq('id', id);
+                if (error) alert(error.message);
+                else chargerDonnees();
+            }
+        }
+
+        // PDF GÉNÉRATION 2 PAGES (Fidèle au document "Fiche technique Auditorium 1.pdf")
+        window.genererPDFExpert = function(id) {
+            const d = allEvents.find(item => item.id === id);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // --- PAGE 1 : EXPRESSION DES BESOINS ---
+            doc.setFont("helvetica", "bold"); doc.setFontSize(10);
+            doc.text("Musée de l'Armée - Invalides", 15, 15);
+            doc.setFontSize(16); doc.setTextColor(127, 29, 29);
+            doc.text("AUDITORIUM AUSTERLITZ", 105, 25, { align: "center" });
+            doc.setFontSize(11); doc.setTextColor(60);
+            doc.text("Fiche technique - Expression des besoins", 105, 32, { align: "center" });
+
+            doc.setFontSize(9); doc.setTextColor(0); doc.setFont("helvetica", "normal");
+            doc.text(`Client / Organisme : ${d.organisme}`, 15, 50);
+            doc.text(`Manifestation : ${d.nom_evenement}`, 15, 57);
+            doc.text(`Date : ${d.date_evenement}`, 15, 64);
+            
+            doc.setFont("helvetica", "bold");
+            doc.text(`Heure arrivée organisateur : ${d.h_orga}`, 15, 80);
+            doc.text(`Arrivée participants : ${d.h_public}`, 15, 87);
+            doc.text(`Fin de la prestation : ${d.h_fin}`, 15, 94);
+
+            doc.setFillColor(240, 240, 240); doc.rect(15, 105, 180, 8, 'F');
+            doc.setFont("helvetica", "bold"); doc.text("SALLE & LOGISTIQUE SCÈNE", 18, 110);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Participants : ${d.nb_participants} (Max 145)`, 15, 120);
+            doc.text(`Espaces : ${(d.lieux_accueil || []).join(', ')}`, 15, 127);
+            doc.text(`Mobilier : ${d.nb_chaises || 0} Chaises / ${d.nb_tables || 0} Tables`, 15, 134);
+
+            doc.setFillColor(240, 240, 240); doc.rect(15, 145, 180, 8, 'F');
+            doc.setFont("helvetica", "bold"); doc.text("RÉGIE AUDIOVISUELLE", 18, 150);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Audio : ${d.micros_hf || 0} Micros HF, ${d.micros_filaires || 0} Micros Filaires`, 15, 160);
+            doc.text(`Options : Captation (${d.captation_video ? 'OUI' : 'NON'}), Visio (${d.visio ? 'OUI' : 'NON'}), Wifi (${d.wifi_public ? 'OUI' : 'NON'})`, 15, 167);
+
+            // Footer RGPD (Extrait du document source)
+            doc.setFontSize(6); doc.setTextColor(100);
+            const footer = "Une fois l'événement terminé, les données ne sont pas conservées par l'Etablissement public et sont supprimées. Droits d'accès : rgpd@musee-armee.fr";
+            doc.text(footer, 15, 280, { maxWidth: 180 });
+
+            // --- PAGE 2 : MODÈLE DÉROULÉ ---
+            doc.addPage();
+            doc.setFontSize(12); doc.setTextColor(0); doc.setFont("helvetica", "bold");
+            doc.text("AUDITORIUM AUSTERLITZ - Fiche modèle déroulé", 105, 20, { align: "center" });
+            
+            doc.autoTable({
+                startY: 35,
+                head: [['Heure', 'Durée', 'Séquence', 'Intervenant', 'Projection', 'Commentaires']],
+                body: Array(14).fill(['', '', '', '', '', '']),
+                theme: 'grid',
+                headStyles: { fillColor: [127, 29, 29], fontSize: 8 },
+                styles: { fontSize: 8, cellPadding: 4 }
+            });
+
+            doc.save(`Fiche_Technique_${d.nom_evenement}.pdf`);
+        };
+
+        // SUBMISSION
+        document.getElementById('form-expert').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = "TRANSMISSION...";
+            btn.disabled = true;
+
             const payload = {
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
                 date_evenement: document.getElementById('date_evenement').value,
-                heure_orga: document.getElementById('h_orga').value,
-                heure_public: document.getElementById('h_public').value,
-                heure_fin: document.getElementById('h_fin').value,
-                nb_participants: parseInt(document.getElementById('n_part').value) || 0,
-                nb_chaises: parseInt(document.getElementById('n_chaises').value) || 0,
-                micros_hf: parseInt(document.getElementById('n_hf').value) || 0,
-                wifi_public: document.getElementById('wifi_p').checked,
-                point_contact: document.getElementById('point_contact').value,
-                contact_email: document.getElementById('contact_email').value
+                nb_participants: parseInt(document.getElementById('nb_participants').value),
+                h_orga: document.getElementById('h_orga').value,
+                h_public: document.getElementById('h_public').value,
+                h_fin: document.getElementById('h_fin').value,
+                lieux_accueil: Array.from(document.querySelectorAll('#lieux_list input:checked')).map(i => i.value),
+                nb_chaises: parseInt(document.getElementById('nb_chaises').value),
+                nb_tables: parseInt(document.getElementById('nb_tables').value),
+                wifi_public: document.getElementById('wifi_public').checked,
+                micros_hf: parseInt(document.getElementById('micros_hf').value),
+                micros_filaires: parseInt(document.getElementById('micros_filaires').value),
+                captation_video: document.getElementById('captation_video').checked,
+                visio: document.getElementById('visio').checked,
+                contact_email: "exemple@musee.fr" // À lier au champ si besoin
             };
+
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (error) alert("Erreur base de données");
-            else { alert("Transmis avec succès !"); location.reload(); }
+            if (error) {
+                alert("Erreur : " + error.message);
+                btn.innerText = "RÉESSAYER";
+                btn.disabled = false;
+            } else {
+                alert("Dossier transmis avec succès à la régie.");
+                location.reload();
+            }
         };
     </script>
 </body>
