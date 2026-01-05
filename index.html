@@ -18,17 +18,13 @@
         .card-premium { background: white; border-radius: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .hidden { display: none !important; }
         #login-modal, #planning-modal, #details-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100000; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .radar-check:checked + label { background-color: #d4af37; color: white; border-color: #d4af37; box-shadow: 0 4px 10px rgba(212,175,55,0.3); }
         
-        /* CALENDRIER STYLE OUTLOOK */
         .calendar-container { display: grid; grid-template-columns: repeat(7, 1fr); background: #e2e8f0; gap: 1px; border: 1px solid #e2e8f0; }
         .calendar-day-head { background: #f8fafc; padding: 10px; text-align: center; font-weight: 900; font-size: 11px; color: #64748b; text-transform: uppercase; }
         .calendar-day-cell { background: white; min-height: 120px; padding: 5px; transition: all 0.2s; }
         .calendar-day-cell:hover { background: #f1f5f9; }
         .calendar-day-num { font-weight: 900; color: #cbd5e1; font-size: 14px; margin-bottom: 5px; display: block; }
         .event-badge { background: #7f1d1d; color: white; padding: 3px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; margin-bottom: 2px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; border-left: 3px solid #d4af37; }
-        .event-badge:hover { transform: translateX(3px); background: #450a0a; }
-        .not-current-month { opacity: 0.3; background: #f8fafc; }
     </style>
 </head>
 <body>
@@ -40,56 +36,34 @@
                 <h1 class="font-prestige text-xl tracking-widest uppercase">Auditorium Austerlitz</h1>
             </div>
             <div class="flex gap-4 items-center">
-                <div id="year-selector-container" class="hidden">
-                    <select id="global-year-filter" onchange="changerAnnee(this.value)" class="bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 text-xs font-black outline-none cursor-pointer">
+                <div id="year-selector-container" class="hidden flex gap-2">
+                    <select id="global-month-filter" onchange="changerFiltres()" class="bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 text-xs font-black cursor-pointer">
+                        <option value="all" class="text-black">Tous les mois</option>
+                        <option value="01" class="text-black">Janvier</option><option value="02" class="text-black">Février</option>
+                        <option value="03" class="text-black">Mars</option><option value="04" class="text-black">Avril</option>
+                        <option value="05" class="text-black">Mai</option><option value="06" class="text-black">Juin</option>
+                        <option value="07" class="text-black">Juillet</option><option value="08" class="text-black">Août</option>
+                        <option value="09" class="text-black">Septembre</option><option value="10" class="text-black">Octobre</option>
+                        <option value="11" class="text-black">Novembre</option><option value="12" class="text-black">Décembre</option>
+                    </select>
+                    <select id="global-year-filter" onchange="changerFiltres()" class="bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 text-xs font-black cursor-pointer">
                         <option value="2024" class="text-black">2024</option>
                         <option value="2025" class="text-black">2025</option>
-                        <option value="2026" class="text-black" selected>2026</option>
+                        <option value="2026" class="text-black">2026</option>
                         <option value="2027" class="text-black">2027</option>
                     </select>
                 </div>
-                <button id="btn-open-planning" onclick="ouvrirPlanning()" class="hidden bg-amber-500 text-red-950 px-6 py-2 rounded-full text-[10px] font-black uppercase hover:bg-amber-400 transition-all shadow-lg">Planning Régie</button>
-                <button onclick="document.getElementById('login-modal').style.display='flex'" id="btn-login-trigger" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20 transition-all cursor-pointer">Accès Régisseur</button>
-                <button id="btn-logout" onclick="handleLogout()" class="hidden text-[10px] font-black uppercase bg-white text-red-900 px-6 py-2 rounded-full shadow-lg hover:bg-slate-100 transition-all">Déconnexion</button>
+                <button id="btn-open-planning" onclick="ouvrirPlanning()" class="hidden bg-amber-500 text-red-950 px-6 py-2 rounded-full text-[10px] font-black uppercase hover:bg-amber-400 shadow-lg">Planning Régie</button>
+                <button onclick="document.getElementById('login-modal').style.display='flex'" id="btn-login-trigger" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20">Accès Régisseur</button>
+                <button id="btn-logout" onclick="handleLogout()" class="hidden text-[10px] font-black uppercase bg-white text-red-900 px-6 py-2 rounded-full shadow-lg">Déconnexion</button>
             </div>
         </div>
     </nav>
 
-    <div id="planning-modal">
-        <div class="bg-white w-[98%] h-[95%] rounded-3xl shadow-2xl overflow-hidden flex flex-col relative">
-            <div class="p-6 gradient-musee text-white flex justify-between items-center">
-                <div class="flex items-center gap-8">
-                    <h2 class="font-prestige text-xl tracking-widest uppercase italic">Planning Austerlitz</h2>
-                    <div class="flex bg-white/10 p-1 rounded-xl border border-white/20">
-                        <button onclick="setPlanningView('mois')" id="view-mois" class="px-4 py-1 text-[10px] font-black uppercase rounded-lg bg-white text-red-900">Mois</button>
-                        <button onclick="setPlanningView('trimestre')" id="view-trimestre" class="px-4 py-1 text-[10px] font-black uppercase rounded-lg hover:bg-white/10">Trimestre</button>
-                        <button onclick="setPlanningView('annee')" id="view-annee" class="px-4 py-1 text-[10px] font-black uppercase rounded-lg hover:bg-white/10">Année</button>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <button onclick="prevPeriod()" class="p-2 hover:bg-white/20 rounded-full"><i class="fa-solid fa-chevron-left"></i></button>
-                    <span id="calendar-period-label" class="font-bold text-sm min-w-[150px] text-center uppercase tracking-widest">Janvier 2026</span>
-                    <button onclick="nextPeriod()" class="p-2 hover:bg-white/20 rounded-full"><i class="fa-solid fa-chevron-right"></i></button>
-                    <button onclick="document.getElementById('planning-modal').style.display='none'" class="ml-4 bg-red-500 w-8 h-8 rounded-full flex items-center justify-center font-bold">×</button>
-                </div>
-            </div>
-            <div id="calendar-grid-wrapper" class="flex-1 overflow-y-auto p-4 bg-slate-100"></div>
-        </div>
-    </div>
-
-    <div id="details-modal">
-        <div class="bg-white max-w-2xl w-full rounded-3xl shadow-2xl overflow-hidden border-4 border-amber-500">
-            <div id="details-content" class="p-8"></div>
-            <div class="p-4 bg-slate-50 text-right border-t">
-                <button onclick="document.getElementById('details-modal').style.display='none'" class="bg-red-900 text-white px-8 py-2 rounded-full font-black uppercase text-xs">Fermer</button>
-            </div>
-        </div>
-    </div>
-
     <div id="vue-client" class="max-w-5xl mx-auto py-12 px-4 space-y-8">
         <form id="main-form" class="space-y-8">
             <div class="card-premium p-8 border-t-8 border-red-900 shadow-2xl">
-                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3"><i class="fa-solid fa-address-card text-xl"></i> Identification & Contact</h3>
+                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 italic"><i class="fa-solid fa-address-card"></i> Identification & Contact</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <input type="text" id="organisme" placeholder="Organisme / Client" required class="w-full p-4 bg-slate-50 border rounded-2xl">
                     <input type="text" id="nom_evenement" placeholder="Nom de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
@@ -111,12 +85,12 @@
             </div>
             
             <div class="card-premium p-8 shadow-xl">
-                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3 italic"><i class="fa-solid fa-users-gear text-xl"></i> Accueil & Logistique</h3>
+                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 italic"><i class="fa-solid fa-users-gear"></i> Accueil & Logistique</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase italic mb-2 block">Participants</label>
+                        <label class="text-[10px] font-black text-slate-400 uppercase italic mb-2 block">Participants (max 145)</label>
                         <input type="number" id="nb_participants" placeholder="0" class="w-full p-6 bg-slate-50 border-2 border-slate-100 rounded-3xl text-4xl font-black text-red-900 text-center">
-                        <label class="flex items-center gap-3 mt-6 cursor-pointer bg-slate-100 p-3 rounded-xl hover:bg-slate-200"><input type="checkbox" id="wifi_public" class="w-6 h-6 accent-red-900"><span class="text-xs font-black uppercase italic">Wifi Public</span></label>
+                        <label class="flex items-center gap-3 mt-6 cursor-pointer bg-slate-100 p-3 rounded-xl"><input type="checkbox" id="wifi_public" class="w-6 h-6 accent-red-900"><span class="text-xs font-black uppercase italic">Wifi Public</span></label>
                     </div>
                     <div id="acc_list" class="space-y-3 bg-slate-50 p-5 rounded-2xl border border-slate-200">
                         <p class="font-black text-[11px] uppercase text-red-900 italic border-b pb-1">Espaces d'Accueil</p>
@@ -134,16 +108,16 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="card-premium p-8 border-l-[12px] border-orange-500 shadow-xl">
-                    <h3 class="text-orange-700 font-black uppercase text-xs mb-6 flex items-center gap-2 italic"><i class="fa-solid fa-chair"></i> Mobilier Scène</h3>
+                    <h3 class="text-orange-700 font-black uppercase text-xs mb-6 italic"><i class="fa-solid fa-chair"></i> Mobilier Scène</h3>
                     <div class="grid grid-cols-2 gap-6">
                         <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block">Chaises (max 6)</label><input type="number" id="nb_chaises" min="0" max="6" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900"></div>
                         <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block">Tables (max 3)</label><input type="number" id="nb_tables" min="0" max="3" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900"></div>
                     </div>
                 </div>
                 <div class="card-premium p-8 border-l-[12px] border-blue-600 shadow-xl">
-                    <h3 class="text-blue-800 font-black uppercase text-xs mb-6 flex items-center gap-2 italic"><i class="fa-solid fa-microphone-lines"></i> Technique</h3>
+                    <h3 class="text-blue-800 font-black uppercase text-xs mb-6 italic"><i class="fa-solid fa-microphone-lines"></i> Technique</h3>
                     <div class="grid grid-cols-2 gap-6 mb-6">
-                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block">Micros HF</label><input type="number" id="micros_hf" min="0" max="2" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900"></div>
+                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block">Micros HF (max 2)</label><input type="number" id="micros_hf" min="0" max="2" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900"></div>
                         <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block">Micros Filaires</label><input type="number" id="micros_filaires" min="0" max="6" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900"></div>
                     </div>
                     <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600 italic">
@@ -157,11 +131,11 @@
             <div class="card-premium p-8 border-l-[12px] border-amber-600 bg-amber-50/20 shadow-xl">
                 <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic flex items-center gap-3"><i class="fa-solid fa-chalkboard-user text-xl"></i> Salle des Cadets</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <label class="flex items-center gap-5 p-6 bg-white rounded-3xl border-2 border-amber-100 cursor-pointer shadow-sm group">
+                    <label class="flex items-center gap-5 p-6 bg-white rounded-3xl border-2 border-amber-100 cursor-pointer shadow-sm">
                         <input type="checkbox" id="cadets_retrans" class="w-10 h-10 accent-amber-700">
                         <span class="text-xs font-black uppercase text-amber-900 leading-tight">Retransmission Auditorium en direct (Vidéo & Audio)</span>
                     </label>
-                    <textarea id="cadets_notes" placeholder="Notes Salle des Cadets..." class="w-full p-6 bg-white border-2 border-amber-100 rounded-3xl h-32 text-sm outline-none shadow-inner"></textarea>
+                    <textarea id="cadets_notes" placeholder="Notes Salle des Cadets / Besoins Divers..." class="w-full p-6 bg-white border-2 border-amber-100 rounded-3xl h-32 text-sm outline-none"></textarea>
                 </div>
             </div>
             <button type="submit" id="submit-btn" class="w-full gradient-musee text-white py-8 rounded-full text-2xl font-black uppercase tracking-[0.4em] shadow-2xl hover:scale-[1.01] transition-all">Envoyer la fiche technique</button>
@@ -169,24 +143,12 @@
     </div>
 
     <div id="vue-admin" class="hidden max-w-7xl mx-auto py-12 px-4 space-y-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 card-premium p-8 bg-white border-t-4 border-red-900">
-                <h3 id="monthly-title" class="font-prestige text-red-900 text-lg uppercase underline decoration-amber-500 mb-6 italic">Activité Mensuelle</h3>
-                <canvas id="chartMonths" height="120"></canvas>
-            </div>
-            <div class="card-premium p-8 bg-white border-t-4 border-red-900 shadow-2xl">
-                <h3 class="font-prestige text-red-900 text-sm uppercase mb-4 italic">Profil des Besoins</h3>
-                <div id="radar-controls" class="flex flex-wrap gap-1 mb-4 border-b pb-4 border-slate-100"></div>
-                <canvas id="chartRadar"></canvas>
-            </div>
-        </div>
-
         <div id="admin-list" class="grid grid-cols-1 gap-10"></div>
     </div>
 
     <div id="login-modal">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border-4 border-red-900">
-            <h3 class="font-prestige text-xl text-center mb-6 text-red-900 border-b pb-4 italic underline underline-offset-8">Identification Régie</h3>
+            <h3 class="font-prestige text-xl text-center mb-6 text-red-900 italic underline underline-offset-8">Identification Régie</h3>
             <div class="space-y-4">
                 <input type="email" id="adm-email" placeholder="Email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
                 <input type="password" id="adm-pass" placeholder="Mot de passe" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
@@ -199,29 +161,9 @@
         const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co'; 
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
-        let charts = {};
         let allEvents = [];
-        let currentData = [];
-        let planningYear = 2026;
-        let planningMonth = 0;
-        let planningView = 'mois';
 
-        const radarAxes = [
-            { id: 'ax-affluence', label: 'Affluence', key: 'nb_participants', factor: 0.05 },
-            { id: 'ax-hf', label: 'Micros HF', key: 'micros_hf_regie', factor: 5 },
-            { id: 'ax-fil', label: 'Micros Fil', key: 'micros_filaires_scene', factor: 1.6 },
-            { id: 'ax-capt', label: 'Captation', key: 'Captation', type: 'option', factor: 10 },
-            { id: 'ax-visio', label: 'Visio', key: 'Visio', type: 'option', factor: 10 },
-            { id: 'ax-mobi', label: 'Mobilier', key: 'mobilier', factor: 1 },
-            { id: 'ax-pres', label: 'Présentation', key: 'nb_participants', factor: 0.02 },
-            { id: 'ax-audio', label: 'Audio', key: 'Record', type: 'option', factor: 10 }
-        ];
-
-        const controlContainer = document.getElementById('radar-controls');
-        radarAxes.forEach(ax => {
-            controlContainer.innerHTML += `<div class="radar-opt"><input type="checkbox" checked id="${ax.id}" class="hidden radar-check" value="${ax.label}"><label for="${ax.id}" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all border-slate-200 text-slate-400">${ax.label}</label></div>`;
-        });
-
+        // AUTH & NAVIGATION
         document.getElementById('btn-auth-submit').addEventListener('click', async () => {
             const email = document.getElementById('adm-email').value;
             const password = document.getElementById('adm-pass').value;
@@ -236,15 +178,10 @@
 
         async function chargerDonnees() {
             const { data } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
-            if (data) { allEvents = data; changerAnnee(planningYear); }
-        }
-
-        function changerAnnee(val) {
-            planningYear = parseInt(val);
-            currentData = allEvents.filter(d => d.date_evenement?.startsWith(val));
-            renderList(currentData);
-            initCharts(currentData);
-            renderCalendar();
+            if (data) { 
+                allEvents = data; 
+                renderList(data);
+            }
         }
 
         function basculerVueAdmin() {
@@ -255,188 +192,156 @@
             chargerDonnees();
         }
 
-        // RENDU DE LA LISTE PREMIUM (DÉTAILLÉE COMME AVANT)
         function renderList(data) {
             document.getElementById('admin-list').innerHTML = data.map(d => `
-                <div class="card-premium overflow-hidden border-t-8 border-red-900 shadow-2xl group transition-all">
-                    <div class="p-6 bg-slate-100 flex justify-between items-center border-b-2 border-slate-200">
+                <div class="card-premium overflow-hidden border-t-8 border-red-900 shadow-2xl">
+                    <div class="p-6 bg-slate-100 flex justify-between items-center">
                         <div>
-                            <div class="flex items-center gap-3 mb-1">
-                                <span class="bg-red-900 text-white px-5 py-2 rounded-full text-[12px] font-black uppercase italic shadow-lg">${d.date_evenement}</span>
-                                <span class="font-prestige text-2xl text-slate-800 tracking-tight">${d.nom_evenement}</span>
-                            </div>
-                            <p class="text-[12px] font-black text-slate-500 uppercase italic flex items-center gap-3 tracking-widest mt-2">
-                                <i class="fa-solid fa-landmark text-amber-600 text-lg"></i> ${d.organisme} <span class="text-slate-300">|</span> <i class="fa-solid fa-user-tie"></i> ${d.point_contact}
-                            </p>
+                            <span class="bg-red-900 text-white px-5 py-2 rounded-full text-[12px] font-black uppercase italic">${d.date_evenement}</span>
+                            <h2 class="font-prestige text-2xl text-slate-800 mt-2">${d.nom_evenement}</h2>
                         </div>
-                        <div class="flex gap-4">
-                            <button onclick="genererPDF('${d.id}')" class="bg-slate-900 text-white px-8 py-3 rounded-full text-[11px] font-black uppercase shadow-xl hover:bg-red-900 transition-all flex items-center gap-2">
-                                <i class="fa-solid fa-file-pdf"></i> GENERER PDF
-                            </button>
-                            <button onclick="supprimerLigne('${d.id}')" class="bg-white text-red-600 border-2 border-red-100 p-3 rounded-full hover:bg-red-600 transition-all shadow-md">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] leading-relaxed bg-white">
-                        <div class="space-y-4">
-                            <p class="font-black text-red-900 uppercase italic border-b-2 border-red-50 pb-2 italic">LOGISTIQUE</p>
-                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                <p class="flex justify-between mb-2"><span>Participants :</span> <strong class="text-red-900 font-black text-lg">${d.nb_participants}</strong></p>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Espaces :</p>
-                                <p class="font-bold text-slate-700 leading-tight">${d.lieux_accueil?.join(' • ') || 'Standard'}</p>
-                            </div>
-                        </div>
-                        <div class="border-l-2 border-slate-50 pl-8 space-y-4">
-                            <p class="font-black text-orange-600 uppercase italic border-b-2 border-orange-50 pb-2 italic">MOBILIER</p>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-orange-50 p-4 rounded-3xl text-center"><span class="block text-[9px] font-black uppercase mb-1">Chaises</span><span class="text-3xl font-black text-orange-600">${d.nb_chaises}</span></div>
-                                <div class="bg-orange-50 p-4 rounded-3xl text-center"><span class="block text-[9px] font-black uppercase mb-1">Tables</span><span class="text-3xl font-black text-orange-600">${d.nb_tables}</span></div>
-                            </div>
-                        </div>
-                        <div class="border-l-2 border-slate-50 pl-8 space-y-4">
-                            <p class="font-black text-blue-600 uppercase italic border-b-2 border-blue-50 pb-2 italic">TECHNIQUE</p>
-                            <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 space-y-3">
-                                <p class="flex justify-between font-bold"><span>Micros HF :</span> <span class="bg-blue-600 text-white px-2 rounded">${d.micros_hf_regie}</span></p>
-                                <p class="flex justify-between font-bold"><span>Micros Fil :</span> <span class="bg-blue-600 text-white px-2 rounded">${d.micros_filaires_scene}</span></p>
-                                <div class="pt-2 flex flex-wrap gap-1">${d.options_tech?.map(opt => `<span class="bg-white border border-blue-200 text-[9px] px-2 py-1 rounded-full font-black text-blue-800 uppercase">${opt}</span>`).join('') || ''}</div>
-                            </div>
-                        </div>
-                        <div class="border-l-2 border-slate-50 pl-8 space-y-4 bg-amber-50/30 p-6 rounded-3xl border-2 border-amber-50">
-                            <p class="font-black text-amber-800 uppercase italic border-b-2 border-amber-100 pb-2 italic">PLANNING</p>
-                            <div class="space-y-2">
-                                <div class="flex justify-between font-bold italic"><span>Orga :</span> <span>${d.heure_orga}</span></div>
-                                <div class="flex justify-between font-bold italic"><span>Public :</span> <span>${d.heure_public}</span></div>
-                            </div>
-                        </div>
+                        <button onclick="genererPDF('${d.id}')" class="bg-slate-900 text-white px-8 py-3 rounded-full text-[11px] font-black uppercase shadow-xl hover:bg-red-900 transition-all">
+                            <i class="fa-solid fa-file-pdf"></i> GENERER PDF COMPLET
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- LOGIQUE PLANNING OUTLOOK ---
-        function ouvrirPlanning() { document.getElementById('planning-modal').style.display = 'flex'; renderCalendar(); }
-
-        function setPlanningView(view) {
-            planningView = view;
-            document.querySelectorAll('#planning-modal button[id^="view-"]').forEach(btn => {
-                btn.classList.remove('bg-white', 'text-red-900'); btn.classList.add('hover:bg-white/10');
-            });
-            document.getElementById('view-' + view).classList.add('bg-white', 'text-red-900');
-            renderCalendar();
-        }
-
-        function renderCalendar() {
-            const wrapper = document.getElementById('calendar-grid-wrapper');
-            const label = document.getElementById('calendar-period-label');
-            const moisNoms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-            wrapper.innerHTML = '';
-
-            if(planningView === 'mois') {
-                label.innerText = `${moisNoms[planningMonth]} ${planningYear}`;
-                wrapper.innerHTML = generateMonthGrid(planningYear, planningMonth);
-            } else if(planningView === 'trimestre') {
-                const trim = Math.floor(planningMonth / 3);
-                label.innerText = `Trimestre ${trim + 1} - ${planningYear}`;
-                let html = `<div class="grid grid-cols-1 md:grid-cols-3 gap-8">`;
-                for(let i=0; i<3; i++) html += `<div><h4 class="font-bold text-red-900 mb-2 uppercase text-xs">${moisNoms[trim*3 + i]}</h4>${generateMonthGrid(planningYear, trim*3+i, true)}</div>`;
-                wrapper.innerHTML = html + `</div>`;
-            } else {
-                label.innerText = `Année ${planningYear}`;
-                let html = `<div class="grid grid-cols-2 md:grid-cols-4 gap-4">`;
-                for(let i=0; i<12; i++) html += `<div class="scale-90 origin-top"> <h4 class="font-bold text-red-900 mb-1 uppercase text-[10px]">${moisNoms[i]}</h4> ${generateMonthGrid(planningYear, i, true)}</div>`;
-                wrapper.innerHTML = html + `</div>`;
-            }
-        }
-
-        function generateMonthGrid(year, month, mini = false) {
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const startOffset = firstDay === 0 ? 6 : firstDay - 1;
-            let html = `<div class="calendar-container">`;
-            ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].forEach(d => html += `<div class="calendar-day-head">${mini ? d[0] : d}</div>`);
-            for(let i=0; i<42; i++) {
-                const dayNum = i - startOffset + 1;
-                const isCurrent = dayNum > 0 && dayNum <= daysInMonth;
-                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
-                html += `<div class="calendar-day-cell ${!isCurrent ? 'not-current-month' : ''} ${mini ? 'min-h-[60px]' : ''}">
-                    <span class="calendar-day-num">${isCurrent ? dayNum : ''}</span>
-                    ${isCurrent ? getEventsForDate(dateStr, mini) : ''}
-                </div>`;
-            }
-            return html + `</div>`;
-        }
-
-        function getEventsForDate(dateStr, mini) {
-            const events = allEvents.filter(e => e.date_evenement === dateStr);
-            return events.map(e => `<span onclick="showDetails('${e.id}')" class="event-badge">${mini ? '•' : e.nom_evenement}</span>`).join('');
-        }
-
-        function showDetails(id) {
-            const e = allEvents.find(x => x.id === id);
-            document.getElementById('details-content').innerHTML = `
-                <div class="flex justify-between items-start mb-6 border-b-2 border-slate-100 pb-4">
-                    <div><h2 class="font-prestige text-3xl text-red-900">${e.nom_evenement}</h2><p class="font-black text-amber-600 uppercase text-sm">${e.organisme}</p></div>
-                    <span class="bg-red-900 text-white px-4 py-1 rounded-full font-bold text-xs">${e.date_evenement}</span>
-                </div>
-                <div class="grid grid-cols-2 gap-8 text-sm">
-                    <div class="space-y-4"><p><strong>Responsable :</strong> ${e.point_contact}</p><p><strong>Horaires :</strong> ${e.heure_orga} - ${e.heure_fin}</p><p><strong>Participants :</strong> ${e.nb_participants}</p></div>
-                    <div class="bg-slate-50 p-4 rounded-2xl border"><p class="font-bold text-red-900 border-b mb-2 uppercase">Technique</p><p>HF/Fil : ${e.micros_hf_regie}/${e.micros_filaires_scene}</p><p>Mobilier : ${e.nb_chaises} ch. / ${e.nb_tables} tab.</p></div>
-                </div>`;
-            document.getElementById('details-modal').style.display = 'flex';
-        }
-
-        // CHARTS ET UTILS (STRICTEMENT IDENTIQUES)
-        function initCharts(data) {
-            document.getElementById('monthly-title').innerText = `Activité Mensuelle ${planningYear}`;
-            const ctxBar = document.getElementById('chartMonths').getContext('2d');
-            const months = Array(12).fill(0);
-            data.forEach(d => { if(d.date_evenement) months[new Date(d.date_evenement).getMonth()]++; });
-            if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Jui','Aoû','Sep','Oct','Nov','Déc'], datasets: [{ label: 'Events', data: months, backgroundColor: '#7f1d1d', borderRadius: 10 }] }, options: { plugins: { legend: { display: false } } } });
-            updateRadar();
-        }
-
-        function updateRadar() {
-            const data = currentData; const total = data.length || 1; const ctxRadar = document.getElementById('chartRadar').getContext('2d');
-            const selectedLabels = []; const selectedValues = [];
-            radarAxes.forEach(ax => {
-                const isChecked = document.getElementById(ax.id).checked;
-                if(isChecked) {
-                    selectedLabels.push(ax.label);
-                    let val = 0;
-                    if(ax.type === 'option') val = (data.filter(d => d.options_tech?.includes(ax.key)).length / total) * ax.factor;
-                    else if (ax.key === 'mobilier') val = (data.reduce((a, b) => a + (b.nb_chaises || 0) + (b.nb_tables || 0), 0) / total);
-                    else val = (data.reduce((a, b) => a + (b[ax.key] || 0), 0) / total) * ax.factor;
-                    selectedValues.push(Math.min(val, 10));
-                }
-            });
-            if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: selectedLabels, datasets: [{ data: selectedValues, backgroundColor: 'rgba(212, 175, 55, 0.4)', borderColor: '#d4af37', borderWidth: 4, pointBackgroundColor: '#7f1d1d' }] }, options: { scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 9, weight: 'bold' } } } }, plugins: { legend: { display: false } } } });
-        }
-        document.querySelectorAll('.radar-check').forEach(el => el.addEventListener('change', updateRadar));
-
-        async function supprimerLigne(id) { if(confirm("Supprimer ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
-
+        // FONCTION EXPORT PDF SANS SIMPLIFICATION [cite: 4, 15, 26, 49, 68, 81, 90, 93]
         window.genererPDF = function(id) {
             const d = allEvents.find(item => item.id === id);
-            const { jsPDF } = window.jspdf; const doc = new jsPDF();
-            doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE AUDITORIUM", 20, 25);
-            doc.autoTable({ startY: 60, head: [['IDENTIFICATION', 'DÉTAILS']], body: [['Event', d.nom_evenement],['Organisme', d.organisme],['Date', d.date_evenement],['Horaires', `${d.heure_orga} - ${d.heure_fin}`]], headStyles: { fillColor: [127, 29, 29] } });
-            doc.autoTable({ startY: doc.lastAutoTable.finalY + 10, head: [['TECHNIQUE', 'VALEURS']], body: [['Participants', d.nb_participants],['Micro HF/Fil', `${d.micros_hf_regie}/${d.micros_filaires_scene}`],['Mobilier', `${d.nb_chaises} ch. / ${d.nb_tables} tab.`]], headStyles: { fillColor: [212, 175, 55] } });
-            doc.save(`Fiche_${d.nom_evenement}.pdf`);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const margin = 15;
+            
+            // --- PAGE 1 : EXPRESSION DES BESOINS ---
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(10);
+            doc.text("Musée de l'Armée - Invalides", margin, 15); [cite: 1, 3]
+            doc.setFontSize(14);
+            doc.text("AUDITORIUM AUSTERLITZ", 105, 25, { align: "center" }); [cite: 2]
+            doc.setFontSize(11);
+            doc.text("Fiche technique - Expression des besoins", 105, 32, { align: "center" }); [cite: 4]
+            
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "normal");
+            doc.text("☐ RDV technique  X Non  ☐ Oui, date:", margin, 40); [cite: 5]
+            
+            doc.text(`Client / Organisme : ${d.organisme || '...........................................'}`, margin, 50); [cite: 6]
+            doc.text(`Manifestation : ${d.nom_evenement || '...........................................'}`, margin, 57); [cite: 6]
+            doc.text(`Date(s) : ${d.date_evenement || '...........................................'}`, margin, 64); [cite: 7]
+            doc.text(`Point de contact : ${d.point_contact || '...........................................'}`, margin, 71); [cite: 8]
+            doc.text(`Courriel : ${d.contact_email || '...........................................'}`, margin, 78); [cite: 9]
+            doc.text(`Téléphone : ${d.contact_tel || '...........................................'}`, 110, 78); [cite: 10]
+            
+            doc.text(`Heure arrivée organisateur : ${d.heure_orga || '.........'}`, margin, 88); [cite: 11]
+            doc.setFontSize(7);
+            doc.text("ouverture des portes - min. 30 minutes avant l'arrivée des participants", margin, 91); [cite: 11]
+            doc.setFontSize(9);
+            doc.text(`Heure arrivée participants : ${d.heure_public || '.........'}`, margin, 98); [cite: 11]
+            doc.text(`Départ participants : ${d.heure_fin || '.........'}`, 110, 98); [cite: 12]
+            doc.text(`Fin de la prestation : ${d.heure_fin || '.........'}`, margin, 105); [cite: 12]
+            doc.setFontSize(7);
+            doc.text("fermeture des portes - min. 30 minutes après le départ des participants", margin, 108); [cite: 13]
+
+            const drawSection = (title, yPos) => {
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(10);
+                doc.setFillColor(230, 230, 230);
+                doc.rect(margin, yPos, 180, 6, 'F');
+                doc.text(title, margin + 2, yPos + 4.5);
+            };
+
+            let y = 115;
+            drawSection("SALLE / SCÈNE", y); [cite: 15, 16]
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+            y += 10;
+            doc.text(`X pupitre fixe avec microphone`, margin, y); [cite: 17]
+            doc.text(`${d.nb_participants || '...'} PARTICIPANTS (max. 145)`, 70, y); [cite: 18]
+            doc.text(`Chaises : ${d.nb_chaises || 0} (max 6)`, 130, y); [cite: 55]
+            y += 5;
+            doc.text(`Tables : ${d.nb_tables || 0} (max 2)`, 130, y); [cite: 54]
+
+            y += 10;
+            drawSection("ACCUEIL", y); [cite: 26]
+            y += 10;
+            const acc = d.lieux_accueil || [];
+            doc.text(`${acc.includes("Hall Orient") ? 'X' : '☐'} Hall Orient`, margin, y); [cite: 32]
+            doc.text(`${acc.includes("Auditorium") ? 'X' : '☐'} Auditorium`, 70, y); [cite: 34]
+            doc.text(`${acc.includes("Table/Desk") ? 'X' : '☐'} Table Desk`, 130, y); [cite: 36, 37]
+
+            y += 10;
+            drawSection("RÉGIE", y); [cite: 49]
+            y += 10;
+            doc.text(`${d.micros_hf_regie || 0} MICROS SANS FIL (max 2)`, margin, y); [cite: 57]
+            doc.text(`${d.options_tech?.includes("Visio") ? 'X' : '☐'} LIVESTREAM/VISIO`, 70, y); [cite: 58]
+            doc.text(`${d.options_tech?.includes("Captation") ? 'X' : '☐'} CAPTATION VIDÉO`, 130, y); [cite: 59]
+            y += 5;
+            doc.text(`${d.options_tech?.includes("Record") ? 'X' : '☐'} ENREGISTREMENT AUDIO`, 70, y); [cite: 62]
+            doc.text(`${d.wifi_public ? 'X' : '☐'} WIFI accès internet public`, 130, y); [cite: 65]
+
+            y += 15;
+            drawSection("SALLE DES CADETS * / DIVERS", y); [cite: 68, 69]
+            y += 10;
+            doc.text(`${d.cadets_retransmission ? 'X' : '☐'} RETRANSMISSION auditorium`, margin, y); [cite: 72]
+            doc.text(`Notes : ${d.cadets_notes || '...........................................'}`, margin, y + 7);
+
+            doc.setFontSize(6);
+            const legal = "Le musée de l'Armée, responsable du traitement, met en œuvre un traitement de données à caractère personnel... [cite: 81] Ces données sont destinées à l'équipe du département des locations des espaces. [cite: 82] Une fois l'événement terminé, les données ne sont pas conservées par l'Etablissement public et sont supprimées. [cite: 83]";
+            doc.text(legal, margin, 275, { maxWidth: 180 });
+
+            // --- PAGE 2 : MODÈLE DÉROULÉ ---
+            doc.addPage();
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(10);
+            doc.text("Musée de l'Armée - Invalides", margin, 15); [cite: 88, 89]
+            doc.text("AUDITORIUM AUSTERLITZ", 105, 25, { align: "center" }); [cite: 90]
+            doc.text("Fiche modèle déroulé", 105, 30, { align: "center" }); [cite: 90]
+            
+            doc.text(`Nom de l'évènement : ${d.nom_evenement}`, margin, 45); [cite: 91]
+            doc.text(`Date : ${d.date_evenement}`, margin, 52); [cite: 92]
+
+            doc.autoTable({
+                startY: 60,
+                head: [['Heure', 'Durée', 'Séquence', 'Intervenant(s)', 'Eléments de projection', 'Commentaires']], [cite: 93]
+                body: Array(10).fill(['', '', '', '', '', '']),
+                theme: 'grid',
+                headStyles: { fillColor: [127, 29, 29] },
+                styles: { fontSize: 8, cellPadding: 5 }
+            });
+
+            doc.save(`Fiche_Technique_Austerlitz_${d.nom_evenement}.pdf`);
         };
 
-        function nextPeriod() { if(planningView === 'mois') planningMonth = (planningMonth + 1) % 12; else if(planningView === 'trimestre') planningMonth = (planningMonth + 3) % 12; else planningYear++; renderCalendar(); }
-        function prevPeriod() { if(planningView === 'mois') planningMonth = (planningMonth - 1 + 12) % 12; else if(planningView === 'trimestre') planningMonth = (planningMonth - 3 + 12) % 12; else planningYear--; renderCalendar(); }
-
+        // FORM SUBMISSION
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
             const payload = {
-                organisme: document.getElementById('organisme').value, nom_evenement: document.getElementById('nom_evenement').value, point_contact: document.getElementById('point_contact').value, contact_email: document.getElementById('contact_email').value, contact_tel: document.getElementById('contact_tel').value, date_evenement: document.getElementById('date_evenement').value, heure_orga: document.getElementById('heure_orga').value, heure_public: document.getElementById('heure_public').value, heure_fin: document.getElementById('heure_fin').value, nb_participants: parseInt(document.getElementById('nb_participants').value) || 0, wifi_public: document.getElementById('wifi_public').checked, lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value), lieux_vestiaire: Array.from(document.querySelectorAll('#vest_list input:checked')).map(i => i.value), nb_chaises: parseInt(document.getElementById('nb_chaises').value) || 0, nb_tables: parseInt(document.getElementById('nb_tables').value) || 0, micros_hf_regie: parseInt(document.getElementById('micros_hf').value) || 0, micros_filaires_scene: parseInt(document.getElementById('micros_filaires').value) || 0, options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value), cadets_retransmission: document.getElementById('cadets_retrans').checked, cadets_notes: document.getElementById('cadets_notes').value
+                organisme: document.getElementById('organisme').value,
+                nom_evenement: document.getElementById('nom_evenement').value,
+                point_contact: document.getElementById('point_contact').value,
+                contact_email: document.getElementById('contact_email').value,
+                contact_tel: document.getElementById('contact_tel').value,
+                date_evenement: document.getElementById('date_evenement').value,
+                heure_orga: document.getElementById('heure_orga').value,
+                heure_public: document.getElementById('heure_public').value,
+                heure_fin: document.getElementById('heure_fin').value,
+                nb_participants: parseInt(document.getElementById('nb_participants').value) || 0,
+                wifi_public: document.getElementById('wifi_public').checked,
+                lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
+                nb_chaises: parseInt(document.getElementById('nb_chaises').value) || 0,
+                nb_tables: parseInt(document.getElementById('nb_tables').value) || 0,
+                micros_hf_regie: parseInt(document.getElementById('micros_hf').value) || 0,
+                micros_filaires_scene: parseInt(document.getElementById('micros_filaires').value) || 0,
+                options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value),
+                cadets_retransmission: document.getElementById('cadets_retrans').checked,
+                cadets_notes: document.getElementById('cadets_notes').value
             };
-            await _supa.from('demandes_auditorium').insert([payload]); alert("✓ Transmis !"); location.reload();
+            await _supa.from('demandes_auditorium').insert([payload]);
+            alert("✓ Fiche technique transmise !");
+            location.reload();
         };
 
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
