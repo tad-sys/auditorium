@@ -23,6 +23,7 @@
             z-index: 100000; background: rgba(0,0,0,0.9); 
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); 
         }
+        .radar-check:checked + label { background-color: #d4af37; color: white; border-color: #d4af37; }
     </style>
 </head>
 <body>
@@ -46,13 +47,13 @@
             <div class="space-y-4">
                 <div>
                     <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Email Administrateur</label>
-                    <input type="email" id="adm-email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none transition-all">
+                    <input type="email" id="adm-email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Mot de passe</label>
-                    <input type="password" id="adm-pass" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none transition-all">
+                    <input type="password" id="adm-pass" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
                 </div>
-                <button type="button" id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg hover:brightness-125 transition-all">Se connecter</button>
+                <button type="button" id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg">Se connecter</button>
                 <button type="button" onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-bold uppercase mt-2">Fermer</button>
             </div>
         </div>
@@ -124,8 +125,8 @@
                 <div class="card-premium p-8 border-l-[12px] border-blue-600 shadow-xl">
                     <h3 class="text-blue-800 font-black uppercase text-xs mb-6 flex items-center gap-2 italic"><i class="fa-solid fa-microphone-lines"></i> Moyens Techniques</h3>
                     <div class="grid grid-cols-2 gap-6 mb-6">
-                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros HF (max 2)</label><input type="number" id="micros_hf" min="0" max="2" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900 outline-none transition-all"></div>
-                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros Filaires (max 6)</label><input type="number" id="micros_filaires" min="0" max="6" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900 outline-none transition-all"></div>
+                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros HF (max 2)</label><input type="number" id="micros_hf" min="0" max="2" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900"></div>
+                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros Filaires (max 6)</label><input type="number" id="micros_filaires" min="0" max="6" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900"></div>
                     </div>
                     <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600 italic">
                         <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer"><input type="checkbox" value="Visio" class="accent-blue-600"> Visio-Conférence</label>
@@ -159,9 +160,19 @@
                 <canvas id="chartMonths" height="120"></canvas>
             </div>
             <div class="card-premium p-8 bg-white border-t-4 border-red-900 shadow-2xl">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-prestige text-red-900 text-lg uppercase underline decoration-amber-500 underline-offset-4 italic">Profil des Besoins</h3>
-                    <i class="fa-solid fa-compass text-amber-500 text-4xl animate-pulse"></i>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-prestige text-red-900 text-sm uppercase underline decoration-amber-500 underline-offset-4 italic">Radar des Besoins</h3>
+                    <i class="fa-solid fa-compass text-amber-500 text-2xl animate-pulse"></i>
+                </div>
+                <div id="radar-controls" class="flex flex-wrap gap-1 mb-4 border-b pb-4 border-slate-100">
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-affluence" class="hidden radar-check" value="Affluence"><label for="ax-affluence" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Affluence</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-hf" class="hidden radar-check" value="Micros HF"><label for="ax-hf" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">HF</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-fil" class="hidden radar-check" value="Micros Fil"><label for="ax-fil" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Fil</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-capt" class="hidden radar-check" value="Captation"><label for="ax-capt" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Captation</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-visio" class="hidden radar-check" value="Visio"><label for="ax-visio" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Visio</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-mobi" class="hidden radar-check" value="Mobilier"><label for="ax-mobi" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Mobilier</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-pres" class="hidden radar-check" value="Présentation"><label for="ax-pres" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Présentation</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-audio" class="hidden radar-check" value="Enregistrement"><label for="ax-audio" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Audio</label></div>
                 </div>
                 <canvas id="chartRadar"></canvas>
             </div>
@@ -180,7 +191,7 @@
             const email = document.getElementById('adm-email').value;
             const password = document.getElementById('adm-pass').value;
             const { error } = await _supa.auth.signInWithPassword({ email, password });
-            if (error) alert("Accès refusé.");
+            if (error) alert("Identification échouée.");
             else { document.getElementById('login-modal').style.display = 'none'; basculerVueAdmin(); }
         });
 
@@ -194,11 +205,7 @@
 
         async function chargerDonnees() {
             const { data, error } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
-            if (data) { 
-                currentData = data;
-                renderList(data); 
-                initCharts(data); 
-            }
+            if (data) { currentData = data; renderList(data); initCharts(data); }
         }
 
         function renderList(data) {
@@ -210,7 +217,7 @@
                                 <span class="bg-red-900 text-white px-5 py-2 rounded-full text-[12px] font-black uppercase italic shadow-lg">${d.date_evenement}</span>
                                 <span class="font-prestige text-2xl text-slate-800 tracking-tight">${d.nom_evenement}</span>
                             </div>
-                            <p class="text-[12px] font-black text-slate-500 uppercase italic flex items-center gap-3 tracking-widest mt-2">
+                            <p class="text-[12px] font-black text-slate-500 uppercase italic flex items-center gap-3 mt-2 tracking-widest italic">
                                 <i class="fa-solid fa-landmark text-amber-600 text-lg"></i> ${d.organisme} <span class="text-slate-300">|</span> <i class="fa-solid fa-user-tie"></i> ${d.point_contact}
                             </p>
                         </div>
@@ -223,7 +230,6 @@
                             </button>
                         </div>
                     </div>
-                    
                     <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] leading-relaxed bg-white relative">
                         <div class="space-y-4">
                             <p class="font-black text-red-900 uppercase italic mb-4 border-b-2 border-red-50 pb-2 flex items-center gap-2 italic">LOGISTIQUE</p>
@@ -233,7 +239,6 @@
                                 <p class="font-bold text-slate-700 leading-tight">${d.lieux_accueil?.join(' • ') || 'Standard'}</p>
                             </div>
                         </div>
-
                         <div class="border-l-2 border-slate-50 pl-8 space-y-4">
                             <p class="font-black text-orange-600 uppercase italic mb-4 border-b-2 border-orange-50 pb-2 flex items-center gap-2 italic">MOBILIER</p>
                             <div class="grid grid-cols-2 gap-4">
@@ -247,25 +252,21 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="border-l-2 border-slate-50 pl-8 space-y-4">
                             <p class="font-black text-blue-600 uppercase italic mb-4 border-b-2 border-blue-50 pb-2 flex items-center gap-2 italic">TECHNIQUE</p>
                             <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 space-y-3">
                                 <p class="flex justify-between font-bold"><span>Micros HF :</span> <span class="bg-blue-600 text-white px-2 rounded">${d.micros_hf_regie}</span></p>
                                 <p class="flex justify-between font-bold"><span>Micros Fil :</span> <span class="bg-blue-600 text-white px-2 rounded">${d.micros_filaires_scene}</span></p>
-                                <div class="pt-2 flex flex-wrap gap-1">
-                                    ${d.options_tech?.map(opt => `<span class="bg-white border border-blue-200 text-[9px] px-2 py-1 rounded-full font-black text-blue-800 uppercase">${opt}</span>`).join('') || ''}
-                                </div>
+                                <div class="pt-2 flex flex-wrap gap-1">${d.options_tech?.map(opt => `<span class="bg-white border border-blue-200 text-[9px] px-2 py-1 rounded-full font-black text-blue-800 uppercase">${opt}</span>`).join('') || ''}</div>
                             </div>
                         </div>
-
                         <div class="border-l-2 border-slate-50 pl-8 space-y-4 bg-amber-50/30 p-6 rounded-3xl border-2 border-amber-50">
                             <p class="font-black text-amber-800 uppercase italic mb-4 border-b-2 border-amber-100 pb-2 flex items-center gap-2 italic">PLANNING</p>
                             <div class="space-y-2">
                                 <div class="flex justify-between font-bold"><span>Orga :</span> <span>${d.heure_orga}</span></div>
                                 <div class="flex justify-between font-bold"><span>Public :</span> <span>${d.heure_public}</span></div>
                                 <div class="pt-4 flex items-center gap-3">
-                                    <span class="text-[10px] font-black uppercase">Cadets :</span>
+                                    <span class="text-[10px] font-black uppercase italic">Cadets :</span>
                                     ${d.cadets_retransmission ? '<i class="fa-solid fa-circle-check text-green-600"></i>' : '<i class="fa-solid fa-circle-xmark text-slate-300"></i>'}
                                 </div>
                             </div>
@@ -276,10 +277,7 @@
         }
 
         async function supprimerLigne(id) {
-            if(confirm("Confirmer la suppression ?")) {
-                await _supa.from('demandes_auditorium').delete().eq('id', id);
-                chargerDonnees();
-            }
+            if(confirm("Supprimer l'événement ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); }
         }
 
         function initCharts(data) {
@@ -296,94 +294,83 @@
                 options: { plugins: { legend: { display: false } } }
             });
 
-            // RADAR MULTI-AXES DYNAMIQUE
+            updateRadar();
+        }
+
+        // MISE À JOUR DYNAMIQUE DU RADAR
+        function updateRadar() {
+            const data = currentData;
             const total = data.length || 1;
-            const radarMetrics = {
-                hf: (data.reduce((a, b) => a + (b.micros_hf_regie || 0), 0) / total) * 5,
-                fil: (data.reduce((a, b) => a + (b.micros_filaires_scene || 0), 0) / total) * 1.6,
-                mobilier: (data.reduce((a, b) => a + (b.nb_chaises || 0) + (b.nb_tables || 0), 0) / total),
-                visio: (data.filter(d => d.options_tech?.some(o => ['Visio','Captation'].includes(o))).length / total) * 10,
-                affluence: (data.reduce((a, b) => a + (b.nb_participants || 0), 0) / total) / 20
+            const ctxRadar = document.getElementById('chartRadar').getContext('2d');
+            
+            // Calcul des métriques possibles
+            const fullMetrics = {
+                'Affluence': (data.reduce((a, b) => a + (b.nb_participants || 0), 0) / total) / 20,
+                'Micros HF': (data.reduce((a, b) => a + (b.micros_hf_regie || 0), 0) / total) * 5,
+                'Micros Fil': (data.reduce((a, b) => a + (b.micros_filaires_scene || 0), 0) / total) * 1.6,
+                'Captation': (data.filter(d => d.options_tech?.includes('Captation')).length / total) * 10,
+                'Visio': (data.filter(d => d.options_tech?.includes('Visio')).length / total) * 10,
+                'Mobilier': (data.reduce((a, b) => a + (b.nb_chaises || 0) + (b.nb_tables || 0), 0) / total),
+                'Présentation': (data.filter(d => (d.nb_participants > 0)).length / total) * 5, // Simple base
+                'Enregistrement': (data.filter(d => d.options_tech?.includes('Record')).length / total) * 10
             };
 
-            const ctxRadar = document.getElementById('chartRadar').getContext('2d');
+            const selectedAxes = Array.from(document.querySelectorAll('.radar-check:checked')).map(i => i.value);
+            const labels = selectedAxes;
+            const radarValues = selectedAxes.map(axis => fullMetrics[axis] || 0);
+
             if(charts.radar) charts.radar.destroy();
             charts.radar = new Chart(ctxRadar, { 
                 type: 'radar', 
                 data: { 
-                    labels: ['Micros HF', 'Micros Filaires', 'Besoin Mobilier', 'Visio/Captation', 'Affluence'], 
+                    labels: labels, 
                     datasets: [{ 
-                        data: [radarMetrics.hf, radarMetrics.fil, radarMetrics.mobilier, radarMetrics.visio, radarMetrics.affluence],
+                        data: radarValues, 
                         backgroundColor: 'rgba(212, 175, 55, 0.4)', 
                         borderColor: '#d4af37', 
-                        borderWidth: 4, pointBackgroundColor: '#7f1d1d', pointRadius: 6
+                        borderWidth: 4, pointBackgroundColor: '#7f1d1d', pointRadius: 5
                     }] 
                 },
                 options: {
-                    scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 9, weight: 'bold' } } } },
+                    scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 9, weight: 'bold' }, color: '#475569' } } },
                     plugins: { legend: { display: false } }
                 }
             });
         }
 
-        // GENERATION PDF RECTIFIÉE
+        // Ecouteur pour le radar dynamique
+        document.querySelectorAll('.radar-check').forEach(el => el.addEventListener('change', updateRadar));
+
+        // GENERATION PDF
         window.genererPDF = function(id) {
             const d = currentData.find(item => item.id === id);
             if(!d) return;
-
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-
-            // Style
             doc.setFillColor(127, 29, 29);
             doc.rect(0, 0, 210, 40, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
+            doc.setFont("helvetica", "bold"); doc.setFontSize(20);
             doc.text("FICHE TECHNIQUE AUDITORIUM", 20, 25);
-            
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(10);
-            doc.text(`Émis le : ${new Date().toLocaleDateString()}`, 160, 50);
-
-            // Infos Client
+            doc.setTextColor(0,0,0); doc.setFontSize(10);
+            doc.text(`Edité le : ${new Date().toLocaleDateString()}`, 160, 50);
             doc.autoTable({
                 startY: 60,
-                head: [['IDENTIFICATION', 'DÉTAILS']],
-                body: [
-                    ['Événement', d.nom_evenement.toUpperCase()],
-                    ['Organisme', d.organisme],
-                    ['Date', d.date_evenement],
-                    ['Contact', `${d.point_contact} (${d.contact_tel || 'N/A'})`],
-                    ['Horaires', `Arrivée: ${d.heure_orga} | Public: ${d.heure_public} | Fin: ${d.heure_fin}`]
-                ],
+                head: [['IDENTIFICATION', 'DETAILS']],
+                body: [['Evenement', d.nom_evenement.toUpperCase()],['Organisme', d.organisme],['Date', d.date_evenement],['Contact', d.point_contact],['Horaires', `${d.heure_orga} - ${d.heure_fin}`]],
                 headStyles: { fillColor: [127, 29, 29] }
             });
-
-            // Technique
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 10,
-                head: [['BESOINS TECHNIQUES', 'QUANTITÉ / ÉTAT']],
-                body: [
-                    ['Nombre de Participants', d.nb_participants],
-                    ['Micros HF (Sennheiser)', d.micros_hf_regie],
-                    ['Micros Filaires (Shure)', d.micros_filaires_scene],
-                    ['Chaises sur scène', d.nb_chaises],
-                    ['Tables sur scène', d.nb_tables],
-                    ['Options validées', d.options_tech?.join(', ') || 'Standard'],
-                    ['Retransmission Cadets', d.cadets_retransmission ? 'OUI' : 'NON'],
-                    ['Notes Cadets', d.cadets_notes || 'Aucune']
-                ],
+                head: [['TECHNIQUE & LOGISTIQUE', 'VALEURS']],
+                body: [['Participants', d.nb_participants],['Micros HF / Fil', `${d.micros_hf_regie} / ${d.micros_filaires_scene}`],['Chaises / Tables', `${d.nb_chaises} / ${d.nb_tables}`],['Options', d.options_tech?.join(', ') || 'Standard'],['Notes Cadets', d.cadets_notes || '/']],
                 headStyles: { fillColor: [212, 175, 55] }
             });
-
-            doc.save(`Fiche_${d.nom_evenement}_${d.date_evenement}.pdf`);
+            doc.save(`Fiche_${d.nom_evenement}.pdf`);
         };
 
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = true;
             const payload = {
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
@@ -408,7 +395,6 @@
             };
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
             if (!error) { alert("✓ Transmis !"); location.reload(); }
-            else { btn.disabled = false; }
         };
 
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
