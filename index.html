@@ -42,14 +42,14 @@
             <h3 class="font-prestige text-xl text-center mb-6 text-red-900 border-b pb-4 italic">Identification Régie</h3>
             <div class="space-y-4">
                 <div>
-                    <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Email</label>
-                    <input type="email" id="adm-email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Email Administrateur</label>
+                    <input type="email" id="adm-email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-red-900">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Mot de passe</label>
-                    <input type="password" id="adm-pass" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    <input type="password" id="adm-pass" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-red-900">
                 </div>
-                <button type="button" id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg">Entrer</button>
+                <button type="button" id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg hover:brightness-110">Entrer</button>
                 <button type="button" onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-bold uppercase mt-2">Annuler</button>
             </div>
         </div>
@@ -68,21 +68,21 @@
                         <input type="tel" id="contact_tel" placeholder="Téléphone" class="w-full p-4 bg-slate-50 border rounded-2xl">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold uppercase text-slate-400 ml-2 italic">Date de l'événement</label>
+                        <label class="text-[12px] font-black uppercase text-red-900 ml-2 italic">Date de l'événement</label>
                         <input type="date" id="date_evenement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
                     </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <label class="text-[9px] font-bold uppercase text-slate-400 block text-center italic">Arrivée Orga</label>
-                            <input type="time" id="heure_orga" class="w-full p-2 border rounded-xl font-bold italic text-center">
+                    <div class="grid grid-cols-3 gap-3 bg-slate-100 p-4 rounded-2xl border border-slate-200">
+                        <div class="text-center">
+                            <label class="text-[10px] font-black uppercase text-[#7f1d1d] block mb-1">Arrivée Orga</label>
+                            <input type="time" id="heure_orga" required class="w-full p-2 border border-white rounded-xl font-bold shadow-sm">
                         </div>
-                        <div>
-                            <label class="text-[9px] font-bold uppercase text-slate-400 block text-center italic">Accueil Public</label>
-                            <input type="time" id="heure_public" class="w-full p-2 border rounded-xl font-bold italic text-center">
+                        <div class="text-center">
+                            <label class="text-[10px] font-black uppercase text-[#7f1d1d] block mb-1">Accueil Public</label>
+                            <input type="time" id="heure_public" required class="w-full p-2 border border-white rounded-xl font-bold shadow-sm">
                         </div>
-                        <div>
-                            <label class="text-[9px] font-bold uppercase text-slate-400 block text-center italic">Fin Événement</label>
-                            <input type="time" id="heure_fin" class="w-full p-2 border rounded-xl font-bold italic text-center">
+                        <div class="text-center">
+                            <label class="text-[10px] font-black uppercase text-[#7f1d1d] block mb-1">Fin Événement</label>
+                            <input type="time" id="heure_fin" required class="w-full p-2 border border-white rounded-xl font-bold shadow-sm">
                         </div>
                     </div>
                 </div>
@@ -115,12 +115,12 @@
                     <h3 class="text-orange-700 font-black uppercase text-xs mb-4 italic">Mobilier Scène</h3>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-[9px] uppercase font-bold text-slate-400 italic">Chaises (max 6)</label>
-                            <input type="number" id="nb_chaises" placeholder="0" class="w-full p-3 border rounded-xl font-bold">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic">Chaises (max 6)</label>
+                            <input type="number" id="nb_chaises" value="0" class="w-full p-3 border rounded-xl font-bold">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold text-slate-400 italic">Tables (max 3)</label>
-                            <input type="number" id="nb_tables" placeholder="0" class="w-full p-3 border rounded-xl font-bold">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic">Tables (max 3)</label>
+                            <input type="number" id="nb_tables" value="0" class="w-full p-3 border rounded-xl font-bold">
                         </div>
                     </div>
                 </div>
@@ -128,18 +128,18 @@
                     <h3 class="text-blue-800 font-black uppercase text-xs mb-4 italic">Moyens Techniques</h3>
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="text-[9px] uppercase font-bold text-slate-400 italic">Mics HF (Main/Crav)</label>
-                            <input type="number" id="micros_hf" placeholder="0" class="w-full p-3 border rounded-xl font-bold">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic">Mics HF</label>
+                            <input type="number" id="micros_hf" value="0" class="w-full p-3 border rounded-xl font-bold">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold text-slate-400 italic">Mics Filaires</label>
-                            <input type="number" id="micros_filaires" placeholder="0" class="w-full p-3 border rounded-xl font-bold">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic">Mics Filaires</label>
+                            <input type="number" id="micros_filaires" value="0" class="w-full p-3 border rounded-xl font-bold">
                         </div>
                     </div>
                     <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600 italic">
-                        <label class="flex gap-2"><input type="checkbox" value="Visio"> Visio-Conférence</label>
-                        <label class="flex gap-2"><input type="checkbox" value="Captation"> Captation Vidéo</label>
-                        <label class="flex gap-2"><input type="checkbox" value="Record"> Enregistrement Audio</label>
+                        <label class="flex gap-2 items-center"><input type="checkbox" value="Visio"> Visio-Conférence</label>
+                        <label class="flex gap-2 items-center"><input type="checkbox" value="Captation"> Captation Vidéo</label>
+                        <label class="flex gap-2 items-center"><input type="checkbox" value="Record"> Enregistrement</label>
                     </div>
                 </div>
             </div>
@@ -151,7 +151,7 @@
                         <input type="checkbox" id="cadets_retrans" class="w-6 h-6 accent-amber-700">
                         <span class="text-xs font-black uppercase text-amber-900">Retransmission Auditorium en direct</span>
                     </label>
-                    <textarea id="cadets_notes" placeholder="Notes Salle des Cadets (Mobilier, besoin traiteur...)" class="w-full p-4 bg-slate-50 border rounded-2xl h-24 text-sm outline-none focus:border-amber-600"></textarea>
+                    <textarea id="cadets_notes" placeholder="Notes Salle des Cadets (Mobilier, besoins spécifiques...)" class="w-full p-4 bg-slate-50 border rounded-2xl h-24 text-sm outline-none focus:border-amber-600"></textarea>
                 </div>
             </div>
 
@@ -230,7 +230,7 @@
                         </div>
                         <div class="border-l pl-4 bg-amber-50 p-2 rounded-xl">
                             <p class="font-black text-amber-800 uppercase italic mb-1 border-b">Cadets</p>
-                            <p>Retransmission: ${d.cadets_retransmission ? 'OUI' : 'NON'}</p>
+                            <p>Retrans: ${d.cadets_retransmission ? 'OUI' : 'NON'}</p>
                         </div>
                     </div>
                 </div>
@@ -248,25 +248,7 @@
         async function genererPDF(id) {
             const { data: d } = await _supa.from('demandes_auditorium').select('*').eq('id', id).single();
             const win = window.open('', '', 'width=900,height=1000');
-            win.document.write(`
-                <html><head><title>Fiche Technique ${d.nom_evenement}</title>
-                <style>
-                    body{font-family:sans-serif;padding:40px; color:#1a1a1a;} 
-                    .header{border-bottom:4px solid #7f1d1d; padding-bottom:10px; margin-bottom:30px;}
-                    h1{color:#7f1d1d; text-transform:uppercase; margin:0;}
-                    .grid{display:grid; grid-template-cols: 1fr 1fr; gap:20px;}
-                    .sec{margin-bottom:20px; padding:15px; background:#f1f5f9; border-radius:10px;}
-                    .lab{font-weight:900; color:#7f1d1d; font-size:10px; text-transform:uppercase; border-bottom:1px solid #ccc; display:block; margin-bottom:10px;}
-                </style></head><body>
-                <div class="header"><h1>${d.nom_evenement}</h1><p>${d.organisme} - ${d.date_evenement}</p></div>
-                <div class="grid">
-                    <div class="sec"><span class="lab">Horaires</span>Orga: ${d.heure_orga}<br>Public: ${d.heure_public}<br>Fin: ${d.heure_fin}</div>
-                    <div class="sec"><span class="lab">Contact</span>${d.point_contact}<br>${d.contact_email}<br>${d.contact_tel}</div>
-                </div>
-                <div class="sec"><span class="lab">Mobilier & Technique</span>Chaises: ${d.nb_chaises} | Tables: ${d.nb_tables}<br>Mics HF: ${d.micros_hf_regie} | Mics Filaires: ${d.micros_filaires_scene}</div>
-                <div class="sec"><span class="lab">Salle des Cadets</span>Retransmission: ${d.cadets_retransmission ? 'OUI' : 'NON'}<br>Notes: ${d.cadets_notes || '/'}</div>
-                <script>window.onload=function(){window.print();window.close();}<\/script></body></html>
-            `);
+            win.document.write(`<html><head><title>Fiche Technique ${d.nom_evenement}</title></head><body><h1>${d.nom_evenement}</h1><p>${d.organisme}</p><script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
             win.document.close();
         }
 
@@ -278,7 +260,7 @@
             charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ label: 'Événements', data: months, backgroundColor: '#7f1d1d' }] } });
         }
 
-        // ENVOI DU FORMULAIRE (CORRECTIF COLONNES)
+        // ENVOI DU FORMULAIRE (AVEC SÉCURITÉ NOM COLONNES)
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
@@ -288,7 +270,6 @@
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
                 point_contact: document.getElementById('point_contact').value,
-                // Vérifiez ici : si l'erreur "contact_email" persiste, renommez-le selon votre table Supabase
                 contact_email: document.getElementById('contact_email').value, 
                 contact_tel: document.getElementById('contact_tel').value,
                 date_evenement: document.getElementById('date_evenement').value,
@@ -309,9 +290,12 @@
             };
 
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (!error) { alert("✓ Fiche technique transmise !"); location.reload(); }
-            else { 
-                alert("Erreur lors de l'envoi : " + error.message);
+            if (!error) { 
+                alert("✓ Fiche technique transmise avec succès !"); 
+                location.reload(); 
+            } else { 
+                console.error("Erreur détaillée Supabase:", error);
+                alert("Erreur lors de l'envoi : " + error.message + "\n\nConseil : Vérifiez que le nom de la colonne email est bien 'contact_email' dans Supabase.");
                 btn.disabled = false; btn.innerText = "Envoyer la fiche technique";
             }
         };
