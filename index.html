@@ -20,6 +20,16 @@
             z-index: 100000; background: rgba(0,0,0,0.9); 
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); 
         }
+        /* Style spécifique pour les labels d'heures toujours visibles */
+        .time-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #7f1d1d;
+            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 <body>
@@ -57,32 +67,38 @@
 
     <div id="vue-client" class="max-w-5xl mx-auto py-12 px-4 space-y-8">
         <form id="main-form" class="space-y-8">
+            
             <div class="card-premium p-8">
                 <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3"><i class="fa-solid fa-address-card"></i> Identification & Contact</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <input type="text" id="organisme" placeholder="Organisme / Client" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
                     <input type="text" id="nom_evenement" placeholder="Nom de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
                     <input type="text" id="point_contact" placeholder="Responsable de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    
                     <div class="grid grid-cols-2 gap-4">
                         <input type="email" id="contact_email" placeholder="Email contact" required class="w-full p-4 bg-slate-50 border rounded-2xl">
                         <input type="tel" id="contact_tel" placeholder="Téléphone" class="w-full p-4 bg-slate-50 border rounded-2xl">
                     </div>
-                    <div>
-                        <label class="text-[12px] font-black uppercase text-red-900 ml-2 italic">Date de l'événement</label>
-                        <input type="date" id="date_evenement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
-                    </div>
-                    <div class="grid grid-cols-3 gap-3 bg-slate-100 p-4 rounded-2xl border border-slate-200">
-                        <div class="text-center">
-                            <label class="text-[10px] font-black uppercase text-[#7f1d1d] block mb-1">Arrivée Orga</label>
-                            <input type="time" id="heure_orga" required class="w-full p-2 border border-white rounded-xl font-bold shadow-sm">
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[11px] font-black uppercase text-slate-500 ml-2 italic">Date de l'événement</label>
+                            <input type="date" id="date_evenement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
                         </div>
-                        <div class="text-center">
-                            <label class="text-[10px] font-black uppercase text-[#7f1d1d] block mb-1">Accueil Public</label>
-                            <input type="time" id="heure_public" required class="w-full p-2 border border-white rounded-xl font-bold shadow-sm">
-                        </div>
-                        <div class="text-center">
-                            <label class="text-[10px] font-black uppercase text-[#7f1d1d] block mb-1">Fin Événement</label>
-                            <input type="time" id="heure_fin" required class="w-full p-2 border border-white rounded-xl font-bold shadow-sm">
+                        
+                        <div class="grid grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <div>
+                                <label class="time-label">Arrivée Orga</label>
+                                <input type="time" id="heure_orga" required class="w-full p-2 bg-white border rounded-xl font-bold">
+                            </div>
+                            <div>
+                                <label class="time-label">Acc. Public</label>
+                                <input type="time" id="heure_public" required class="w-full p-2 bg-white border rounded-xl font-bold">
+                            </div>
+                            <div>
+                                <label class="time-label">Fin Event</label>
+                                <input type="time" id="heure_fin" required class="w-full p-2 bg-white border rounded-xl font-bold">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,9 +108,12 @@
                 <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 italic"><i class="fa-solid fa-users-gear mr-2"></i>Accueil & Logistique</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase italic">Nombre de participants</label>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase italic">Participants prévus</label>
                         <input type="number" id="nb_participants" placeholder="0" class="w-full p-4 bg-slate-50 border rounded-2xl text-2xl font-black text-red-900 outline-none">
-                        <label class="flex items-center gap-2 mt-4 cursor-pointer"><input type="checkbox" id="wifi_public" class="w-5 h-5 accent-red-900"> <span class="text-xs font-bold uppercase italic">Accès Wifi Public</span></label>
+                        <label class="flex items-center gap-2 mt-4 cursor-pointer">
+                            <input type="checkbox" id="wifi_public" class="w-5 h-5 accent-red-900"> 
+                            <span class="text-xs font-bold uppercase italic">Accès Wifi Public</span>
+                        </label>
                     </div>
                     <div id="acc_list" class="space-y-2 bg-slate-50 p-4 rounded-xl border">
                         <p class="font-bold text-[10px] uppercase text-slate-400 italic">Espaces d'Accueil</p>
@@ -151,7 +170,7 @@
                         <input type="checkbox" id="cadets_retrans" class="w-6 h-6 accent-amber-700">
                         <span class="text-xs font-black uppercase text-amber-900">Retransmission Auditorium en direct</span>
                     </label>
-                    <textarea id="cadets_notes" placeholder="Notes Salle des Cadets (Mobilier, besoins spécifiques...)" class="w-full p-4 bg-slate-50 border rounded-2xl h-24 text-sm outline-none focus:border-amber-600"></textarea>
+                    <textarea id="cadets_notes" placeholder="Besoins spécifiques Salle des Cadets (Mobilier, traiteur, etc.)..." class="w-full p-4 bg-slate-50 border rounded-2xl h-24 text-sm outline-none focus:border-amber-600"></textarea>
                 </div>
             </div>
 
@@ -168,6 +187,7 @@
     </div>
 
     <script>
+        // CONFIGURATION (N'oubliez pas de mettre vos clés)
         const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co'; 
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
@@ -214,25 +234,6 @@
                             </button>
                         </div>
                     </div>
-                    <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 text-[11px]">
-                        <div>
-                            <p class="font-black text-red-900 uppercase italic mb-1 border-b">Logistique</p>
-                            <p>Participants: <strong>${d.nb_participants}</strong></p>
-                            <p>Accueil: ${d.lieux_accueil?.join(', ') || '/'}</p>
-                        </div>
-                        <div class="border-l pl-4">
-                            <p class="font-black text-orange-600 uppercase italic mb-1 border-b">Mobilier</p>
-                            <p>Chaises: <strong>${d.nb_chaises}</strong> | Tables: <strong>${d.nb_tables}</strong></p>
-                        </div>
-                        <div class="border-l pl-4">
-                            <p class="font-black text-blue-600 uppercase italic mb-1 border-b">Technique</p>
-                            <p>HF: <strong>${d.micros_hf_regie}</strong> | Fil: <strong>${d.micros_filaires_scene}</strong></p>
-                        </div>
-                        <div class="border-l pl-4 bg-amber-50 p-2 rounded-xl">
-                            <p class="font-black text-amber-800 uppercase italic mb-1 border-b">Cadets</p>
-                            <p>Retrans: ${d.cadets_retransmission ? 'OUI' : 'NON'}</p>
-                        </div>
-                    </div>
                 </div>
             `).join('');
         }
@@ -248,7 +249,7 @@
         async function genererPDF(id) {
             const { data: d } = await _supa.from('demandes_auditorium').select('*').eq('id', id).single();
             const win = window.open('', '', 'width=900,height=1000');
-            win.document.write(`<html><head><title>Fiche Technique ${d.nom_evenement}</title></head><body><h1>${d.nom_evenement}</h1><p>${d.organisme}</p><script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
+            win.document.write(`<html><head><title>Fiche Technique</title></head><body><h1>${d.nom_evenement}</h1><p>${d.organisme}</p><script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
             win.document.close();
         }
 
@@ -260,7 +261,7 @@
             charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ label: 'Événements', data: months, backgroundColor: '#7f1d1d' }] } });
         }
 
-        // ENVOI DU FORMULAIRE (AVEC SÉCURITÉ NOM COLONNES)
+        // ENVOI DU FORMULAIRE - CORRECTION ERREUR COLONNE
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
@@ -295,7 +296,7 @@
                 location.reload(); 
             } else { 
                 console.error("Erreur détaillée Supabase:", error);
-                alert("Erreur lors de l'envoi : " + error.message + "\n\nConseil : Vérifiez que le nom de la colonne email est bien 'contact_email' dans Supabase.");
+                alert("Erreur lors de l'envoi : " + error.message);
                 btn.disabled = false; btn.innerText = "Envoyer la fiche technique";
             }
         };
@@ -303,4 +304,5 @@
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
     </script>
 </body>
+</html>
 </html>
