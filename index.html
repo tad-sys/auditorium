@@ -20,6 +20,7 @@
             z-index: 100000; background: rgba(0,0,0,0.9); 
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); 
         }
+        input:focus, textarea:focus { border-color: #7f1d1d !important; outline: none; ring: 2px; ring-color: #7f1d1d; }
     </style>
 </head>
 <body>
@@ -28,156 +29,199 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <i class="fa-solid fa-building-columns text-amber-500 text-2xl"></i>
-                <h1 class="font-prestige text-xl tracking-widest">Auditorium Austerlitz</h1>
+                <h1 class="font-prestige text-xl tracking-widest uppercase">Auditorium Austerlitz</h1>
             </div>
             <div class="flex gap-3">
-                <button onclick="document.getElementById('login-modal').style.display='flex'" id="btn-login-trigger" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20 transition-all cursor-pointer">Accès Régisseur</button>
-                <button id="btn-logout" onclick="handleLogout()" class="hidden text-[10px] font-black uppercase bg-white text-red-900 px-6 py-2 rounded-full shadow-lg">Déconnexion</button>
+                <button onclick="document.getElementById('login-modal').style.display='flex'" id="btn-login-trigger" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20 transition-all cursor-pointer tracking-widest">Accès Régisseur</button>
+                <button id="btn-logout" onclick="handleLogout()" class="hidden text-[10px] font-black uppercase bg-white text-red-900 px-6 py-2 rounded-full shadow-lg hover:bg-slate-100 transition-all">Déconnexion</button>
             </div>
         </div>
     </nav>
 
     <div id="login-modal">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl mx-4">
-            <h3 class="font-prestige text-xl text-center mb-6 text-red-900 border-b pb-4 italic">Identification Régie</h3>
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl mx-4 relative border-4 border-red-900">
+            <h3 class="font-prestige text-xl text-center mb-6 text-red-900 border-b pb-4 italic underline underline-offset-8">Identification Régie</h3>
             <div class="space-y-4">
                 <div>
                     <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Email Administrateur</label>
-                    <input type="email" id="adm-email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    <input type="email" id="adm-email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none transition-all">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold uppercase text-slate-400 ml-2">Mot de passe</label>
-                    <input type="password" id="adm-pass" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    <input type="password" id="adm-pass" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none transition-all">
                 </div>
-                <button type="button" id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg">Entrer</button>
-                <button type="button" onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-bold uppercase mt-2">Annuler</button>
+                <button type="button" id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg hover:brightness-125 transition-all">Se connecter</button>
+                <button type="button" onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-bold uppercase mt-2 hover:text-red-900 transition-colors">Fermer la fenêtre</button>
             </div>
         </div>
     </div>
 
     <div id="vue-client" class="max-w-5xl mx-auto py-12 px-4 space-y-8">
         <form id="main-form" class="space-y-8">
-            <div class="card-premium p-8">
-                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3"><i class="fa-solid fa-address-card"></i> Identification & Contact</h3>
+            
+            <div class="card-premium p-8 border-t-8 border-red-900 shadow-2xl">
+                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3">
+                    <i class="fa-solid fa-address-card text-xl"></i> Identification & Contact de l'événement
+                </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input type="text" id="organisme" placeholder="Organisme / Client" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                    <input type="text" id="nom_evenement" placeholder="Nom de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                    <input type="text" id="point_contact" placeholder="Responsable de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
+                    <input type="text" id="organisme" placeholder="Organisme / Client (ex: Direction Générale...)" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none shadow-inner">
+                    <input type="text" id="nom_evenement" placeholder="Nom de l'événement (ex: Remise de prix...)" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none shadow-inner">
+                    <input type="text" id="point_contact" placeholder="Responsable de l'événement (Nom & Prénom)" required class="w-full p-4 bg-slate-50 border rounded-2xl shadow-inner">
+                    
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="email" id="contact_email" placeholder="Email contact" required class="w-full p-4 bg-slate-50 border rounded-2xl">
-                        <input type="tel" id="contact_tel" placeholder="Téléphone" class="w-full p-4 bg-slate-50 border rounded-2xl">
+                        <input type="email" id="contact_email" placeholder="Email contact" required class="w-full p-4 bg-slate-50 border rounded-2xl shadow-inner">
+                        <input type="tel" id="contact_tel" placeholder="Téléphone" class="w-full p-4 bg-slate-50 border rounded-2xl shadow-inner">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-bold uppercase text-slate-400 ml-2 italic">Date de l'événement</label>
-                        <input type="date" id="date_evenement" required class="w-full p-4 bg-slate-50 border rounded-2xl">
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-2xl border">
-                        <div class="text-center">
-                            <span class="text-[9px] font-black uppercase text-red-900 block mb-1">Arrivée Orga</span>
-                            <input type="time" id="heure_orga" required class="w-full p-2 border rounded-xl font-bold text-center">
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[11px] font-black uppercase text-slate-500 ml-2 italic">Date de l'événement</label>
+                            <input type="date" id="date_evenement" required class="w-full p-4 bg-slate-50 border rounded-2xl shadow-md border-red-100">
                         </div>
-                        <div class="text-center">
-                            <span class="text-[9px] font-black uppercase text-red-900 block mb-1">Accueil Public</span>
-                            <input type="time" id="heure_public" required class="w-full p-2 border rounded-xl font-bold text-center">
-                        </div>
-                        <div class="text-center">
-                            <span class="text-[9px] font-black uppercase text-red-900 block mb-1">Fin Event</span>
-                            <input type="time" id="heure_fin" required class="w-full p-2 border rounded-xl font-bold text-center">
+                        
+                        <div class="grid grid-cols-3 gap-4 bg-red-50/50 p-4 rounded-2xl border-2 border-red-100">
+                            <div class="flex flex-col">
+                                <label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Arrivée Orga</label>
+                                <input type="time" id="heure_orga" required class="w-full p-2 bg-white border rounded-xl font-bold shadow-sm text-center">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Accueil Public</label>
+                                <input type="time" id="heure_public" required class="w-full p-2 bg-white border rounded-xl font-bold shadow-sm text-center">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Fin Event</label>
+                                <input type="time" id="heure_fin" required class="w-full p-2 bg-white border rounded-xl font-bold shadow-sm text-center">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card-premium p-8">
-                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 italic"><i class="fa-solid fa-users-gear mr-2"></i>Accueil & Logistique</h3>
+            <div class="card-premium p-8 shadow-xl">
+                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3 italic">
+                    <i class="fa-solid fa-users-gear text-xl"></i> Accueil & Logistique
+                </h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase italic">Participants prévus</label>
-                        <input type="number" id="nb_participants" placeholder="0" class="w-full p-4 bg-slate-50 border rounded-2xl text-2xl font-black text-red-900">
+                        <label class="text-[10px] font-black text-slate-400 uppercase italic mb-2 block">Nombre de participants prévus</label>
+                        <input type="number" id="nb_participants" placeholder="0" class="w-full p-6 bg-slate-50 border-2 border-slate-100 rounded-3xl text-4xl font-black text-red-900 outline-none text-center shadow-inner">
+                        <label class="flex items-center gap-3 mt-6 cursor-pointer bg-slate-100 p-3 rounded-xl hover:bg-slate-200 transition-all">
+                            <input type="checkbox" id="wifi_public" class="w-6 h-6 accent-red-900"> 
+                            <span class="text-xs font-black uppercase italic text-slate-700">Accès Wifi Public</span>
+                        </label>
                     </div>
-                    <div id="acc_list" class="space-y-2 bg-slate-50 p-4 rounded-xl border italic">
-                        <p class="font-bold text-[10px] uppercase text-slate-400">Espaces d'Accueil</p>
-                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Hall Orient"> Hall Orient</label>
-                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Auditorium"> Auditorium</label>
-                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Table/Desk"> Table / Desk</label>
+                    <div id="acc_list" class="space-y-3 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-inner">
+                        <p class="font-black text-[11px] uppercase text-red-900 italic border-b pb-1">Espaces d'Accueil</p>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Hall Orient" class="accent-red-900"> Hall Orient</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Auditorium" class="accent-red-900"> Auditorium</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Table/Desk" class="accent-red-900"> Table / Desk d'accueil</label>
                     </div>
-                    <div id="vest_list" class="space-y-2 bg-slate-50 p-4 rounded-xl border italic">
-                        <p class="font-bold text-[10px] uppercase text-slate-400">Vestiaires</p>
-                        <label class="flex gap-2 text-xs"><input type="checkbox" value="SAS Auditorium"> SAS Auditorium</label>
-                        <label class="flex gap-2 text-xs"><input type="checkbox" value="Salle des Cadets"> Salle des Cadets</label>
+                    <div id="vest_list" class="space-y-3 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-inner">
+                        <p class="font-black text-[11px] uppercase text-red-900 italic border-b pb-1">Vestiaires</p>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="SAS Auditorium" class="accent-red-900"> SAS Auditorium</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Salle des Cadets" class="accent-red-900"> Salle des Cadets</label>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="card-premium p-8 border-l-8 border-orange-500">
-                    <h3 class="text-orange-700 font-black uppercase text-xs mb-4 italic">Mobilier Scène</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="text-[9px] uppercase font-bold text-slate-400">Chaises (max 6)</label><input type="number" id="nb_chaises" max="6" value="0" class="w-full p-3 border rounded-xl font-bold"></div>
-                        <div><label class="text-[9px] uppercase font-bold text-slate-400">Tables (max 3)</label><input type="number" id="nb_tables" max="3" value="0" class="w-full p-3 border rounded-xl font-bold"></div>
+                <div class="card-premium p-8 border-l-[12px] border-orange-500 shadow-xl">
+                    <h3 class="text-orange-700 font-black uppercase text-xs mb-6 flex items-center gap-2 italic">
+                        <i class="fa-solid fa-chair"></i> Mobilier Scène
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-orange-300">Chaises (max 6)</label>
+                            <input type="number" id="nb_chaises" min="0" max="6" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900 outline-none focus:border-orange-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-orange-300">Tables (max 3)</label>
+                            <input type="number" id="nb_tables" min="0" max="3" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900 outline-none focus:border-orange-500 transition-all">
+                        </div>
                     </div>
                 </div>
-                <div class="card-premium p-8 border-l-8 border-blue-600">
-                    <h3 class="text-blue-800 font-black uppercase text-xs mb-4 italic">Technique</h3>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
+                
+                <div class="card-premium p-8 border-l-[12px] border-blue-600 shadow-xl">
+                    <h3 class="text-blue-800 font-black uppercase text-xs mb-6 flex items-center gap-2 italic">
+                        <i class="fa-solid fa-microphone-lines"></i> Moyens Techniques
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="text-[9px] uppercase font-bold text-slate-400">Mics HF (2 max)</label>
-                            <input type="number" id="micros_hf" max="2" value="0" class="w-full p-3 border rounded-xl font-bold">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros HF (max 2)</label>
+                            <input type="number" id="micros_hf" min="0" max="2" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900 outline-none focus:border-blue-600 transition-all">
                         </div>
                         <div>
-                            <label class="text-[9px] uppercase font-bold text-slate-400">Mics Filaires (6 max)</label>
-                            <input type="number" id="micros_filaires" max="6" value="0" class="w-full p-3 border rounded-xl font-bold">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros Filaires (max 6)</label>
+                            <input type="number" id="micros_filaires" min="0" max="6" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900 outline-none focus:border-blue-600 transition-all">
                         </div>
                     </div>
-                    <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600">
-                        <label class="flex gap-2"><input type="checkbox" value="Visio"> Visio</label>
-                        <label class="flex gap-2"><input type="checkbox" value="Captation"> Captation</label>
-                        <label class="flex gap-2"><input type="checkbox" value="Record"> Record</label>
+                    <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600 italic">
+                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer hover:bg-blue-100"><input type="checkbox" value="Visio" class="accent-blue-600"> Visio-Conférence</label>
+                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer hover:bg-blue-100"><input type="checkbox" value="Captation" class="accent-blue-600"> Captation Vidéo</label>
+                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer hover:bg-blue-100"><input type="checkbox" value="Record" class="accent-blue-600"> Enregistrement</label>
                     </div>
                 </div>
             </div>
 
-            <div class="card-premium p-8 border-l-8 border-amber-600 bg-amber-50/20">
-                <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic">Salle des Cadets</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <label class="flex items-center gap-4 p-5 bg-amber-50 rounded-2xl border border-amber-100 cursor-pointer">
-                        <input type="checkbox" id="cadets_retrans" class="w-6 h-6 accent-amber-700">
-                        <span class="text-xs font-black uppercase text-amber-900">Retransmission Direct</span>
+            <div class="card-premium p-8 border-l-[12px] border-amber-600 bg-amber-50/20 shadow-xl">
+                <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic flex items-center gap-3">
+                    <i class="fa-solid fa-chalkboard-user text-xl"></i> Salle des Cadets
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <label class="flex items-center gap-5 p-6 bg-white rounded-3xl border-2 border-amber-100 cursor-pointer shadow-sm hover:shadow-md transition-all group">
+                        <input type="checkbox" id="cadets_retrans" class="w-10 h-10 accent-amber-700 transition-transform group-hover:scale-110">
+                        <span class="text-xs font-black uppercase text-amber-900 leading-tight">Retransmission Auditorium en direct (Vidéo & Audio)</span>
                     </label>
-                    <textarea id="cadets_notes" placeholder="Notes Salle des Cadets..." class="w-full p-4 bg-slate-50 border rounded-2xl h-24 text-sm"></textarea>
+                    <textarea id="cadets_notes" placeholder="Besoins spécifiques Salle des Cadets (Configuration mobilier, besoins traiteur, accès spécifiques...)" class="w-full p-6 bg-white border-2 border-amber-100 rounded-3xl h-32 text-sm outline-none focus:border-amber-600 shadow-inner font-medium"></textarea>
                 </div>
             </div>
 
-            <button type="submit" id="submit-btn" class="w-full gradient-musee text-white py-6 rounded-full text-xl font-black uppercase tracking-[0.3em] shadow-2xl">Envoyer la fiche technique</button>
+            <button type="submit" id="submit-btn" class="w-full gradient-musee text-white py-8 rounded-full text-2xl font-black uppercase tracking-[0.4em] shadow-[0_20px_50px_rgba(69,10,10,0.3)] hover:scale-[1.02] active:scale-95 transition-all">Envoyer la fiche technique</button>
         </form>
     </div>
 
     <div id="vue-admin" class="hidden max-w-7xl mx-auto py-12 px-4 space-y-12">
+        
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 card-premium p-8">
-                <h3 class="font-prestige text-red-900 mb-4 uppercase text-xs tracking-tighter">Activité Mensuelle</h3>
+            <div class="lg:col-span-2 card-premium p-8 bg-white border-t-4 border-red-900">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-prestige text-red-900 text-lg uppercase underline decoration-amber-500 underline-offset-4">Volume d'Activité Mensuel</h3>
+                    <i class="fa-solid fa-chart-line text-red-100 text-4xl"></i>
+                </div>
                 <canvas id="chartMonths" height="120"></canvas>
             </div>
-            <div class="card-premium p-8">
-                <h3 class="font-prestige text-red-900 mb-4 uppercase text-xs tracking-tighter">Profil Moyen</h3>
+            
+            <div class="card-premium p-8 bg-white border-t-4 border-red-900">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-prestige text-red-900 text-lg uppercase underline decoration-amber-500 underline-offset-4">Profil Technique</h3>
+                    <i class="fa-solid fa-chart-pie text-red-100 text-4xl"></i>
+                </div>
                 <canvas id="chartRadar"></canvas>
             </div>
         </div>
-        <div id="admin-list" class="grid grid-cols-1 gap-6"></div>
+
+        <div id="admin-list" class="grid grid-cols-1 gap-8">
+            </div>
     </div>
 
     <script>
+        // CONFIGURATION SUPABASE
         const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co'; 
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
         let charts = {};
 
+        // GESTION AUTHENTIFICATION
         document.getElementById('btn-auth-submit').addEventListener('click', async () => {
             const email = document.getElementById('adm-email').value;
             const password = document.getElementById('adm-pass').value;
             const { error } = await _supa.auth.signInWithPassword({ email, password });
-            if (error) alert("Échec : " + error.message);
-            else { document.getElementById('login-modal').style.display = 'none'; basculerVueAdmin(); }
+            if (error) {
+                alert("Identifiants incorrects ou droits insuffisants.");
+            } else { 
+                document.getElementById('login-modal').style.display = 'none'; 
+                basculerVueAdmin(); 
+            }
         });
 
         function basculerVueAdmin() {
@@ -190,41 +234,82 @@
 
         async function chargerDonnees() {
             const { data, error } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
-            if (data) { renderList(data); initCharts(data); }
+            if (data) { 
+                renderList(data); 
+                initCharts(data); 
+            }
         }
 
         function renderList(data) {
             document.getElementById('admin-list').innerHTML = data.map(d => `
-                <div class="card-premium overflow-hidden border-t-4 border-red-900 shadow-xl">
-                    <div class="p-6 bg-slate-50 flex justify-between items-center border-b">
+                <div class="card-premium overflow-hidden border-t-4 border-red-900 shadow-2xl group transition-all">
+                    <div class="p-6 bg-slate-50 flex justify-between items-center border-b-2 border-slate-100">
                         <div>
-                            <span class="bg-red-900 text-white px-3 py-1 rounded-full text-[10px] font-bold mr-3">${d.date_evenement}</span>
-                            <span class="font-black uppercase text-xl text-slate-800">${d.nom_evenement}</span>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mt-1 italic">${d.organisme} - ${d.point_contact}</p>
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="bg-red-900 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase italic shadow-md">${d.date_evenement}</span>
+                                <span class="font-prestige text-xl text-slate-800 tracking-tight">${d.nom_evenement}</span>
+                            </div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase italic flex items-center gap-2 tracking-widest">
+                                <i class="fa-solid fa-landmark text-amber-600"></i> ${d.organisme} — RESP : ${d.point_contact}
+                            </p>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-4 py-2 rounded-full text-[10px] font-black uppercase">PDF</button>
-                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-2 rounded-full hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
+                        <div class="flex gap-3">
+                            <button onclick="genererPDF('${d.id}')" class="bg-slate-800 text-white px-6 py-2 rounded-full text-[10px] font-black uppercase shadow-lg hover:bg-red-900 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-2 rounded-full hover:bg-red-900 hover:text-white transition-all shadow-sm">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 text-[11px]">
-                        <div>
-                            <p class="font-black text-red-900 uppercase italic mb-1 border-b">Logistique</p>
-                            <p>Participants: <strong>${d.nb_participants}</strong></p>
-                            <p>Accueil: ${d.lieux_accueil?.join(', ') || '/'}</p>
+                    
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-4 gap-8 text-[11px] leading-relaxed bg-white">
+                        <div class="space-y-2">
+                            <p class="font-black text-red-900 uppercase italic mb-3 border-b-2 border-red-50 pb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-user-group"></i> Logistique
+                            </p>
+                            <p class="flex justify-between"><span>Participants :</span> <strong class="text-red-900 uppercase font-black">${d.nb_participants}</strong></p>
+                            <p class="flex flex-col gap-1"><span>Espaces :</span> <strong class="bg-slate-100 p-2 rounded-lg text-[9px]">${d.lieux_accueil?.join(' • ') || 'Aucun'}</strong></p>
+                            <p class="flex flex-col gap-1"><span>Vestiaires :</span> <strong class="bg-slate-100 p-2 rounded-lg text-[9px]">${d.lieux_vestiaire?.join(' • ') || 'Aucun'}</strong></p>
+                            <p class="flex justify-between items-center pt-2"><span>Wifi Public :</span> ${d.wifi_public ? '<i class="fa-solid fa-circle-check text-green-500 text-lg"></i>' : '<i class="fa-solid fa-circle-xmark text-slate-300 text-lg"></i>'}</p>
                         </div>
-                        <div class="border-l pl-4">
-                            <p class="font-black text-orange-600 uppercase italic mb-1 border-b">Mobilier</p>
-                            <p>Chaises: <strong>${d.nb_chaises}</strong> | Tables: <strong>${d.nb_tables}</strong></p>
+                        
+                        <div class="border-l-2 border-slate-50 pl-6 space-y-2">
+                            <p class="font-black text-orange-600 uppercase italic mb-3 border-b-2 border-orange-50 pb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-couch"></i> Mobilier
+                            </p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="bg-orange-50 p-3 rounded-2xl text-center">
+                                    <span class="block text-[8px] font-black text-orange-800 uppercase">Chaises</span>
+                                    <span class="text-2xl font-black text-orange-600">${d.nb_chaises}</span>
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-2xl text-center">
+                                    <span class="block text-[8px] font-black text-orange-800 uppercase">Tables</span>
+                                    <span class="text-2xl font-black text-orange-600">${d.nb_tables}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="border-l pl-4">
-                            <p class="font-black text-blue-600 uppercase italic mb-1 border-b">Technique</p>
-                            <p>HF: <strong>${d.micros_hf_regie}</strong> | Fil: <strong>${d.micros_filaires_scene}</strong></p>
+
+                        <div class="border-l-2 border-slate-50 pl-6 space-y-2">
+                            <p class="font-black text-blue-600 uppercase italic mb-3 border-b-2 border-blue-50 pb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-microchip"></i> Technique
+                            </p>
+                            <p class="flex justify-between"><span>Micros HF :</span> <strong class="text-blue-900">${d.micros_hf_regie}</strong></p>
+                            <p class="flex justify-between"><span>Micros Fil :</span> <strong class="text-blue-900">${d.micros_filaires_scene}</strong></p>
+                            <p class="flex flex-col gap-1 pt-2"><span>Options :</span> <strong class="text-blue-700 bg-blue-50 p-2 rounded-lg text-[9px] uppercase tracking-tighter">${d.options_tech?.join(' / ') || 'Standard'}</strong></p>
                         </div>
-                        <div class="border-l pl-4 bg-amber-50 p-2 rounded-xl">
-                            <p class="font-black text-amber-800 uppercase italic mb-1 border-b">Infos</p>
-                            <p>Orga: ${d.heure_orga} | Public: ${d.heure_public}</p>
-                            <p>Retrans Cadets: ${d.cadets_retransmission ? 'OUI' : 'NON'}</p>
+
+                        <div class="border-l-2 border-slate-50 pl-6 space-y-2 bg-amber-50/30 p-4 rounded-3xl">
+                            <p class="font-black text-amber-800 uppercase italic mb-3 border-b-2 border-amber-100 pb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-clock"></i> Horaires & Cadets
+                            </p>
+                            <p class="flex justify-between bg-white p-1 px-2 rounded-lg shadow-sm"><span>Orga :</span> <strong>${d.heure_orga}</strong></p>
+                            <p class="flex justify-between bg-white p-1 px-2 rounded-lg shadow-sm"><span>Public :</span> <strong>${d.heure_public}</strong></p>
+                            <p class="flex justify-between bg-white p-1 px-2 rounded-lg shadow-sm"><span>Fin :</span> <strong>${d.heure_fin}</strong></p>
+                            <p class="flex justify-between items-center pt-3 border-t border-amber-100">
+                                <span class="uppercase font-black text-[9px] text-amber-900">Retrans. Cadets :</span>
+                                ${d.cadets_retransmission ? '<i class="fa-solid fa-video text-amber-600"></i>' : '<i class="fa-solid fa-video-slash text-slate-300"></i>'}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -232,9 +317,13 @@
         }
 
         async function supprimerLigne(id) {
-            if(confirm("Supprimer ?")) {
+            if(confirm("Confirmer la suppression irréversible de cette fiche ?")) {
                 const { error } = await _supa.from('demandes_auditorium').delete().eq('id', id);
-                if (!error) chargerDonnees();
+                if (!error) { 
+                    chargerDonnees(); 
+                } else { 
+                    alert("Erreur de suppression."); 
+                }
             }
         }
 
@@ -243,22 +332,37 @@
             const months = Array(12).fill(0);
             data.forEach(d => { if(d.date_evenement) months[new Date(d.date_evenement).getMonth()]++; });
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ label: 'Événements', data: months, backgroundColor: '#7f1d1d' }] } });
+            charts.bar = new Chart(ctxBar, { 
+                type: 'bar', 
+                data: { 
+                    labels: ['Janv','Févr','Mars','Avril','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'], 
+                    datasets: [{ label: 'Événements', data: months, backgroundColor: '#7f1d1d', borderRadius: 8 }] 
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
 
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
             const avg = [
                 data.reduce((a, b) => a + (b.micros_hf_regie || 0), 0) / (data.length || 1),
                 data.reduce((a, b) => a + (b.micros_filaires_scene || 0), 0) / (data.length || 1),
-                data.filter(d => d.options_tech?.includes('Visio')).length
+                data.filter(d => d.options_tech?.includes('Visio')).length / (data.length || 1) * 5
             ];
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['HF', 'Fil', 'Visio'], datasets: [{ label: 'Moyenne', data: avg, backgroundColor: 'rgba(127, 29, 29, 0.1)', borderColor: '#7f1d1d' }] } });
+            charts.radar = new Chart(ctxRadar, { 
+                type: 'radar', 
+                data: { 
+                    labels: ['Mics HF', 'Mics Fil', 'Visio/Complexité'], 
+                    datasets: [{ label: 'Profil Moyen', data: avg, backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', pointBackgroundColor: '#7f1d1d' }] 
+                },
+                options: { scales: { r: { beginAtZero: true } } }
+            });
         }
 
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
             btn.disabled = true;
+            btn.innerText = "TRANSMISSION...";
 
             const payload = {
                 organisme: document.getElementById('organisme').value,
@@ -271,6 +375,7 @@
                 heure_public: document.getElementById('heure_public').value,
                 heure_fin: document.getElementById('heure_fin').value,
                 nb_participants: parseInt(document.getElementById('nb_participants').value) || 0,
+                wifi_public: document.getElementById('wifi_public').checked,
                 lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
                 lieux_vestiaire: Array.from(document.querySelectorAll('#vest_list input:checked')).map(i => i.value),
                 nb_chaises: parseInt(document.getElementById('nb_chaises').value) || 0,
@@ -283,12 +388,18 @@
             };
 
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (!error) { alert("✓ Transmis !"); location.reload(); }
-            else { alert("Erreur d'envoi : " + error.message); btn.disabled = false; }
+            if (!error) { 
+                alert("✓ Votre fiche technique a bien été transmise à la régie."); 
+                location.reload(); 
+            } else { 
+                alert("Erreur réseau : " + error.message); 
+                btn.disabled = false; 
+                btn.innerText = "Envoyer la fiche technique";
+            }
         };
 
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
-        async function genererPDF(id) { /* PDF Logic Rétablie */ }
+        async function genererPDF(id) { alert("Fonction PDF en cours de génération..."); }
     </script>
 </body>
 </html>
