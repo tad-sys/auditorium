@@ -18,13 +18,14 @@
         .gradient-musee { background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%); }
         .card-premium { background: white; border-radius: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .hidden { display: none !important; }
-        #login-modal { 
+        #login-modal, #planning-modal { 
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%; 
             z-index: 100000; background: rgba(0,0,0,0.9); 
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
         }
         .radar-check:checked + label { background-color: #d4af37; color: white; border-color: #d4af37; }
+        .planning-item:hover { transform: translateX(5px); background-color: #fef2f2; }
     </style>
 </head>
 <body>
@@ -37,33 +38,31 @@
             </div>
     
             <div class="flex gap-3 items-center">
-                <div id="admin-filters" class="hidden flex gap-2">
-                    <select id="filter-year" onchange="chargerDonnees()" class="bg-white/10 border border-white/20 rounded px-2 py-1 text-[10px] font-black uppercase outline-none cursor-pointer">
-                        <option value="2025" class="text-black">2025</option>
-                        <option value="2026" selected class="text-black">2026</option>
-                    </select>
-                    <select id="filter-month" onchange="chargerDonnees()" class="bg-white/10 border border-white/20 rounded px-2 py-1 text-[10px] font-black uppercase outline-none cursor-pointer">
-                        <option value="all" class="text-black">Tous les mois</option>
-                        <option value="01" class="text-black">Janvier</option>
-                        <option value="02" class="text-black">Février</option>
-                        <option value="03" class="text-black">Mars</option>
-                        <option value="04" class="text-black">Avril</option>
-                        <option value="05" class="text-black">Mai</option>
-                        <option value="06" class="text-black">Juin</option>
-                        <option value="07" class="text-black">Juillet</option>
-                        <option value="08" class="text-black">Août</option>
-                        <option value="09" class="text-black">Septembre</option>
-                        <option value="10" class="text-black">Octobre</option>
-                        <option value="11" class="text-black">Novembre</option>
-                        <option value="12" class="text-black">Décembre</option>
-                    </select>
-                </div>
-
+                <button id="btn-open-planning" onclick="ouvrirPlanning()" class="hidden text-[10px] font-black uppercase bg-amber-500 text-white px-6 py-2 rounded-full shadow-lg hover:bg-amber-600 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days"></i> Planning
+                </button>
                 <button onclick="document.getElementById('login-modal').style.display='flex'" id="btn-login-trigger" class="text-[10px] font-black uppercase border border-white/40 px-6 py-2 rounded-full hover:bg-white/20 transition-all cursor-pointer">Accès Régisseur</button>
                 <button id="btn-logout" onclick="handleLogout()" class="hidden text-[10px] font-black uppercase bg-white text-red-900 px-6 py-2 rounded-full shadow-lg hover:bg-slate-100 transition-all">Déconnexion</button>
             </div>
         </div>
     </nav>
+
+    <div id="planning-modal">
+        <div class="bg-white rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col shadow-2xl mx-4 overflow-hidden border-4 border-red-900">
+            <div class="p-6 bg-slate-50 border-b flex justify-between items-center">
+                <h3 class="font-prestige text-xl text-red-900 italic">Planning de l'Auditorium</h3>
+                <div class="flex bg-slate-200 p-1 rounded-xl gap-1">
+                    <button onclick="filtrerPlanning('hebdo')" class="px-4 py-2 text-[9px] font-black uppercase rounded-lg hover:bg-white transition-all">Hebdo</button>
+                    <button onclick="filtrerPlanning('mois')" class="px-4 py-2 text-[9px] font-black uppercase rounded-lg bg-white shadow-sm">Mensuel</button>
+                    <button onclick="filtrerPlanning('trimestre')" class="px-4 py-2 text-[9px] font-black uppercase rounded-lg hover:bg-white transition-all">Trimestre</button>
+                    <button onclick="filtrerPlanning('an')" class="px-4 py-2 text-[9px] font-black uppercase rounded-lg hover:bg-white transition-all">Annuel</button>
+                </div>
+                <button onclick="document.getElementById('planning-modal').style.display='none'" class="text-slate-400 hover:text-red-900"><i class="fa-solid fa-circle-xmark text-2xl"></i></button>
+            </div>
+            <div id="planning-content" class="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
+                </div>
+        </div>
+    </div>
 
     <div id="login-modal">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl mx-4 relative border-4 border-red-900">
@@ -210,7 +209,6 @@
         const _supa = supabase.createClient(S_URL, S_KEY);
         let charts = {};
         let currentData = [];
-        let allData = []; // Stockage global pour le filtrage local
 
         document.getElementById('btn-auth-submit').addEventListener('click', async () => {
             const email = document.getElementById('adm-email').value;
@@ -228,32 +226,67 @@
             document.getElementById('vue-admin').classList.remove('hidden');
             document.getElementById('btn-logout').classList.remove('hidden');
             document.getElementById('btn-login-trigger').classList.add('hidden');
-            document.getElementById('admin-filters').classList.remove('hidden'); // Affiche les filtres
+            document.getElementById('btn-open-planning').classList.remove('hidden'); // Affiche le bouton planning
             chargerDonnees();
         }
 
         async function chargerDonnees() {
             const { data, error } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
-            if (data) { 
-                allData = data;
-                filtrerEtAfficher();
-            }
+            if (data) { currentData = data; renderList(data); initCharts(data); }
         }
 
-        function filtrerEtAfficher() {
-            const year = document.getElementById('filter-year').value;
-            const month = document.getElementById('filter-month').value;
+        // LOGIQUE PLANNING
+        function ouvrirPlanning() {
+            document.getElementById('planning-modal').style.display = 'flex';
+            filtrerPlanning('mois'); // Vue par défaut
+        }
 
-            currentData = allData.filter(d => {
-                if (!d.date_evenement) return false;
-                const dDate = d.date_evenement.split('-'); // [YYYY, MM, DD]
-                const matchYear = dDate[0] === year;
-                const matchMonth = (month === 'all') || (dDate[1] === month);
-                return matchYear && matchMonth;
-            });
+        function filtrerPlanning(mode) {
+            const container = document.getElementById('planning-content');
+            const now = new Date();
+            let filtered = [];
 
-            renderList(currentData); 
-            initCharts(currentData, year); 
+            if (mode === 'hebdo') {
+                const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                filtered = currentData.filter(d => new Date(d.date_evenement) >= now && new Date(d.date_evenement) <= nextWeek);
+            } else if (mode === 'mois') {
+                filtered = currentData.filter(d => new Date(d.date_evenement).getMonth() === now.getMonth() && new Date(d.date_evenement).getFullYear() === now.getFullYear());
+            } else if (mode === 'trimestre') {
+                const in3Months = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+                filtered = currentData.filter(d => new Date(d.date_evenement) >= now && new Date(d.date_evenement) <= in3Months);
+            } else {
+                filtered = currentData.filter(d => new Date(d.date_evenement).getFullYear() === now.getFullYear());
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-10 font-bold italic uppercase text-xs">Aucun événement trouvé pour cette période.</p>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(d => `
+                <div onclick="voirDetail('${d.id}')" class="planning-item flex items-center gap-6 p-4 border-l-4 border-red-900 bg-slate-50 rounded-xl cursor-pointer transition-all shadow-sm">
+                    <div class="text-center min-w-[60px]">
+                        <span class="block text-[10px] font-black text-red-900 uppercase">${new Date(d.date_evenement).toLocaleDateString('fr-FR', {month: 'short'})}</span>
+                        <span class="block text-2xl font-black">${new Date(d.date_evenement).getDate()}</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-prestige text-sm text-slate-800">${d.nom_evenement}</h4>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">${d.organisme} • <i class="fa-solid fa-clock"></i> ${d.heure_orga}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="bg-amber-100 text-amber-800 text-[8px] font-black px-2 py-1 rounded-full uppercase">${d.nb_participants} PAX</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function voirDetail(id) {
+            document.getElementById('planning-modal').style.display = 'none';
+            // Scroll vers l'élément dans la liste admin
+            const element = document.getElementById('admin-list').querySelector(`[onclick*="${id}"]`).closest('.card-premium');
+            element.scrollIntoView({ behavior: 'smooth' });
+            element.classList.add('ring-4', 'ring-amber-400');
+            setTimeout(() => element.classList.remove('ring-4', 'ring-amber-400'), 3000);
         }
 
         function renderList(data) {
@@ -332,17 +365,12 @@
             }
         }
 
-        function initCharts(data, selectedYear) {
-            document.getElementById('year-title').innerText = `Activité Mensuelle ${selectedYear}`;
-
+        function initCharts(data) {
+            const currentYear = 2026;
+            document.getElementById('year-title').innerText = `Activité Mensuelle ${currentYear}`;
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
             const months = Array(12).fill(0);
-            data.forEach(d => { 
-                if(d.date_evenement) {
-                    const m = new Date(d.date_evenement).getMonth();
-                    months[m]++; 
-                }
-            });
+            data.forEach(d => { if(d.date_evenement) months[new Date(d.date_evenement).getMonth()]++; });
             if(charts.bar) charts.bar.destroy();
             charts.bar = new Chart(ctxBar, { 
                 type: 'bar', 
@@ -369,23 +397,11 @@
             const selectedAxes = Array.from(document.querySelectorAll('.radar-check:checked')).map(i => i.value);
             const labels = selectedAxes;
             const radarValues = selectedAxes.map(axis => fullMetrics[axis] || 0);
-
             if(charts.radar) charts.radar.destroy();
             charts.radar = new Chart(ctxRadar, { 
                 type: 'radar', 
-                data: { 
-                    labels: labels, 
-                    datasets: [{ 
-                        data: radarValues, 
-                        backgroundColor: 'rgba(212, 175, 55, 0.4)', 
-                        borderColor: '#d4af37', 
-                        borderWidth: 4, pointBackgroundColor: '#7f1d1d', pointRadius: 5
-                    }] 
-                },
-                options: {
-                    scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 9, weight: 'bold' }, color: '#475569' } } },
-                    plugins: { legend: { display: false } }
-                }
+                data: { labels: labels, datasets: [{ data: radarValues, backgroundColor: 'rgba(212, 175, 55, 0.4)', borderColor: '#d4af37', borderWidth: 4, pointBackgroundColor: '#7f1d1d', pointRadius: 5 }] },
+                options: { scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 9, weight: 'bold' }, color: '#475569' } } }, plugins: { legend: { display: false } } }
             });
         }
 
