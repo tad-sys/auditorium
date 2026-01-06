@@ -19,7 +19,7 @@
         .hidden { display: none !important; }
         .radar-check:checked + label { background-color: #d4af37; color: white; border-color: #d4af37; }
         
-        /* Style spécifique Planning */
+        /* Modal Planning */
         #planning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100000; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); background: white; border: 1px solid #e2e8f0; }
         .calendar-day { min-height: 120px; border: 0.5px solid #f1f5f9; padding: 5px; position: relative; }
@@ -71,10 +71,10 @@
     <div id="vue-client" class="max-w-5xl mx-auto py-12 px-4 space-y-8">
         <form id="main-form" class="space-y-8">
             <div class="card-premium p-8 border-t-8 border-red-900 shadow-2xl">
-                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3"><i class="fa-solid fa-address-card text-xl"></i> Identification & Contact</h3>
+                <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3 italic"><i class="fa-solid fa-address-card text-xl"></i> Identification & Contact</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input type="text" id="organisme" placeholder="Organisme / Client" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none shadow-inner transition-all">
-                    <input type="text" id="nom_evenement" placeholder="Nom de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none shadow-inner transition-all">
+                    <input type="text" id="organisme" placeholder="Organisme / Client" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none shadow-inner transition-all focus:border-red-900">
+                    <input type="text" id="nom_evenement" placeholder="Nom de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none shadow-inner transition-all focus:border-red-900">
                     <input type="text" id="point_contact" placeholder="Responsable de l'événement" required class="w-full p-4 bg-slate-50 border rounded-2xl shadow-inner">
                     <div class="grid grid-cols-2 gap-4">
                         <input type="email" id="contact_email" placeholder="Email contact" required class="w-full p-4 bg-slate-50 border rounded-2xl shadow-inner">
@@ -86,8 +86,8 @@
                     </div>
                     <div class="grid grid-cols-3 gap-4 bg-red-50/50 p-4 rounded-2xl border-2 border-red-100">
                         <div class="flex flex-col"><label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Arrivée Orga</label><input type="time" id="heure_orga" required class="w-full p-2 bg-white border rounded-xl font-bold text-center"></div>
-                        <div class="flex flex-col"><label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Accueil Public</label><input type="time" id="heure_public" required class="w-full p-2 bg-white border rounded-xl font-bold text-center"></div>
-                        <div class="flex flex-col"><label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Fin Event</label><input type="time" id="heure_fin" required class="w-full p-2 bg-white border rounded-xl font-bold text-center"></div>
+                        <div class="flex flex-col"><label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Public</label><input type="time" id="heure_public" required class="w-full p-2 bg-white border rounded-xl font-bold text-center"></div>
+                        <div class="flex flex-col"><label class="text-[10px] font-black uppercase text-red-900 mb-1 text-center italic">Fin</label><input type="time" id="heure_fin" required class="w-full p-2 bg-white border rounded-xl font-bold text-center"></div>
                     </div>
                 </div>
             </div>
@@ -96,23 +96,23 @@
                 <h3 class="text-[#7f1d1d] font-black uppercase text-sm mb-6 border-b pb-2 flex items-center gap-3 italic"><i class="fa-solid fa-users-gear text-xl"></i> Accueil & Logistique</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <label class="text-[10px] font-black text-slate-400 uppercase italic mb-2 block">Nombre de participants prévus</label>
+                        <label class="text-[10px] font-black text-slate-400 uppercase italic mb-2 block">Participants prévus</label>
                         <input type="number" id="nb_participants" placeholder="0" class="w-full p-6 bg-slate-50 border-2 border-slate-100 rounded-3xl text-4xl font-black text-red-900 outline-none text-center shadow-inner">
-                        <label class="flex items-center gap-3 mt-6 cursor-pointer bg-slate-100 p-3 rounded-xl hover:bg-slate-200 transition-all">
+                        <label class="flex items-center gap-3 mt-6 cursor-pointer bg-slate-100 p-3 rounded-xl hover:bg-slate-200">
                             <input type="checkbox" id="wifi_public" class="w-6 h-6 accent-red-900"> 
                             <span class="text-xs font-black uppercase italic text-slate-700">Accès Wifi Public</span>
                         </label>
                     </div>
                     <div id="acc_list" class="space-y-3 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-inner">
                         <p class="font-black text-[11px] uppercase text-red-900 italic border-b pb-1">Espaces d'Accueil</p>
-                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Hall Orient" class="accent-red-900"> Hall Orient</label>
-                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Auditorium" class="accent-red-900"> Auditorium</label>
-                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Table/Desk" class="accent-red-900"> Table / Desk d'accueil</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Hall Orient"> Hall Orient</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Auditorium"> Auditorium</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Table/Desk"> Table / Desk</label>
                     </div>
                     <div id="vest_list" class="space-y-3 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-inner">
                         <p class="font-black text-[11px] uppercase text-red-900 italic border-b pb-1">Vestiaires</p>
-                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="SAS Auditorium" class="accent-red-900"> SAS Auditorium</label>
-                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Salle des Cadets" class="accent-red-900"> Salle des Cadets</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="SAS Auditorium"> SAS Auditorium</label>
+                        <label class="flex gap-3 text-xs font-bold text-slate-600 hover:text-red-900 cursor-pointer"><input type="checkbox" value="Salle des Cadets"> Salle des Cadets</label>
                     </div>
                 </div>
             </div>
@@ -122,37 +122,37 @@
                     <h3 class="text-orange-700 font-black uppercase text-xs mb-6 flex items-center gap-2 italic"><i class="fa-solid fa-chair"></i> Mobilier Scène</h3>
                     <div class="grid grid-cols-2 gap-6">
                         <div>
-                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-orange-300">Chaises (max 6)</label>
-                            <input type="number" id="nb_chaises" min="0" max="6" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900 outline-none transition-all">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block">Chaises (max 6)</label>
+                            <input type="number" id="nb_chaises" min="0" max="6" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900">
                         </div>
                         <div>
-                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-orange-300">Tables (max 3)</label>
-                            <input type="number" id="nb_tables" min="0" max="3" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900 outline-none transition-all">
+                            <label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block">Tables (max 3)</label>
+                            <input type="number" id="nb_tables" min="0" max="3" value="0" class="w-full p-4 border-2 border-orange-50 rounded-2xl font-black text-xl text-orange-900">
                         </div>
                     </div>
                 </div>
                 <div class="card-premium p-8 border-l-[12px] border-blue-600 shadow-xl">
                     <h3 class="text-blue-800 font-black uppercase text-xs mb-6 flex items-center gap-2 italic"><i class="fa-solid fa-microphone-lines"></i> Moyens Techniques</h3>
                     <div class="grid grid-cols-2 gap-6 mb-6">
-                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros HF (max 2)</label><input type="number" id="micros_hf" min="0" max="2" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900"></div>
-                        <div><label class="text-[10px] uppercase font-black text-slate-500 italic mb-1 block underline underline-offset-4 decoration-blue-300">Micros Filaires (max 6)</label><input type="number" id="micros_filaires" min="0" max="6" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900"></div>
+                        <input type="number" id="micros_hf" min="0" max="2" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900">
+                        <input type="number" id="micros_filaires" min="0" max="6" value="0" class="w-full p-4 border-2 border-blue-50 rounded-2xl font-black text-xl text-blue-900">
                     </div>
                     <div id="tech_opts" class="flex flex-wrap gap-4 text-[10px] font-black uppercase text-slate-600 italic">
-                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer"><input type="checkbox" value="Visio" class="accent-blue-600"> Visio-Conférence</label>
-                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer"><input type="checkbox" value="Captation" class="accent-blue-600"> Captation Vidéo</label>
-                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer"><input type="checkbox" value="Record" class="accent-blue-600"> Enregistrement</label>
+                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer"><input type="checkbox" value="Visio"> Visio-Conférence</label>
+                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer"><input type="checkbox" value="Captation"> Captation Vidéo</label>
+                        <label class="flex gap-2 items-center bg-blue-50 p-2 rounded-lg border border-blue-100 cursor-pointer"><input type="checkbox" value="Record"> Enregistrement</label>
                     </div>
                 </div>
             </div>
 
             <div class="card-premium p-8 border-l-[12px] border-amber-600 bg-amber-50/20 shadow-xl">
-                <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic flex items-center gap-3"><i class="fa-solid fa-chalkboard-user text-xl"></i> Salle des Cadets</h3>
+                <h3 class="text-amber-800 font-black uppercase text-sm mb-4 italic flex items-center gap-3"><i class="fa-solid fa-chalkboard-user"></i> Salle des Cadets</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <label class="flex items-center gap-5 p-6 bg-white rounded-3xl border-2 border-amber-100 cursor-pointer shadow-sm group">
-                        <input type="checkbox" id="cadets_retrans" class="w-10 h-10 accent-amber-700 transition-transform group-hover:scale-110">
-                        <span class="text-xs font-black uppercase text-amber-900 leading-tight">Retransmission Auditorium en direct (Vidéo & Audio)</span>
+                    <label class="flex items-center gap-5 p-6 bg-white rounded-3xl border-2 border-amber-100 cursor-pointer shadow-sm">
+                        <input type="checkbox" id="cadets_retrans" class="w-10 h-10 accent-amber-700">
+                        <span class="text-xs font-black uppercase text-amber-900 leading-tight">Retransmission Auditorium en direct</span>
                     </label>
-                    <textarea id="cadets_notes" placeholder="Besoins spécifiques Salle des Cadets..." class="w-full p-6 bg-white border-2 border-amber-100 rounded-3xl h-32 text-sm outline-none shadow-inner font-medium"></textarea>
+                    <textarea id="cadets_notes" placeholder="Besoins spécifiques Salle des Cadets..." class="w-full p-6 bg-white border-2 border-amber-100 rounded-3xl h-32 text-sm outline-none font-medium"></textarea>
                 </div>
             </div>
             <button type="submit" class="w-full gradient-musee text-white py-8 rounded-full text-2xl font-black uppercase tracking-[0.4em] shadow-2xl hover:scale-[1.02] transition-all">Envoyer la fiche technique</button>
@@ -163,7 +163,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 card-premium p-8 bg-white border-t-4 border-red-900 shadow-xl">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 id="year-title" class="font-prestige text-red-900 text-lg uppercase underline decoration-amber-500 underline-offset-4 tracking-tighter italic">Activité Mensuelle 2026</h3>
+                    <h3 id="year-title" class="font-prestige text-red-900 text-lg uppercase underline decoration-amber-500 underline-offset-4 italic tracking-widest">Activité Mensuelle 2026</h3>
                     <div class="flex gap-2">
                          <button onclick="changerAnneeStats(2026)" class="text-[9px] font-black border px-3 py-1 rounded-full hover:bg-red-900 hover:text-white transition-all">2026</button>
                          <button onclick="changerAnneeStats(2025)" class="text-[9px] font-black border px-3 py-1 rounded-full hover:bg-red-900 hover:text-white transition-all">2025</button>
@@ -174,18 +174,16 @@
 
             <div class="card-premium p-8 bg-white border-t-4 border-red-900 shadow-2xl">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-prestige text-red-900 text-sm uppercase underline decoration-amber-500 underline-offset-4 italic">Radar des Besoins</h3>
+                    <h3 class="font-prestige text-red-900 text-sm uppercase italic">Radar des Besoins</h3>
                     <i class="fa-solid fa-compass text-amber-500 text-2xl animate-pulse"></i>
                 </div>
                 <div id="radar-controls" class="flex flex-wrap gap-1 mb-4 border-b pb-4 border-slate-100">
-                    <div class="radar-opt"><input type="checkbox" checked id="ax-affluence" class="hidden radar-check" value="Affluence"><label for="ax-affluence" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Affluence</label></div>
+                    <div class="radar-opt"><input type="checkbox" checked id="ax-aff" class="hidden radar-check" value="Affluence"><label for="ax-aff" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Affluence</label></div>
                     <div class="radar-opt"><input type="checkbox" checked id="ax-hf" class="hidden radar-check" value="Micros HF"><label for="ax-hf" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">HF</label></div>
                     <div class="radar-opt"><input type="checkbox" checked id="ax-fil" class="hidden radar-check" value="Micros Fil"><label for="ax-fil" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Fil</label></div>
                     <div class="radar-opt"><input type="checkbox" checked id="ax-capt" class="hidden radar-check" value="Captation"><label for="ax-capt" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Captation</label></div>
                     <div class="radar-opt"><input type="checkbox" checked id="ax-visio" class="hidden radar-check" value="Visio"><label for="ax-visio" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Visio</label></div>
                     <div class="radar-opt"><input type="checkbox" checked id="ax-mobi" class="hidden radar-check" value="Mobilier"><label for="ax-mobi" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Mobilier</label></div>
-                    <div class="radar-opt"><input type="checkbox" checked id="ax-pres" class="hidden radar-check" value="Présentation"><label for="ax-pres" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Présentation</label></div>
-                    <div class="radar-opt"><input type="checkbox" checked id="ax-audio" class="hidden radar-check" value="Enregistrement"><label for="ax-audio" class="text-[8px] font-black uppercase px-2 py-1 border rounded-full cursor-pointer transition-all">Audio</label></div>
                 </div>
                 <canvas id="chartRadar"></canvas>
             </div>
@@ -194,15 +192,13 @@
         <div id="admin-list" class="grid grid-cols-1 gap-10"></div>
     </div>
 
-    <div id="login-modal">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl mx-4 relative border-4 border-red-900">
-            <h3 class="font-prestige text-xl text-center mb-6 text-red-900 border-b pb-4 italic underline underline-offset-8">Identification Régie</h3>
-            <div class="space-y-4">
-                <input type="email" id="adm-email" placeholder="Email" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                <input type="password" id="adm-pass" placeholder="Mot de passe" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
-                <button type="button" id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg">Se connecter</button>
-                <button type="button" onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-bold uppercase mt-2">Fermer</button>
-            </div>
+    <div id="login-modal" style="display:none;" class="fixed inset-0 bg-black/80 z-[200000] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full border-4 border-red-900 shadow-2xl">
+            <h3 class="font-prestige text-xl text-center mb-6 text-red-900 italic">Identification Régisseur</h3>
+            <input type="email" id="adm-email" placeholder="Email" class="w-full p-4 bg-slate-50 border rounded-2xl mb-4 outline-none">
+            <input type="password" id="adm-pass" placeholder="Mot de passe" class="w-full p-4 bg-slate-50 border rounded-2xl mb-6 outline-none">
+            <button id="btn-auth-submit" class="w-full gradient-musee text-white py-4 rounded-2xl font-black uppercase shadow-lg">Se connecter</button>
+            <button onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-black uppercase mt-4 italic">Annuler</button>
         </div>
     </div>
 
@@ -210,7 +206,7 @@
         const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co';
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
-        let charts = {}, currentData = [], viewDate = new Date();
+        let charts = {}, currentData = [], viewDate = new Date(), currentYear = 2026;
 
         document.getElementById('btn-auth-submit').onclick = async () => {
             const { error } = await _supa.auth.signInWithPassword({ 
@@ -224,22 +220,25 @@
                 document.getElementById('btn-logout').classList.remove('hidden');
                 document.getElementById('btn-open-planning').classList.remove('hidden');
                 chargerDonnees();
-            } else alert("Identification échouée.");
+            } else alert("Identifiants incorrects.");
         };
 
         async function chargerDonnees() {
-            const { data } = await _supa.from('demandes_auditorium').select('*').order('date_evenement');
+            const { data } = await _supa.from('demandes_auditorium').select('*').order('date_evenement', { ascending: true });
             currentData = data || [];
             renderList(currentData);
             initCharts(currentData);
         }
 
-        // --- FONCTIONS PLANNING OUTLOOK ---
-        function ouvrirPlanning() {
-            document.getElementById('planning-modal').style.display = 'flex';
-            renderOutlook();
+        // --- FILTRES DE STATS ---
+        function changerAnneeStats(year) {
+            currentYear = year;
+            document.getElementById('year-title').innerText = `Activité Mensuelle ${year}`;
+            initCharts(currentData);
         }
 
+        // --- PLANNING ---
+        function ouvrirPlanning() { document.getElementById('planning-modal').style.display = 'flex'; renderOutlook(); }
         function navCal(dir) {
             const type = document.getElementById('cal-filter').value;
             if(type === 'mois') viewDate.setMonth(viewDate.getMonth() + dir);
@@ -251,14 +250,11 @@
 
         function renderOutlook() {
             const container = document.getElementById('calendar-view');
-            const type = document.getElementById('cal-filter').value;
             container.innerHTML = '';
             document.getElementById('cal-title').innerText = viewDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }).toUpperCase();
-
             const grid = document.createElement('div');
             grid.className = "calendar-grid";
             const lastDay = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
-
             for(let i=1; i<=lastDay; i++) {
                 const dateStr = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
                 const events = currentData.filter(e => e.date_evenement === dateStr);
@@ -274,7 +270,7 @@
                         const el = document.getElementById(`fiche-${ev.id}`);
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         el.classList.add('ring-8', 'ring-amber-500');
-                        setTimeout(() => el.classList.remove('ring-8', 'ring-amber-500'), 3000);
+                        setTimeout(() => el.classList.remove('ring-8', 'ring-amber-500'), 2000);
                     };
                     dayEl.appendChild(evEl);
                 });
@@ -283,99 +279,87 @@
             container.appendChild(grid);
         }
 
-        // --- CHARTS & RADAR (VOTRE CODE ORIGINAL) [cite: 74-87] ---
+        // --- RADAR ET GRAPHIQUES ---
         function initCharts(data) {
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
             const months = Array(12).fill(0);
-            data.forEach(d => { if(d.date_evenement) months[new Date(d.date_evenement).getMonth()]++; });
+            data.forEach(d => {
+                const dDate = new Date(d.date_evenement);
+                if(dDate.getFullYear() === currentYear) months[dDate.getMonth()]++;
+            });
             if(charts.bar) charts.bar.destroy();
             charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Jui','Aoû','Sep','Oct','Nov','Déc'], datasets: [{ data: months, backgroundColor: '#7f1d1d', borderRadius: 10 }] }, options: { plugins: { legend: { display: false } } } });
             updateRadar();
         }
 
         function updateRadar() {
-            const total = currentData.length || 1;
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
+            const total = currentData.length || 1;
             const fullMetrics = {
                 'Affluence': (currentData.reduce((a, b) => a + (b.nb_participants || 0), 0) / total) / 20,
                 'Micros HF': (currentData.reduce((a, b) => a + (b.micros_hf_regie || 0), 0) / total) * 5,
                 'Micros Fil': (currentData.reduce((a, b) => a + (b.micros_filaires_scene || 0), 0) / total) * 1.6,
                 'Captation': (currentData.filter(d => d.options_tech?.includes('Captation')).length / total) * 10,
                 'Visio': (currentData.filter(d => d.options_tech?.includes('Visio')).length / total) * 10,
-                'Mobilier': (currentData.reduce((a, b) => a + (b.nb_chaises || 0) + (b.nb_tables || 0), 0) / total),
-                'Présentation': (currentData.filter(d => (d.nb_participants > 0)).length / total) * 5,
-                'Enregistrement': (currentData.filter(d => d.options_tech?.includes('Record')).length / total) * 10
+                'Mobilier': (currentData.reduce((a, b) => a + (b.nb_chaises || 0) + (b.nb_tables || 0), 0) / total)
             };
-            const selectedAxes = Array.from(document.querySelectorAll('.radar-check:checked')).map(i => i.value);
+            const selectedLabels = Array.from(document.querySelectorAll('.radar-check:checked')).map(i => i.value);
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: selectedAxes, datasets: [{ data: selectedAxes.map(axis => fullMetrics[axis] || 0), backgroundColor: 'rgba(212, 175, 55, 0.4)', borderColor: '#d4af37', borderWidth: 4, pointBackgroundColor: '#7f1d1d' }] }, options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
+            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: selectedLabels, datasets: [{ data: selectedLabels.map(l => fullMetrics[l] || 0), backgroundColor: 'rgba(212, 175, 55, 0.4)', borderColor: '#d4af37', borderWidth: 4 }] }, options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
         }
+        document.querySelectorAll('.radar-check').forEach(el => el.onchange = updateRadar);
 
-        document.querySelectorAll('.radar-check').forEach(el => el.addEventListener('change', updateRadar));
-
-        // --- LISTE ADMIN (VOTRE DESIGN ORIGINAL) [cite: 49-72] ---
+        // --- LISTE ADMIN DÉTAILLÉE ---
         function renderList(data) {
             document.getElementById('admin-list').innerHTML = data.map(d => `
-                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-red-900 shadow-2xl group transition-all">
-                    <div class="p-6 bg-slate-100 flex justify-between items-center border-b-2 border-slate-200">
-                        <div>
-                            <div class="flex items-center gap-3 mb-1">
-                                <span class="bg-red-900 text-white px-5 py-2 rounded-full text-[12px] font-black uppercase italic shadow-lg">${d.date_evenement}</span>
-                                <span class="font-prestige text-2xl text-slate-800 tracking-tight">${d.nom_evenement}</span>
-                            </div>
-                            <p class="text-[12px] font-black text-slate-500 uppercase italic flex items-center gap-3 mt-2 tracking-widest italic">
-                                <i class="fa-solid fa-landmark text-amber-600 text-lg"></i> ${d.organisme} <span class="text-slate-300">|</span> <i class="fa-solid fa-user-tie"></i> ${d.point_contact}
-                            </p>
+                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-red-900 shadow-2xl transition-all">
+                    <div class="p-6 bg-slate-100 flex justify-between items-center border-b-2">
+                        <div class="flex items-center gap-4">
+                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase">${d.date_evenement}</span>
+                            <h4 class="font-prestige text-2xl text-slate-800">${d.nom_evenement}</h4>
                         </div>
                         <div class="flex gap-4">
-                            <button onclick="genererPDF('${d.id}')" class="bg-slate-900 text-white px-8 py-3 rounded-full text-[11px] font-black uppercase shadow-xl hover:bg-red-900 transition-all flex items-center gap-2"><i class="fa-solid fa-file-pdf"></i> GENERER PDF</button>
-                            <button onclick="supprimerLigne('${d.id}')" class="bg-white text-red-600 border-2 border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition-all shadow-md"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-8 py-3 rounded-full text-[11px] font-black uppercase shadow-xl hover:bg-red-900 transition-all flex items-center gap-2"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                            <button onclick="supprimerLigne('${d.id}')" class="bg-white text-red-600 border-2 border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition-all"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
-                    <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] leading-relaxed bg-white">
-                        <div class="space-y-4">
-                            <p class="font-black text-red-900 uppercase italic mb-4 border-b-2 border-red-50 pb-2 italic">LOGISTIQUE</p>
-                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                <p class="flex justify-between mb-2"><span>Participants :</span> <strong class="text-red-900 font-black text-lg">${d.nb_participants}</strong></p>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Espaces :</p>
-                                <p class="font-bold text-slate-700 leading-tight">${d.lieux_accueil?.join(' • ') || 'Standard'}</p>
-                            </div>
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-4 gap-8 text-[12px] leading-relaxed bg-white">
+                        <div class="space-y-2">
+                            <p class="font-black text-red-900 uppercase border-b pb-1 italic">Contact</p>
+                            <p>Client: <b>${d.organisme}</b></p>
+                            <p>Responsable: <b>${d.point_contact}</b></p>
+                            <p>Email: <b>${d.contact_email}</b></p>
                         </div>
-                        <div class="border-l-2 border-slate-50 pl-8 space-y-4">
-                            <p class="font-black text-orange-600 uppercase italic mb-4 border-b-2 border-orange-50 pb-2 italic">MOBILIER</p>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-orange-50 p-4 rounded-3xl text-center"><span class="block text-[9px] font-black uppercase mb-1">Chaises</span><span class="text-3xl font-black text-orange-600">${d.nb_chaises}</span></div>
-                                <div class="bg-orange-50 p-4 rounded-3xl text-center"><span class="block text-[9px] font-black uppercase mb-1">Tables</span><span class="text-3xl font-black text-orange-600">${d.nb_tables}</span></div>
-                            </div>
+                        <div class="space-y-2">
+                            <p class="font-black text-orange-600 border-b pb-1 italic uppercase">Logistique</p>
+                            <p>Public: <b>${d.nb_participants}</b></p>
+                            <p>Horaires: <b>${d.heure_orga} - ${d.heure_fin}</b></p>
+                            <p>Espaces: <b>${d.lieux_accueil?.join(', ') || 'N/A'}</b></p>
                         </div>
-                        <div class="border-l-2 border-slate-50 pl-8 space-y-4">
-                            <p class="font-black text-blue-600 uppercase italic mb-4 border-b-2 border-blue-50 pb-2 italic">TECHNIQUE</p>
-                            <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 space-y-3">
-                                <p class="flex justify-between font-bold"><span>Micros HF :</span> <span class="bg-blue-600 text-white px-2 rounded">${d.micros_hf_regie}</span></p>
-                                <p class="flex justify-between font-bold"><span>Micros Fil :</span> <span class="bg-blue-600 text-white px-2 rounded">${d.micros_filaires_scene}</span></p>
-                            </div>
+                        <div class="space-y-2">
+                            <p class="font-black text-blue-600 border-b pb-1 italic uppercase">Technique</p>
+                            <p>HF: <b>${d.micros_hf_regie}</b> | Fil: <b>${d.micros_filaires_scene}</b></p>
+                            <p>Mobilier: <b>${d.nb_chaises} chaises, ${d.nb_tables} tables</b></p>
+                            <p>Options: <b>${d.options_tech?.join(', ') || 'Aucune'}</b></p>
                         </div>
-                        <div class="border-l-2 border-slate-50 pl-8 space-y-4 bg-amber-50/30 p-6 rounded-3xl border-2 border-amber-50">
-                            <p class="font-black text-amber-800 uppercase italic mb-4 border-b-2 border-amber-100 pb-2 italic">PLANNING</p>
-                            <div class="space-y-2">
-                                <div class="flex justify-between font-bold"><span>Orga :</span> <span>${d.heure_orga}</span></div>
-                                <div class="flex justify-between font-bold"><span>Public :</span> <span>${d.heure_public}</span></div>
-                                <div class="pt-4 flex items-center gap-3"><span class="text-[10px] font-black uppercase italic">Cadets :</span> ${d.cadets_retransmission ? '<i class="fa-solid fa-circle-check text-green-600"></i>' : '<i class="fa-solid fa-circle-xmark text-slate-300"></i>'}</div>
-                            </div>
+                        <div class="space-y-2 bg-amber-50 p-4 rounded-2xl">
+                            <p class="font-black text-amber-800 border-b border-amber-200 pb-1 italic uppercase">Salle des Cadets</p>
+                            <p>Retransmission: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p>
+                            <p class="italic text-slate-500">${d.cadets_notes || 'Pas de notes'}</p>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- FORM & PDF [cite: 88-103] ---
+        // --- FORMULAIRE & PDF ---
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
             const payload = {
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
                 point_contact: document.getElementById('point_contact').value,
-                contact_email: document.getElementById('contact_email').value, 
+                contact_email: document.getElementById('contact_email').value,
                 contact_tel: document.getElementById('contact_tel').value,
                 date_evenement: document.getElementById('date_evenement').value,
                 heure_orga: document.getElementById('heure_orga').value,
@@ -394,7 +378,7 @@
                 cadets_notes: document.getElementById('cadets_notes').value
             };
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (!error) { alert("✓ Transmis !"); location.reload(); }
+            if (!error) { alert("✓ Transmis avec succès !"); location.reload(); }
         };
 
         window.genererPDF = function(id) {
@@ -402,15 +386,12 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(20); doc.text("FICHE TECHNIQUE AUDITORIUM", 20, 25);
-            doc.autoTable({ startY: 60, head: [['IDENTIFICATION', 'DETAILS']], body: [['Evenement', d.nom_evenement.toUpperCase()],['Organisme', d.organisme],['Date', d.date_evenement],['Horaires', `${d.heure_orga} - ${d.heure_fin}`]], headStyles: { fillColor: [127, 29, 29] } });
+            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE AUDITORIUM", 20, 28);
+            doc.autoTable({ startY: 50, head: [['Section', 'Détails']], body: [['Événement', d.nom_evenement],['Organisme', d.organisme],['Date', d.date_evenement],['Horaires', `${d.heure_orga} - ${d.heure_fin}`],['Participants', d.nb_participants],['Technique', `${d.micros_hf_regie} HF, ${d.micros_filaires_scene} Filaires`]], theme: 'grid', headStyles: { fillColor: [127, 29, 29] } });
             doc.save(`Fiche_${d.nom_evenement}.pdf`);
         };
 
-        async function supprimerLigne(id) {
-            if(confirm("Supprimer l'événement ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); }
-        }
-
+        async function supprimerLigne(id) { if(confirm("Supprimer définitivement ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
     </script>
 </body>
