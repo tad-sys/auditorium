@@ -62,30 +62,12 @@
                     <h3 class="text-xl font-prestige italic">Informations Générales</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500 ml-1">Organisme / Client</label>
-                        <input type="text" id="organisme" required class="input-premium" placeholder="ex: Direction du Musée">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500 ml-1">Nom de l'événement</label>
-                        <input type="text" id="nom_evenement" required class="input-premium" placeholder="ex: Conférence Napoléon">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500 ml-1">Contact (Nom/Prénom)</label>
-                        <input type="text" id="point_contact" required class="input-premium">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500 ml-1">Email</label>
-                        <input type="email" id="contact_email" required class="input-premium">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500 ml-1">Téléphone</label>
-                        <input type="tel" id="contact_tel" required class="input-premium">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500 ml-1">Date de l'événement</label>
-                        <input type="date" id="date_evenement" required class="input-premium">
-                    </div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Organisme / Client</label><input type="text" id="organisme" required class="input-premium" placeholder="ex: Direction du Musée"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Nom de l'événement</label><input type="text" id="nom_evenement" required class="input-premium" placeholder="ex: Conférence Napoléon"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Contact (Nom/Prénom)</label><input type="text" id="point_contact" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Email</label><input type="email" id="contact_email" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Téléphone</label><input type="tel" id="contact_tel" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Date de l'événement</label><input type="date" id="date_evenement" required class="input-premium"></div>
                 </div>
             </div>
 
@@ -95,22 +77,10 @@
                     <h3 class="text-xl font-prestige italic">Horaires & Affluence</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500">Installation</label>
-                        <input type="time" id="heure_orga" class="input-premium">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500">Ouverture Public</label>
-                        <input type="time" id="heure_public" class="input-premium">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500">Fin d'événement</label>
-                        <input type="time" id="heure_fin" class="input-premium">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-slate-500">Participants</label>
-                        <input type="number" id="nb_participants" class="input-premium" placeholder="max 200">
-                    </div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Installation</label><input type="time" id="heure_orga" class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Ouverture Public</label><input type="time" id="heure_public" class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Fin d'événement</label><input type="time" id="heure_fin" class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Participants</label><input type="number" id="nb_participants" class="input-premium" placeholder="max 200"></div>
                 </div>
                 <div class="mt-8 p-6 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex items-center gap-4">
                     <input type="checkbox" id="wifi_public" class="w-6 h-6 accent-red-900">
@@ -133,14 +103,8 @@
                     </div>
                     <div class="space-y-4">
                         <p class="text-[11px] font-black uppercase text-red-900 italic">Mobilier supplémentaire</p>
-                        <div class="flex items-center gap-4">
-                            <input type="number" id="nb_chaises" class="input-premium w-24" placeholder="0">
-                            <span class="text-sm font-bold">Chaises (suppl.)</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <input type="number" id="nb_tables" class="input-premium w-24" placeholder="0">
-                            <span class="text-sm font-bold">Tables (rectangulaires)</span>
-                        </div>
+                        <div class="flex items-center gap-4"><input type="number" id="nb_chaises" class="input-premium w-24" placeholder="0"><span class="text-sm font-bold">Chaises (suppl.)</span></div>
+                        <div class="flex items-center gap-4"><input type="number" id="nb_tables" class="input-premium w-24" placeholder="0"><span class="text-sm font-bold">Tables (rectangulaires)</span></div>
                     </div>
                 </div>
             </div>
@@ -152,14 +116,8 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="space-y-6">
-                        <div class="flex flex-col gap-2">
-                            <label class="text-[11px] font-black uppercase text-slate-500">Micros HF (Sennheiser)</label>
-                            <input type="number" id="micros_hf" class="input-premium" max="4" value="0">
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label class="text-[11px] font-black uppercase text-slate-500">Micros Filaires (Scène)</label>
-                            <input type="number" id="micros_filaires" class="input-premium" max="6" value="0">
-                        </div>
+                        <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Micros HF (Sennheiser) - Max 2</label><input type="number" id="micros_hf" class="input-premium" max="2" value="0"></div>
+                        <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Micros Filaires (Scène) - Max 6</label><input type="number" id="micros_filaires" class="input-premium" max="6" value="0"></div>
                     </div>
                     <div class="space-y-4">
                         <p class="text-[11px] font-black uppercase text-red-900 italic">Options Techniques</p>
@@ -181,12 +139,12 @@
                     <label class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border-2 border-amber-100 cursor-pointer">
                         <input type="checkbox" id="cadets_retrans" class="w-8 h-8 accent-amber-600">
                         <div>
-                            <p class="font-black text-amber-900 text-sm">Retransmission vers le restaurant ?</p>
+                            <p class="font-black text-amber-900 text-sm">Retransmission vers la salle des cadets ?</p>
                             <p class="text-xs text-amber-700">Permet de diffuser le flux audio/vidéo de l'auditorium.</p>
                         </div>
                     </label>
                     <div class="flex flex-col gap-2">
-                        <label class="text-[11px] font-black uppercase text-amber-600">Notes spécifiques pour la restauration</label>
+                        <label class="text-[11px] font-black uppercase text-amber-600">Notes spécifiques pour la salle des cadets</label>
                         <textarea id="cadets_notes" class="input-premium h-24 border-amber-200 bg-amber-50/30" placeholder="Installation buffet, horaires traiteur..."></textarea>
                     </div>
                 </div>
@@ -203,28 +161,15 @@
                 <p id="stats-summary" class="text-sm text-slate-500 font-bold uppercase tracking-widest mt-2"></p>
             </div>
             <div class="flex gap-4">
-                <select id="filter-year" onchange="applyGlobalFilter()" class="bg-white px-6 py-3 rounded-full text-xs font-black border-2 border-slate-200">
-                    <option value="2024">2024</option><option value="2025" selected>2025</option><option value="2026">2026</option>
-                </select>
-                <select id="filter-month" onchange="applyGlobalFilter()" class="bg-white px-6 py-3 rounded-full text-xs font-black border-2 border-slate-200">
-                    <option value="all">Tous les mois</option>
-                    <option value="0">Janvier</option><option value="1">Février</option><option value="2">Mars</option>
-                    <option value="3">Avril</option><option value="4">Mai</option><option value="5">Juin</option>
-                    <option value="6">Juillet</option><option value="7">Août</option><option value="8">Septembre</option>
-                    <option value="9">Octobre</option><option value="10">Novembre</option><option value="11">Décembre</option>
-                </select>
+                <select id="filter-year" onchange="applyGlobalFilter()" class="bg-white px-6 py-3 rounded-full text-xs font-black border-2 border-slate-200"><option value="2024">2024</option><option value="2025" selected>2025</option><option value="2026">2026</option></select>
+                <select id="filter-month" onchange="applyGlobalFilter()" class="bg-white px-6 py-3 rounded-full text-xs font-black border-2 border-slate-200"><option value="all">Tous les mois</option><option value="0">Janvier</option><option value="1">Février</option><option value="2">Mars</option><option value="3">Avril</option><option value="4">Mai</option><option value="5">Juin</option><option value="6">Juillet</option><option value="7">Août</option><option value="8">Septembre</option><option value="9">Octobre</option><option value="10">Novembre</option><option value="11">Décembre</option></select>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div class="card-premium p-8 lg:col-span-2">
-                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Activité Annuelle</p>
-                <canvas id="chartMonths" height="100"></canvas>
-            </div>
-            <div class="card-premium p-8">
-                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Complexité Technique</p>
-                <canvas id="chartRadar"></canvas>
-                <div class="grid grid-cols-2 gap-2 mt-6" id="radar-legend">
+            <div class="card-premium p-8 lg:col-span-2"><p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Activité Annuelle</p><canvas id="chartMonths" height="100"></canvas></div>
+            <div class="card-premium p-8"><p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Complexité Technique</p><canvas id="chartRadar"></canvas>
+                <div class="grid grid-cols-2 gap-2 mt-6">
                     <label class="text-[9px] font-black flex items-center gap-1 uppercase"><input type="checkbox" value="Affluence" checked class="radar-check"> Affluence</label>
                     <label class="text-[9px] font-black flex items-center gap-1 uppercase"><input type="checkbox" value="Micros HF" checked class="radar-check"> Micros HF</label>
                     <label class="text-[9px] font-black flex items-center gap-1 uppercase"><input type="checkbox" value="Micros Fil" checked class="radar-check"> Micros Fil</label>
@@ -234,7 +179,6 @@
                 </div>
             </div>
         </div>
-
         <div id="admin-list" class="space-y-8"></div>
     </main>
 
@@ -260,18 +204,10 @@
                         <button onclick="changeMonth(1)" class="w-12 h-12 rounded-full border-2 border-slate-200 flex items-center justify-center hover:bg-white"><i class="fa-solid fa-chevron-right"></i></button>
                     </div>
                 </div>
-                <button onclick="document.getElementById('planning-modal').style.display='none'" class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-900 hover:text-white transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <button onclick="document.getElementById('planning-modal').style.display='none'" class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-900 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="grid grid-cols-7 mb-4">
-                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Lun</div>
-                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Mar</div>
-                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Mer</div>
-                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Jeu</div>
-                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Ven</div>
-                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Sam</div>
-                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Dim</div>
+                <div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Lun</div><div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Mar</div><div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Mer</div><div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Jeu</div><div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Ven</div><div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Sam</div><div class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Dim</div>
             </div>
             <div id="calendar-view" class="flex-grow overflow-y-auto rounded-3xl shadow-inner"></div>
         </div>
@@ -286,8 +222,7 @@
 
         // --- CORRECTION DU BOUTON ENVOYER ---
         document.getElementById('main-form').onsubmit = async (e) => {
-            e.preventDefault(); // EMPÊCHE LE RECHARGEMENT QUI BLOQUE L'ENVOI
-            
+            e.preventDefault(); // Crucial pour éviter le rechargement
             const payload = {
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
@@ -309,19 +244,15 @@
                 cadets_retransmission: document.getElementById('cadets_retrans').checked,
                 cadets_notes: document.getElementById('cadets_notes').value
             };
-
-            const { data, error } = await _supa.from('demandes_auditorium').insert([payload]);
-            
-            if (error) {
-                console.error("Erreur d'envoi:", error.message);
-                alert("Erreur lors de l'envoi : " + error.message);
+            const { error } = await _supa.from('demandes_auditorium').insert([payload]);
+            if (!error) { 
+                alert("Fiche technique transmise !"); 
+                location.reload(); 
             } else {
-                alert("Fiche technique transmise avec succès !");
-                location.reload();
+                alert("Erreur : " + error.message);
             }
         };
 
-        // --- AUTHENTIFICATION ---
         document.getElementById('btn-auth-submit').onclick = async () => {
             const { error } = await _supa.auth.signInWithPassword({ 
                 email: document.getElementById('adm-email').value,
@@ -334,9 +265,7 @@
                 document.getElementById('btn-logout').classList.remove('hidden');
                 document.getElementById('btn-open-planning').classList.remove('hidden');
                 chargerDonnees();
-            } else {
-                alert("Identifiants incorrects");
-            }
+            } else { alert("Accès refusé"); }
         };
 
         async function chargerDonnees() {
@@ -350,19 +279,14 @@
             const targetMonth = document.getElementById('filter-month').value;
             filteredData = allData.filter(d => {
                 const dDate = new Date(d.date_evenement);
-                const matchYear = dDate.getFullYear() === targetYear;
-                const matchMonth = targetMonth === "all" ? true : dDate.getMonth() === parseInt(targetMonth);
-                return matchYear && matchMonth;
+                return dDate.getFullYear() === targetYear && (targetMonth === "all" ? true : dDate.getMonth() === parseInt(targetMonth));
             });
             document.getElementById('stats-summary').innerText = `${filteredData.length} Événements trouvés`;
             renderList(filteredData);
             initCharts(filteredData);
         }
 
-        function ouvrirPlanning() { 
-            document.getElementById('planning-modal').style.display = 'flex';
-            renderOutlook();
-        }
+        function ouvrirPlanning() { document.getElementById('planning-modal').style.display = 'flex'; renderOutlook(); }
 
         function renderOutlook() {
             const container = document.getElementById('calendar-view');
@@ -393,14 +317,7 @@
             const months = Array(12).fill(0);
             data.forEach(d => { months[new Date(d.date_evenement).getMonth()]++; });
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { 
-                type: 'bar', 
-                data: { 
-                    labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Jui','Aoû','Sep','Oct','Nov','Déc'], 
-                    datasets: [{ data: months, backgroundColor: '#7f1d1d', borderRadius: 10 }] 
-                },
-                options: { plugins: { legend: { display: false } } }
-            });
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Jui','Aoû','Sep','Oct','Nov','Déc'], datasets: [{ data: months, backgroundColor: '#7f1d1d', borderRadius: 10 }] }, options: { plugins: { legend: { display: false } } } });
             updateRadar();
         }
 
@@ -417,14 +334,7 @@
             };
             const selectedLabels = Array.from(document.querySelectorAll('.radar-check:checked')).map(i => i.value);
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { 
-                type: 'radar', 
-                data: { 
-                    labels: selectedLabels, 
-                    datasets: [{ data: selectedLabels.map(l => fullMetrics[l] || 0), backgroundColor: 'rgba(212, 175, 55, 0.4)', borderColor: '#d4af37', borderWidth: 4 }] 
-                },
-                options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } }
-            });
+            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: selectedLabels, datasets: [{ data: selectedLabels.map(l => fullMetrics[l] || 0), backgroundColor: 'rgba(212, 175, 55, 0.4)', borderColor: '#d4af37', borderWidth: 4 }] }, options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
         }
 
         function renderList(data) {
@@ -442,25 +352,10 @@
                         </div>
                     </div>
                     <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white">
-                        <div class="space-y-2">
-                            <p class="font-black text-red-900 uppercase italic border-b pb-2">Identification</p>
-                            <p>Client: <b>${d.organisme}</b></p>
-                            <p>Contact: <b>${d.point_contact}</b></p>
-                        </div>
-                        <div class="space-y-2">
-                            <p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
-                            <p>Participants: <b>${d.nb_participants}</b></p>
-                            <p>Horaires: <b>${d.heure_orga} - ${d.heure_fin}</b></p>
-                        </div>
-                        <div class="space-y-2">
-                            <p class="font-black text-blue-600 uppercase italic border-b pb-2">Technique</p>
-                            <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p>
-                            <p>Mobilier: <b>${d.nb_chaises} chaises / ${d.nb_tables} tables</b></p>
-                        </div>
-                        <div class="bg-amber-50 p-4 rounded-2xl">
-                            <p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Cadets</p>
-                            <p>Retrans: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p>
-                        </div>
+                        <div class="space-y-2"><p class="font-black text-red-900 uppercase italic border-b pb-2">Identification</p><p>Client: <b>${d.organisme}</b></p><p>Contact: <b>${d.point_contact}</b></p></div>
+                        <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p><p>Participants: <b>${d.nb_participants}</b></p><p>Horaires: <b>${d.heure_orga} - ${d.heure_fin}</b></p></div>
+                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Technique</p><p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p><p>Mobilier: <b>${d.nb_chaises} chaises / ${d.nb_tables} tables</b></p></div>
+                        <div class="bg-amber-50 p-4 rounded-2xl"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Cadets</p><p>Retrans: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p></div>
                     </div>
                 </div>
             `).join('');
@@ -476,13 +371,7 @@
             doc.save(`Fiche_${d.nom_evenement}.pdf`);
         };
 
-        async function supprimerLigne(id) { 
-            if(confirm("Supprimer définitivement ?")) { 
-                await _supa.from('demandes_auditorium').delete().eq('id', id);
-                chargerDonnees();
-            } 
-        }
-        
+        async function supprimerLigne(id) { if(confirm("Supprimer définitivement ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
         function changeMonth(step) { viewDate.setMonth(viewDate.getMonth() + step); renderOutlook(); }
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
         document.querySelectorAll('.radar-check').forEach(i => i.onchange = updateRadar);
