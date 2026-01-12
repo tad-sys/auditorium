@@ -425,7 +425,7 @@
                 cadets_notes: document.getElementById('cadets_notes').value
             };
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (!error) { alert("✓ Transmis !"); location.reload(); }
+            if (!error) { alert("Fiche technique transmise avec succès !"); location.reload(); }
         };
 
         window.genererPDF = function(id) {
