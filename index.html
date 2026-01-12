@@ -220,9 +220,14 @@
         
         let charts = {}, allData = [], filteredData = [], viewDate = new Date();
 
-        // --- CORRECTION DU BOUTON ENVOYER ---
+        // --- CORRECTION DU BOUTON ENVOYER AVEC SÉCURITÉ "CHECK CONSTRAINT" ---
         document.getElementById('main-form').onsubmit = async (e) => {
-            e.preventDefault(); // Crucial pour éviter le rechargement
+            e.preventDefault();
+            
+            // On s'assure que nb_participants n'est pas vide ou négatif pour éviter l'erreur de contrainte
+            let nbPart = parseInt(document.getElementById('nb_participants').value);
+            if (isNaN(nbPart) || nbPart < 0) nbPart = 0;
+
             const payload = {
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
@@ -233,7 +238,7 @@
                 heure_orga: document.getElementById('heure_orga').value,
                 heure_public: document.getElementById('heure_public').value,
                 heure_fin: document.getElementById('heure_fin').value,
-                nb_participants: parseInt(document.getElementById('nb_participants').value) || 0,
+                nb_participants: nbPart, // Valeur sécurisée ici
                 wifi_public: document.getElementById('wifi_public').checked,
                 lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
                 nb_chaises: parseInt(document.getElementById('nb_chaises').value) || 0,
@@ -244,6 +249,7 @@
                 cadets_retransmission: document.getElementById('cadets_retrans').checked,
                 cadets_notes: document.getElementById('cadets_notes').value
             };
+            
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
             if (!error) { 
                 alert("Fiche technique transmise !"); 
