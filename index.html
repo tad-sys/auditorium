@@ -57,12 +57,12 @@
                     <h3 class="text-xl font-prestige italic">Informations Générales</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Organisme</label><input type="text" id="organisme" required class="input-premium"></div>
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Nom de l'événement</label><input type="text" id="nom_evenement" required class="input-premium"></div>
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Contact</label><input type="text" id="point_contact" required class="input-premium"></div>
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Email</label><input type="email" id="contact_email" required class="input-premium"></div>
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Téléphone</label><input type="tel" id="contact_tel" required class="input-premium"></div>
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500 ml-1">Date</label><input type="date" id="date_evenement" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Organisme</label><input type="text" id="organisme" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Nom de l'événement</label><input type="text" id="nom_evenement" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Contact</label><input type="text" id="point_contact" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Email</label><input type="email" id="contact_email" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Téléphone</label><input type="tel" id="contact_tel" required class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Date</label><input type="date" id="date_evenement" required class="input-premium"></div>
                 </div>
             </div>
 
@@ -88,16 +88,14 @@
                     <div class="space-y-4">
                         <p class="text-[11px] font-black uppercase text-red-900 italic">Lieux d'accueil</p>
                         <div id="acc_list" class="grid grid-cols-1 gap-2">
-                            <label class="flex items-center gap-3"><input type="checkbox" value="Hall"> Hall</label>
-                            <label class="flex items-center gap-3"><input type="checkbox" value="Foyer"> Foyer</label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Hall"> <span class="text-sm font-bold">Hall d'entrée</span></label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Foyer"> <span class="text-sm font-bold">Foyer (Cocktail)</span></label>
                         </div>
                     </div>
                     <div class="space-y-4">
-                        <p class="text-[11px] font-black uppercase text-red-900 italic">Mobilier (Limité)</p>
-                        <div class="flex flex-col gap-4">
-                            <input type="number" id="nb_chaises" class="input-premium" placeholder="Chaises (Max 6)" max="6">
-                            <input type="number" id="nb_tables" class="input-premium" placeholder="Tables (Max 3)" max="3">
-                        </div>
+                        <p class="text-[11px] font-black uppercase text-red-900 italic">Mobilier supplémentaire</p>
+                        <div class="flex items-center gap-4"><input type="number" id="nb_chaises" class="input-premium w-24" max="6"><span class="text-sm font-bold">Chaises (max 6)</span></div>
+                        <div class="flex items-center gap-4"><input type="number" id="nb_tables" class="input-premium w-24" max="3"><span class="text-sm font-bold">Tables (max 3)</span></div>
                     </div>
                 </div>
             </div>
@@ -107,12 +105,19 @@
                     <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-red-900">04</span>
                     <h3 class="text-xl font-prestige italic">Audio-Visuel</h3>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input type="number" id="micros_hf" class="input-premium" placeholder="Micros HF (Max 2)" max="2">
-                    <input type="number" id="micros_filaires" class="input-premium" placeholder="Micros Fil (Max 6)" max="6">
-                    <div id="tech_opts" class="col-span-2 grid grid-cols-2 gap-2">
-                        <label><input type="checkbox" value="Captation"> Captation Vidéo</label>
-                        <label><input type="checkbox" value="Visio"> Visioconférence</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-6">
+                        <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Micros HF (Max 2)</label><input type="number" id="micros_hf" class="input-premium" max="2" value="0"></div>
+                        <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Micros Filaires (Max 6)</label><input type="number" id="micros_filaires" class="input-premium" max="6" value="0"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <p class="text-[11px] font-black uppercase text-red-900 italic">Options Techniques</p>
+                        <div id="tech_opts" class="grid grid-cols-1 gap-3">
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Présentation"> <span class="text-sm font-bold">Présentation (PPT)</span></label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Visio"> <span class="text-sm font-bold">Visioconférence</span></label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Captation"> <span class="text-sm font-bold">Captation Vidéo</span></label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Traduction"> <span class="text-sm font-bold">Traduction Simultanée</span></label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,15 +125,18 @@
             <div class="card-premium p-10 border-l-8 border-amber-500">
                 <div class="flex items-center gap-4 mb-8">
                     <span class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center font-black text-amber-600">05</span>
-                    <h3 class="text-xl font-prestige italic">Salle des Cadets</h3>
+                    <h3 class="text-xl font-prestige italic">Espace Les Cadets</h3>
                 </div>
-                <div class="space-y-4">
-                    <label class="flex items-center gap-3"><input type="checkbox" id="cadets_retrans"> Retransmission Cadets</label>
-                    <textarea id="cadets_notes" class="input-premium w-full h-24" placeholder="Notes spécifiques..."></textarea>
+                <div class="space-y-6">
+                    <label class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border-2 border-amber-100 cursor-pointer">
+                        <input type="checkbox" id="cadets_retrans" class="w-8 h-8 accent-amber-600">
+                        <span class="font-black text-amber-900 text-sm">Retransmission vers la salle des cadets ?</span>
+                    </label>
+                    <textarea id="cadets_notes" class="input-premium w-full h-24" placeholder="Notes Salle des Cadets..."></textarea>
                 </div>
             </div>
 
-            <button type="submit" class="w-full py-6 rounded-full btn-gold font-black uppercase tracking-[0.3em] text-sm">Transmettre la fiche technique</button>
+            <button type="submit" class="w-full py-6 rounded-full btn-gold font-black uppercase tracking-[0.3em] text-sm shadow-2xl">Transmettre la fiche technique</button>
         </form>
     </main>
 
@@ -165,7 +173,7 @@
     </main>
 
     <div id="login-modal" class="modal-overlay">
-        <div class="bg-white rounded-[32px] p-12 max-w-md w-full">
+        <div class="bg-white rounded-[32px] p-12 max-w-md w-full shadow-2xl">
             <h3 class="font-prestige text-3xl mb-8 text-center italic">Authentification</h3>
             <div class="space-y-6">
                 <input type="email" id="adm-email" placeholder="Email" class="input-premium w-full">
@@ -181,23 +189,16 @@
         const _supa = supabase.createClient(S_URL, S_KEY);
         let charts = {}, allData = [], filteredData = [];
 
-        // Sécurisation Entrées
         const safeInt = (id) => {
             const v = parseInt(document.getElementById(id).value);
             return isNaN(v) || v < 0 ? 0 : v;
         };
 
-        // ENVOI FORMULAIRE
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
-            
             const chaises = safeInt('nb_chaises');
             const tables = safeInt('nb_tables');
-
-            if(chaises > 6 || tables > 3) {
-                alert("Erreur : Max 6 chaises et 3 tables.");
-                return;
-            }
+            if(chaises > 6 || tables > 3) { alert("Limite dépassée : Max 6 chaises / 3 tables."); return; }
 
             const payload = {
                 organisme: document.getElementById('organisme').value,
@@ -221,11 +222,10 @@
             };
 
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (!error) { alert("Succès !"); location.reload(); }
-            else { alert("Erreur : " + error.message); }
+            if (!error) { alert("Transmis avec succès !"); location.reload(); }
+            else { alert("Erreur base de données."); }
         };
 
-        // ADMIN LOGIQUE
         document.getElementById('btn-auth-submit').onclick = async () => {
             const { error } = await _supa.auth.signInWithPassword({ 
                 email: document.getElementById('adm-email').value,
@@ -237,7 +237,7 @@
                 document.getElementById('vue-admin').classList.remove('hidden');
                 document.getElementById('btn-logout').classList.remove('hidden');
                 chargerDonnees();
-            }
+            } else { alert("Accès refusé."); }
         };
 
         async function chargerDonnees() {
@@ -253,7 +253,7 @@
                 const dt = new Date(d.date_evenement);
                 return dt.getFullYear() === y && (m === "all" ? true : dt.getMonth() === parseInt(m));
             });
-            document.getElementById('stats-summary').innerText = `${filteredData.length} Événements`;
+            document.getElementById('stats-summary').innerText = `${filteredData.length} Événements programmés`;
             renderList();
             initCharts();
         }
@@ -261,79 +261,77 @@
         function renderList() {
             const container = document.getElementById('admin-list');
             container.innerHTML = filteredData.map(d => `
-                <div class="card-premium overflow-hidden border-t-8 border-red-900 shadow-2xl">
-                    <div class="p-6 bg-slate-100 flex justify-between items-center border-b-2">
+                <div class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
+                    <div class="p-6 bg-slate-50 flex justify-between items-center border-b">
                         <div class="flex items-center gap-4">
-                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
+                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase">${d.date_evenement}</span>
                             <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
                         <div class="flex gap-4">
-                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-8 py-3 rounded-full text-[11px] font-black uppercase">PDF Premium</button>
-                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 p-3 hover:bg-red-600 hover:text-white rounded-full transition"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-widest shadow-lg">PDF Premium</button>
+                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 p-3 hover:bg-red-600 hover:text-white rounded-full transition border-2 border-red-50"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                     <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white">
-                        <div class="space-y-2"><p class="font-black text-red-900 uppercase italic border-b pb-2">Identification</p>
-                            <p>Organisme: <b>${d.organisme}</b></p><p>Contact: <b>${d.point_contact}</b></p><p>Email: <b>${d.contact_email}</b></p></div>
+                        <div class="space-y-2"><p class="font-black text-red-900 uppercase italic border-b pb-2">Client</p>
+                            <p><b>${d.organisme}</b></p><p>Contact: ${d.point_contact}</p><p>${d.contact_email}</p></div>
                         <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
-                            <p>Participants: <b>${d.nb_participants}</b></p><p>Installation: <b>${d.heure_orga}</b></p><p>Fin: <b>${d.heure_fin}</b></p></div>
-                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Mobilier & Tech</p>
-                            <p>Chaises: <b>${d.nb_chaises}</b> / Tables: <b>${d.nb_tables}</b></p>
+                            <p>Participants: <b>${d.nb_participants}</b></p><p>Horaires: <b>${d.heure_orga} - ${d.heure_fin}</b></p></div>
+                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Matériel & Mobilier</p>
+                            <p>Mobilier: <b>${d.nb_chaises} Ch. / ${d.nb_tables} Tab.</b></p>
                             <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p></div>
-                        <div class="bg-amber-50 p-4 rounded-2xl"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Cadets</p>
-                            <p>Retransmission: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p><p class="italic text-[10px] mt-2">${d.cadets_notes || ''}</p></div>
+                        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Les Cadets</p>
+                            <p>Retransmission: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p><p class="mt-2 text-amber-900">${d.cadets_notes || ''}</p></div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- PDF PREMIUM COMPLET ---
         window.genererPDF = function(id) {
             const d = filteredData.find(item => item.id === id);
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Entête stylisée
-            doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 45, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(24); doc.setFont("helvetica", "bold");
-            doc.text("FICHE TECHNIQUE AUDITORIUM", 20, 25);
-            doc.setFontSize(10); doc.text(`Réf: ${d.id.substring(0,8)} | Généré le ${new Date().toLocaleDateString()}`, 20, 35);
+            // Design Premium PDF
+            doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 50, 'F');
+            doc.setTextColor(255, 255, 255); doc.setFontSize(26); doc.text("FICHE TECHNIQUE RÉGIE", 20, 30);
+            doc.setFontSize(10); doc.text(`RÉFÉRENCE : ${d.id.substring(0,10).toUpperCase()}`, 20, 40);
 
-            const body = [
-                ["Organisme", d.organisme],
-                ["Événement", d.nom_evenement],
-                ["Date", d.date_evenement],
-                ["Contact", `${d.point_contact} (${d.contact_email})`],
-                ["Horaires", `${d.heure_orga} (Instal) - ${d.heure_public} (Public) - ${d.heure_fin} (Fin)`],
-                ["Affluence", `${d.nb_participants} personnes`],
-                ["Mobilier", `${d.nb_chaises} Chaises, ${d.nb_tables} Tables`],
-                ["Audio-Visuel", `${d.micros_hf_regie} Micros HF, ${d.micros_filaires_scene} Micros Filaires`],
-                ["Options", (d.options_tech || []).join(', ') || 'Aucune'],
-                ["Lieux", (d.lieux_accueil || []).join(', ') || 'Standard'],
-                ["Salle des Cadets", d.cadets_retransmission ? "Retransmission OUI" : "NON"],
-                ["Notes Cadets", d.cadets_notes || "Néant"]
+            const content = [
+                ["NOM DE L'ÉVÉNEMENT", d.nom_evenement.toUpperCase()],
+                ["ORGANISME / CLIENT", d.organisme],
+                ["DATE DE L'ÉVÉNEMENT", d.date_evenement],
+                ["POINT DE CONTACT", `${d.point_contact} (${d.contact_tel})`],
+                ["EMAIL", d.contact_email],
+                ["AFFLUENCE PRÉVUE", `${d.nb_participants} Personnes`],
+                ["HORAIRES", `Installation: ${d.heure_orga} | Public: ${d.heure_public} | Fin: ${d.heure_fin}`],
+                ["LIEUX D'ACCUEIL", (d.lieux_accueil || []).join(', ') || 'N/A'],
+                ["MOBILIER", `${d.nb_chaises} Chaises, ${d.nb_tables} Tables`],
+                ["AUDIOVISUEL", `${d.micros_hf_regie} Micros HF, ${d.micros_filaires_scene} Micros Filaires`],
+                ["OPTIONS TECHNIQUES", (d.options_tech || []).join(', ') || 'Aucune'],
+                ["SALLE DES CADETS", d.cadets_retransmission ? "RETRANSMISSION ACTIVE" : "NON"],
+                ["NOTES CADETS", d.cadets_notes || "Aucune note spécifique"]
             ];
 
             doc.autoTable({
-                startY: 55,
-                head: [['CATÉGORIE', 'DÉTAILS']],
-                body: body,
-                theme: 'striped',
-                headStyles: { fillColor: [127, 29, 29], fontSize: 11 },
-                bodyStyles: { fontSize: 10, cellPadding: 5 },
-                columnStyles: { 0: { fontStyle: 'bold', width: 50 } }
+                startY: 60,
+                head: [['SECTION', 'DÉTAILS TECHNIQUES']],
+                body: content,
+                theme: 'grid',
+                headStyles: { fillColor: [127, 29, 29], fontSize: 12 },
+                styles: { cellPadding: 5, fontSize: 10 },
+                columnStyles: { 0: { fontStyle: 'bold', fillColor: [245, 245, 245], width: 60 } }
             });
 
-            doc.save(`FT_${d.nom_evenement}_${d.date_evenement}.pdf`);
+            doc.save(`FICHE_TECH_${d.nom_evenement}_${d.date_evenement}.pdf`);
         };
 
-        // --- CHARTS & RADAR RESTAURÉS ---
         function initCharts() {
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
-            const months = Array(12).fill(0);
-            filteredData.forEach(d => months[new Date(d.date_evenement).getMonth()]++);
+            const counts = Array(12).fill(0);
+            filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: months, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Jui','Aoû','Sep','Oct','Nov','Déc'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 10 }] }, options: { plugins: { legend: { display: false } } } });
             updateRadar();
         }
 
@@ -351,7 +349,7 @@
             charts.radar = new Chart(ctx, { type: 'radar', data: { labels: sel, datasets: [{ data: sel.map(l => metrics[l]), backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', borderWidth: 2 }] }, options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
         }
 
-        async function supprimerLigne(id) { if(confirm("Supprimer ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
+        async function supprimerLigne(id) { if(confirm("Supprimer cette fiche ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
         document.querySelectorAll('.radar-check').forEach(i => i.onchange = updateRadar);
     </script>
