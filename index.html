@@ -10,6 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; }
@@ -21,6 +24,12 @@
         .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(127, 29, 29, 0.4); }
         .hidden { display: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+        
+        /* Custom FullCalendar */
+        #calendar { background: white; padding: 20px; border-radius: 24px; border: none; }
+        .fc-toolbar-title { font-family: 'Cinzel', serif !important; font-style: italic; font-size: 1.2rem !important; }
+        .fc-button-primary { background-color: #7f1d1d !important; border: none !important; text-transform: uppercase; font-size: 0.7rem !important; font-weight: bold !important; border-radius: 20px !important; }
+        .fc-event { cursor: pointer; border: none !important; padding: 2px 5px; }
     </style>
 </head>
 <body class="pb-20">
@@ -180,6 +189,11 @@
             </div>
         </div>
 
+        <div class="card-premium p-8 mb-12">
+             <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Calendrier de Programmation (Vue Outlook)</p>
+             <div id="calendar"></div>
+        </div>
+
         <div id="admin-list" class="space-y-8"></div>
     </main>
 
@@ -198,21 +212,16 @@
         const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co';
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
-        let charts = {}, allData = [], filteredData = [];
+        let charts = {}, allData = [], filteredData = [], calendar = null;
 
         const getVal = (id) => parseInt(document.getElementById(id).value) || 0;
 
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
-            
-            if(!document.getElementById('rgpd_consent').checked) {
-                alert("Vous devez accepter le traitement de vos données (RGPD) pour continuer.");
-                return;
-            }
-
+            if(!document.getElementById('rgpd_consent').checked) { alert("Acceptez le RGPD."); return; }
             const chaises = getVal('nb_chaises');
             const tables = getVal('nb_tables');
-            if(chaises > 6 || tables > 3) { alert("Limites : 6 chaises et 3 tables max."); return; }
+            if(chaises > 6 || tables > 3) { alert("Limites : 6 chaises / 3 tables max."); return; }
 
             const payload = {
                 organisme: document.getElementById('organisme').value,
@@ -256,7 +265,35 @@
         async function chargerDonnees() {
             const { data } = await _supa.from('demandes_auditorium').select('*').order('date_evenement');
             allData = data || [];
+            initCalendar();
             applyGlobalFilter();
+        }
+
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            const events = allData.map(d => ({
+                title: d.nom_evenement,
+                start: d.date_evenement,
+                backgroundColor: '#7f1d1d',
+                borderColor: '#7f1d1d',
+                extendedProps: { id: d.id }
+            }));
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'fr',
+                events: events,
+                eventClick: function(info) {
+                    const el = document.getElementById(`fiche-${info.event.extendedProps.id}`);
+                    if(el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+            calendar.render();
         }
 
         function applyGlobalFilter() {
@@ -269,12 +306,13 @@
             document.getElementById('stats-summary').innerText = `${filteredData.length} Événements`;
             renderList();
             initCharts();
+            if(calendar) calendar.gotoDate(`${y}-${m === 'all' ? '01' : (parseInt(m)+1).toString().padStart(2,'0')}-01`);
         }
 
         function renderList() {
             const container = document.getElementById('admin-list');
             container.innerHTML = filteredData.map(d => `
-                <div class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
+                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
                     <div class="p-6 bg-slate-100 flex justify-between items-center border-b">
                         <div class="flex items-center gap-4">
                             <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
@@ -311,7 +349,6 @@
             const doc = new jsPDF();
             doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 45, 'F');
             doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
-            
             const rows = [
                 ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
                 ["Contact", `${d.point_contact} (${d.contact_email})`], ["Affluence", `${d.nb_participants} pers.`],
