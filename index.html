@@ -88,14 +88,16 @@
                     <div class="space-y-4">
                         <p class="text-[11px] font-black uppercase text-red-900 italic">Lieux d'accueil</p>
                         <div id="acc_list" class="grid grid-cols-1 gap-2">
-                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Hall"> <span class="text-sm font-bold">Hall d'entrée</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Foyer"> <span class="text-sm font-bold">Foyer (Cocktail)</span></label>
+                            <label class="flex items-center gap-3"><input type="checkbox" value="Hall"> Hall d'entrée</label>
+                            <label class="flex items-center gap-3"><input type="checkbox" value="Foyer"> Foyer (Cocktail)</label>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <p class="text-[11px] font-black uppercase text-red-900 italic">Mobilier supplémentaire</p>
-                        <div class="flex items-center gap-4"><input type="number" id="nb_chaises" class="input-premium w-24" max="6"><span class="text-sm font-bold">Chaises (max 6)</span></div>
-                        <div class="flex items-center gap-4"><input type="number" id="nb_tables" class="input-premium w-24" max="3"><span class="text-sm font-bold">Tables (max 3)</span></div>
+                        <div class="flex flex-col gap-3">
+                            <div class="flex items-center gap-4"><input type="number" id="nb_chaises" class="input-premium w-20" max="6" value="0"> <span>Chaises (Max 6)</span></div>
+                            <div class="flex items-center gap-4"><input type="number" id="nb_tables" class="input-premium w-20" max="3" value="0"> <span>Tables (Max 3)</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -106,17 +108,17 @@
                     <h3 class="text-xl font-prestige italic">Audio-Visuel</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="space-y-6">
+                    <div class="space-y-4">
                         <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Micros HF (Max 2)</label><input type="number" id="micros_hf" class="input-premium" max="2" value="0"></div>
                         <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Micros Filaires (Max 6)</label><input type="number" id="micros_filaires" class="input-premium" max="6" value="0"></div>
                     </div>
-                    <div class="space-y-4">
+                    <div class="space-y-3">
                         <p class="text-[11px] font-black uppercase text-red-900 italic">Options Techniques</p>
-                        <div id="tech_opts" class="grid grid-cols-1 gap-3">
-                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Présentation"> <span class="text-sm font-bold">Présentation (PPT)</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Visio"> <span class="text-sm font-bold">Visioconférence</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Captation"> <span class="text-sm font-bold">Captation Vidéo</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer"><input type="checkbox" value="Traduction"> <span class="text-sm font-bold">Traduction Simultanée</span></label>
+                        <div id="tech_opts" class="grid grid-cols-1 gap-2">
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Présentation"> Présentation (PPT)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Visioconférence"> Visioconférence</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Captation"> Captation Vidéo</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" value="Traduction"> Traduction Simultanée</label>
                         </div>
                     </div>
                 </div>
@@ -127,16 +129,16 @@
                     <span class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center font-black text-amber-600">05</span>
                     <h3 class="text-xl font-prestige italic">Espace Les Cadets</h3>
                 </div>
-                <div class="space-y-6">
-                    <label class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border-2 border-amber-100 cursor-pointer">
-                        <input type="checkbox" id="cadets_retrans" class="w-8 h-8 accent-amber-600">
-                        <span class="font-black text-amber-900 text-sm">Retransmission vers la salle des cadets ?</span>
+                <div class="space-y-4">
+                    <label class="flex items-center gap-4 p-4 bg-amber-50 rounded-xl cursor-pointer">
+                        <input type="checkbox" id="cadets_retrans" class="w-6 h-6 accent-amber-600">
+                        <span class="font-bold text-amber-900">Besoin de retransmission vers les Cadets ?</span>
                     </label>
-                    <textarea id="cadets_notes" class="input-premium w-full h-24" placeholder="Notes Salle des Cadets..."></textarea>
+                    <textarea id="cadets_notes" class="input-premium w-full h-24" placeholder="Notes complémentaires..."></textarea>
                 </div>
             </div>
 
-            <button type="submit" class="w-full py-6 rounded-full btn-gold font-black uppercase tracking-[0.3em] text-sm shadow-2xl">Transmettre la fiche technique</button>
+            <button type="submit" class="w-full py-6 rounded-full btn-gold font-black uppercase tracking-widest text-sm shadow-2xl">Envoyer la fiche</button>
         </form>
     </main>
 
@@ -173,7 +175,7 @@
     </main>
 
     <div id="login-modal" class="modal-overlay">
-        <div class="bg-white rounded-[32px] p-12 max-w-md w-full shadow-2xl">
+        <div class="bg-white rounded-[32px] p-12 max-w-md w-full">
             <h3 class="font-prestige text-3xl mb-8 text-center italic">Authentification</h3>
             <div class="space-y-6">
                 <input type="email" id="adm-email" placeholder="Email" class="input-premium w-full">
@@ -189,16 +191,13 @@
         const _supa = supabase.createClient(S_URL, S_KEY);
         let charts = {}, allData = [], filteredData = [];
 
-        const safeInt = (id) => {
-            const v = parseInt(document.getElementById(id).value);
-            return isNaN(v) || v < 0 ? 0 : v;
-        };
+        const getVal = (id) => parseInt(document.getElementById(id).value) || 0;
 
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
-            const chaises = safeInt('nb_chaises');
-            const tables = safeInt('nb_tables');
-            if(chaises > 6 || tables > 3) { alert("Limite dépassée : Max 6 chaises / 3 tables."); return; }
+            const chaises = getVal('nb_chaises');
+            const tables = getVal('nb_tables');
+            if(chaises > 6 || tables > 3) { alert("Limites : 6 chaises et 3 tables max."); return; }
 
             const payload = {
                 organisme: document.getElementById('organisme').value,
@@ -210,11 +209,11 @@
                 heure_orga: document.getElementById('heure_orga').value,
                 heure_public: document.getElementById('heure_public').value,
                 heure_fin: document.getElementById('heure_fin').value,
-                nb_participants: safeInt('nb_participants'),
+                nb_participants: getVal('nb_participants'),
                 nb_chaises: chaises,
                 nb_tables: tables,
-                micros_hf_regie: safeInt('micros_hf'),
-                micros_filaires_scene: safeInt('micros_filaires'),
+                micros_hf_regie: getVal('micros_hf'),
+                micros_filaires_scene: getVal('micros_filaires'),
                 lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
                 options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value),
                 cadets_retransmission: document.getElementById('cadets_retrans').checked,
@@ -222,8 +221,7 @@
             };
 
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-            if (!error) { alert("Transmis avec succès !"); location.reload(); }
-            else { alert("Erreur base de données."); }
+            if (!error) { alert("Fiche transmise !"); location.reload(); }
         };
 
         document.getElementById('btn-auth-submit').onclick = async () => {
@@ -237,7 +235,7 @@
                 document.getElementById('vue-admin').classList.remove('hidden');
                 document.getElementById('btn-logout').classList.remove('hidden');
                 chargerDonnees();
-            } else { alert("Accès refusé."); }
+            }
         };
 
         async function chargerDonnees() {
@@ -253,7 +251,7 @@
                 const dt = new Date(d.date_evenement);
                 return dt.getFullYear() === y && (m === "all" ? true : dt.getMonth() === parseInt(m));
             });
-            document.getElementById('stats-summary').innerText = `${filteredData.length} Événements programmés`;
+            document.getElementById('stats-summary').innerText = `${filteredData.length} Événements`;
             renderList();
             initCharts();
         }
@@ -262,14 +260,14 @@
             const container = document.getElementById('admin-list');
             container.innerHTML = filteredData.map(d => `
                 <div class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
-                    <div class="p-6 bg-slate-50 flex justify-between items-center border-b">
+                    <div class="p-6 bg-slate-100 flex justify-between items-center border-b">
                         <div class="flex items-center gap-4">
-                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase">${d.date_evenement}</span>
+                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
                             <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
-                        <div class="flex gap-4">
-                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-widest shadow-lg">PDF Premium</button>
-                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 p-3 hover:bg-red-600 hover:text-white rounded-full transition border-2 border-red-50"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="flex gap-3">
+                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF</button>
+                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                     <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white">
@@ -277,11 +275,16 @@
                             <p><b>${d.organisme}</b></p><p>Contact: ${d.point_contact}</p><p>${d.contact_email}</p></div>
                         <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
                             <p>Participants: <b>${d.nb_participants}</b></p><p>Horaires: <b>${d.heure_orga} - ${d.heure_fin}</b></p></div>
-                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Matériel & Mobilier</p>
+                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Mobilier & Tech</p>
                             <p>Mobilier: <b>${d.nb_chaises} Ch. / ${d.nb_tables} Tab.</b></p>
-                            <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p></div>
+                            <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p>
+                            <div class="mt-2 bg-blue-50 p-3 rounded-xl border border-blue-100">
+                                <p class="text-[9px] font-black text-blue-800 uppercase mb-1 underline">Options choisies :</p>
+                                <p class="text-blue-600 font-black">${d.options_tech && d.options_tech.length > 0 ? d.options_tech.join(' • ') : 'Aucune'}</p>
+                            </div>
+                        </div>
                         <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Les Cadets</p>
-                            <p>Retransmission: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p><p class="mt-2 text-amber-900">${d.cadets_notes || ''}</p></div>
+                            <p>Retrans: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p><p class="mt-2 italic text-amber-900">${d.cadets_notes || ''}</p></div>
                     </div>
                 </div>
             `).join('');
@@ -291,39 +294,21 @@
             const d = filteredData.find(item => item.id === id);
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 45, 'F');
+            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
             
-            // Design Premium PDF
-            doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 50, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(26); doc.text("FICHE TECHNIQUE RÉGIE", 20, 30);
-            doc.setFontSize(10); doc.text(`RÉFÉRENCE : ${d.id.substring(0,10).toUpperCase()}`, 20, 40);
-
-            const content = [
-                ["NOM DE L'ÉVÉNEMENT", d.nom_evenement.toUpperCase()],
-                ["ORGANISME / CLIENT", d.organisme],
-                ["DATE DE L'ÉVÉNEMENT", d.date_evenement],
-                ["POINT DE CONTACT", `${d.point_contact} (${d.contact_tel})`],
-                ["EMAIL", d.contact_email],
-                ["AFFLUENCE PRÉVUE", `${d.nb_participants} Personnes`],
-                ["HORAIRES", `Installation: ${d.heure_orga} | Public: ${d.heure_public} | Fin: ${d.heure_fin}`],
-                ["LIEUX D'ACCUEIL", (d.lieux_accueil || []).join(', ') || 'N/A'],
-                ["MOBILIER", `${d.nb_chaises} Chaises, ${d.nb_tables} Tables`],
-                ["AUDIOVISUEL", `${d.micros_hf_regie} Micros HF, ${d.micros_filaires_scene} Micros Filaires`],
-                ["OPTIONS TECHNIQUES", (d.options_tech || []).join(', ') || 'Aucune'],
-                ["SALLE DES CADETS", d.cadets_retransmission ? "RETRANSMISSION ACTIVE" : "NON"],
-                ["NOTES CADETS", d.cadets_notes || "Aucune note spécifique"]
+            const rows = [
+                ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
+                ["Contact", `${d.point_contact} (${d.contact_email})`], ["Affluence", `${d.nb_participants} pers.`],
+                ["Horaires", `${d.heure_orga} - ${d.heure_public} - ${d.heure_fin}`],
+                ["Mobilier", `${d.nb_chaises} Chaises, ${d.nb_tables} Tables`],
+                ["Audiovisuel", `${d.micros_hf_regie} Micros HF, ${d.micros_filaires_scene} Fil`],
+                ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune'],
+                ["Les Cadets", d.cadets_retransmission ? "OUI" : "NON"],
+                ["Notes Cadets", d.cadets_notes || "/"]
             ];
-
-            doc.autoTable({
-                startY: 60,
-                head: [['SECTION', 'DÉTAILS TECHNIQUES']],
-                body: content,
-                theme: 'grid',
-                headStyles: { fillColor: [127, 29, 29], fontSize: 12 },
-                styles: { cellPadding: 5, fontSize: 10 },
-                columnStyles: { 0: { fontStyle: 'bold', fillColor: [245, 245, 245], width: 60 } }
-            });
-
-            doc.save(`FICHE_TECH_${d.nom_evenement}_${d.date_evenement}.pdf`);
+            doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [127, 29, 29] } });
+            doc.save(`FT_${d.nom_evenement}.pdf`);
         };
 
         function initCharts() {
@@ -331,7 +316,7 @@
             const counts = Array(12).fill(0);
             filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['Jan','Fév','Mar','Avr','Mai','Jui','Jui','Aoû','Sep','Oct','Nov','Déc'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 10 }] }, options: { plugins: { legend: { display: false } } } });
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
             updateRadar();
         }
 
@@ -349,7 +334,7 @@
             charts.radar = new Chart(ctx, { type: 'radar', data: { labels: sel, datasets: [{ data: sel.map(l => metrics[l]), backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', borderWidth: 2 }] }, options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
         }
 
-        async function supprimerLigne(id) { if(confirm("Supprimer cette fiche ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
+        async function supprimerLigne(id) { if(confirm("Supprimer ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
         document.querySelectorAll('.radar-check').forEach(i => i.onchange = updateRadar);
     </script>
