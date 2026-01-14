@@ -138,6 +138,15 @@
                 </div>
             </div>
 
+            <div class="p-6 bg-slate-200/50 rounded-2xl border-2 border-slate-200">
+                <label class="flex items-start gap-4 cursor-pointer">
+                    <input type="checkbox" id="rgpd_consent" required class="mt-1 w-5 h-5 accent-red-900">
+                    <span class="text-xs text-slate-600 leading-relaxed font-medium">
+                        En soumettant ce formulaire, j'accepte que les informations saisies soient exploitées par la régie de l'Auditorium du Musée de l'Armée dans le cadre de l'organisation technique de mon événement et de la relation commerciale qui peut en découler.
+                    </span>
+                </label>
+            </div>
+
             <button type="submit" class="w-full py-6 rounded-full btn-gold font-black uppercase tracking-widest text-sm shadow-2xl">Envoyer la fiche</button>
         </form>
     </main>
@@ -195,6 +204,12 @@
 
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
+            
+            if(!document.getElementById('rgpd_consent').checked) {
+                alert("Vous devez accepter le traitement de vos données (RGPD) pour continuer.");
+                return;
+            }
+
             const chaises = getVal('nb_chaises');
             const tables = getVal('nb_tables');
             if(chaises > 6 || tables > 3) { alert("Limites : 6 chaises et 3 tables max."); return; }
@@ -266,7 +281,7 @@
                             <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
                         <div class="flex gap-3">
-                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF</button>
+                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF Premium</button>
                             <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
@@ -300,7 +315,7 @@
             const rows = [
                 ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
                 ["Contact", `${d.point_contact} (${d.contact_email})`], ["Affluence", `${d.nb_participants} pers.`],
-                ["Horaires", `${d.heure_orga} - ${d.heure_public} - ${d.heure_fin}`],
+                ["Horaires", `Installation: ${d.heure_orga} | Fin: ${d.heure_fin}`],
                 ["Mobilier", `${d.nb_chaises} Chaises, ${d.nb_tables} Tables`],
                 ["Audiovisuel", `${d.micros_hf_regie} Micros HF, ${d.micros_filaires_scene} Fil`],
                 ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune'],
