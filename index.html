@@ -84,7 +84,7 @@
                     <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Installation</label><input type="time" id="heure_orga" class="input-premium"></div>
                     <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Ouverture</label><input type="time" id="heure_public" class="input-premium"></div>
                     <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Fin</label><input type="time" id="heure_fin" class="input-premium"></div>
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Participants</label><input type="number" id="nb_participants" class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Participants (Max 145)</label><input type="number" id="nb_participants" class="input-premium" max="145"></div>
                 </div>
             </div>
 
@@ -218,7 +218,13 @@
 
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
+            
+            // Verifications de sécurité
             if(!document.getElementById('rgpd_consent').checked) { alert("Acceptez le RGPD."); return; }
+            
+            const participants = getVal('nb_participants');
+            if(participants > 145) { alert("Capacité maximale de l'auditorium : 145 personnes."); return; }
+
             const chaises = getVal('nb_chaises');
             const tables = getVal('nb_tables');
             if(chaises > 6 || tables > 3) { alert("Limites : 6 chaises / 3 tables max."); return; }
@@ -233,7 +239,7 @@
                 heure_orga: document.getElementById('heure_orga').value,
                 heure_public: document.getElementById('heure_public').value,
                 heure_fin: document.getElementById('heure_fin').value,
-                nb_participants: getVal('nb_participants'),
+                nb_participants: participants,
                 nb_chaises: chaises,
                 nb_tables: tables,
                 micros_hf_regie: getVal('micros_hf'),
