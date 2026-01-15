@@ -10,7 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
     <style>
@@ -24,8 +23,6 @@
         .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(127, 29, 29, 0.4); }
         .hidden { display: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
-        
-        /* Custom FullCalendar */
         #calendar { background: white; padding: 20px; border-radius: 24px; border: none; }
         .fc-toolbar-title { font-family: 'Cinzel', serif !important; font-style: italic; font-size: 1.2rem !important; }
         .fc-button-primary { background-color: #7f1d1d !important; border: none !important; text-transform: uppercase; font-size: 0.7rem !important; font-weight: bold !important; border-radius: 20px !important; }
@@ -178,14 +175,8 @@
                 <canvas id="chartMonths" height="100"></canvas>
             </div>
             <div class="card-premium p-8">
-                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Complexité Technique</p>
+                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Popularité des Options Techniques</p>
                 <canvas id="chartRadar"></canvas>
-                <div class="grid grid-cols-2 gap-2 mt-4">
-                    <label class="text-[9px] font-black flex items-center gap-1 uppercase"><input type="checkbox" value="Affluence" checked class="radar-check"> Affluence</label>
-                    <label class="text-[9px] font-black flex items-center gap-1 uppercase"><input type="checkbox" value="Micros" checked class="radar-check"> Micros</label>
-                    <label class="text-[9px] font-black flex items-center gap-1 uppercase"><input type="checkbox" value="Mobilier" checked class="radar-check"> Mobilier</label>
-                    <label class="text-[9px] font-black flex items-center gap-1 uppercase"><input type="checkbox" value="Options" checked class="radar-check"> Options</label>
-                </div>
             </div>
         </div>
 
@@ -218,17 +209,9 @@
 
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
-            
-            // Verifications de sécurité
             if(!document.getElementById('rgpd_consent').checked) { alert("Acceptez le RGPD."); return; }
-            
             const participants = getVal('nb_participants');
-            if(participants > 145) { alert("Capacité maximale de l'auditorium : 145 personnes."); return; }
-
-            const chaises = getVal('nb_chaises');
-            const tables = getVal('nb_tables');
-            if(chaises > 6 || tables > 3) { alert("Limites : 6 chaises / 3 tables max."); return; }
-
+            if(participants > 145) { alert("Capacité maximale : 145 personnes."); return; }
             const payload = {
                 organisme: document.getElementById('organisme').value,
                 nom_evenement: document.getElementById('nom_evenement').value,
@@ -240,8 +223,8 @@
                 heure_public: document.getElementById('heure_public').value,
                 heure_fin: document.getElementById('heure_fin').value,
                 nb_participants: participants,
-                nb_chaises: chaises,
-                nb_tables: tables,
+                nb_chaises: getVal('nb_chaises'),
+                nb_tables: getVal('nb_tables'),
                 micros_hf_regie: getVal('micros_hf'),
                 micros_filaires_scene: getVal('micros_filaires'),
                 lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
@@ -249,7 +232,6 @@
                 cadets_retransmission: document.getElementById('cadets_retrans').checked,
                 cadets_notes: document.getElementById('cadets_notes').value
             };
-
             const { error } = await _supa.from('demandes_auditorium').insert([payload]);
             if (!error) { alert("Fiche transmise !"); location.reload(); }
         };
@@ -284,17 +266,12 @@
                 borderColor: '#7f1d1d',
                 extendedProps: { id: d.id }
             }));
-
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
+                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
                 locale: 'fr',
                 events: events,
-                eventClick: function(info) {
+                eventClick: (info) => {
                     const el = document.getElementById(`fiche-${info.event.extendedProps.id}`);
                     if(el) el.scrollIntoView({ behavior: 'smooth' });
                 }
@@ -333,7 +310,13 @@
                         <div class="space-y-2"><p class="font-black text-red-900 uppercase italic border-b pb-2">Client</p>
                             <p><b>${d.organisme}</b></p><p>Contact: ${d.point_contact}</p><p>${d.contact_email}</p></div>
                         <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
-                            <p>Participants: <b>${d.nb_participants}</b></p><p>Horaires: <b>${d.heure_orga} - ${d.heure_fin}</b></p></div>
+                            <p>Participants: <b>${d.nb_participants}</b></p>
+                            <div class="mt-2 text-slate-600 space-y-1">
+                                <p>Installation: <b>${d.heure_orga || '--:--'}</b></p>
+                                <p>Ouverture: <b>${d.heure_public || '--:--'}</b></p>
+                                <p>Fin: <b>${d.heure_fin || '--:--'}</b></p>
+                            </div>
+                        </div>
                         <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Mobilier & Tech</p>
                             <p>Mobilier: <b>${d.nb_chaises} Ch. / ${d.nb_tables} Tab.</b></p>
                             <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p>
@@ -349,6 +332,34 @@
             `).join('');
         }
 
+        function initCharts() {
+            const ctxBar = document.getElementById('chartMonths').getContext('2d');
+            const counts = Array(12).fill(0);
+            filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
+            if(charts.bar) charts.bar.destroy();
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
+            
+            const ctxRadar = document.getElementById('chartRadar').getContext('2d');
+            const optsCount = { 'Présentation': 0, 'Visioconférence': 0, 'Captation': 0, 'Traduction': 0 };
+            filteredData.forEach(d => {
+                if(d.options_tech) d.options_tech.forEach(o => {
+                    if(o.includes('Présentation')) optsCount['Présentation']++;
+                    if(o.includes('Visioconférence')) optsCount['Visioconférence']++;
+                    if(o.includes('Captation')) optsCount['Captation']++;
+                    if(o.includes('Traduction')) optsCount['Traduction']++;
+                });
+            });
+            if(charts.radar) charts.radar.destroy();
+            charts.radar = new Chart(ctxRadar, { 
+                type: 'radar', 
+                data: { 
+                    labels: ['PPT', 'Visio', 'Captation', 'Traduction'], 
+                    datasets: [{ data: Object.values(optsCount), backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', borderWidth: 2 }] 
+                },
+                options: { scales: { r: { beginAtZero: true, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+            });
+        }
+
         window.genererPDF = function(id) {
             const d = filteredData.find(item => item.id === id);
             const { jsPDF } = window.jspdf;
@@ -357,44 +368,18 @@
             doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
             const rows = [
                 ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
-                ["Contact", `${d.point_contact} (${d.contact_email})`], ["Affluence", `${d.nb_participants} pers.`],
-                ["Horaires", `Installation: ${d.heure_orga} | Fin: ${d.heure_fin}`],
-                ["Mobilier", `${d.nb_chaises} Chaises, ${d.nb_tables} Tables`],
-                ["Audiovisuel", `${d.micros_hf_regie} Micros HF, ${d.micros_filaires_scene} Fil`],
+                ["Installation", d.heure_orga], ["Ouverture Public", d.heure_public], ["Fin Événement", d.heure_fin],
+                ["Affluence", `${d.nb_participants} pers.`], ["Mobilier", `${d.nb_chaises} Ch., ${d.nb_tables} Tab.`],
+                ["Audiovisuel", `${d.micros_hf_regie} HF, ${d.micros_filaires_scene} Fil`],
                 ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune'],
-                ["Les Cadets", d.cadets_retransmission ? "OUI" : "NON"],
-                ["Notes Cadets", d.cadets_notes || "/"]
+                ["Les Cadets", d.cadets_retransmission ? "OUI" : "NON"], ["Notes Cadets", d.cadets_notes || "/"]
             ];
             doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [127, 29, 29] } });
             doc.save(`FT_${d.nom_evenement}.pdf`);
         };
 
-        function initCharts() {
-            const ctxBar = document.getElementById('chartMonths').getContext('2d');
-            const counts = Array(12).fill(0);
-            filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
-            if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
-            updateRadar();
-        }
-
-        function updateRadar() {
-            const ctx = document.getElementById('chartRadar').getContext('2d');
-            const total = filteredData.length || 1;
-            const metrics = {
-                'Affluence': (filteredData.reduce((a, b) => a + (b.nb_participants || 0), 0) / total) / 20,
-                'Micros': (filteredData.reduce((a, b) => a + (b.micros_hf_regie || 0) + (b.micros_filaires_scene || 0), 0) / total) * 1.5,
-                'Mobilier': (filteredData.reduce((a, b) => a + (b.nb_chaises || 0) + (b.nb_tables || 0), 0) / total),
-                'Options': (filteredData.filter(d => d.options_tech?.length > 0).length / total) * 10
-            };
-            const sel = Array.from(document.querySelectorAll('.radar-check:checked')).map(i => i.value);
-            if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctx, { type: 'radar', data: { labels: sel, datasets: [{ data: sel.map(l => metrics[l]), backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', borderWidth: 2 }] }, options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
-        }
-
         async function supprimerLigne(id) { if(confirm("Supprimer ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
-        document.querySelectorAll('.radar-check').forEach(i => i.onchange = updateRadar);
     </script>
 </body>
 </html>
