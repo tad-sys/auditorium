@@ -203,8 +203,11 @@
         const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co';
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
-        let charts = {}, allData = [], filteredData = [], calendar = null;
+        
+        // --- LIEN ONEDRIVE ---
+        const LINK_ONEDRIVE = "https://bte633288-my.sharepoint.com/:f:/g/personal/nourdine_tadjadit_musee-armee_fr/IgDCvKE1osikSYq35v7-8bvjAbubZTV2QPUiqbgz-rybpBc";
 
+        let charts = {}, allData = [], filteredData = [], calendar = null;
         const getVal = (id) => parseInt(document.getElementById(id).value) || 0;
 
         document.getElementById('main-form').onsubmit = async (e) => {
@@ -292,6 +295,12 @@
             if(calendar) calendar.gotoDate(`${y}-${m === 'all' ? '01' : (parseInt(m)+1).toString().padStart(2,'0')}-01`);
         }
 
+        window.relancerClient = (email, eventName) => {
+            const subject = encodeURIComponent(`Rappel : Supports pour ${eventName}`);
+            const body = encodeURIComponent(`Bonjour,\n\nMerci de nous transmettre vos supports au moins 24h avant via ce lien :\n${LINK_ONEDRIVE}`);
+            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        };
+
         function renderList() {
             const container = document.getElementById('admin-list');
             container.innerHTML = filteredData.map(d => `
@@ -302,6 +311,7 @@
                             <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
                         <div class="flex gap-3">
+                            <button onclick="relancerClient('${d.contact_email}', '${d.nom_evenement}')" class="bg-blue-600 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase shadow-lg hover:bg-blue-800 transition">Relancer (PPT)</button>
                             <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF Premium</button>
                             <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
@@ -333,18 +343,15 @@
         }
 
         function initCharts() {
-            // GRAPHIQUE BARRES
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
             const counts = Array(12).fill(0);
             filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
             if(charts.bar) charts.bar.destroy();
             charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
-            
-            // RADAR AVEC 7 AXES
+
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
             const total = filteredData.length || 1;
             const stats = { 'PPT': 0, 'Visio': 0, 'Captation': 0, 'Traduction': 0, 'HF': 0, 'Filaire': 0, 'Affluence': 0 };
-            
             filteredData.forEach(d => {
                 if(d.options_tech) {
                     if(d.options_tech.some(o => o.includes('Présentation'))) stats['PPT']++;
@@ -356,18 +363,15 @@
                 stats['Filaire'] += (d.micros_filaires_scene || 0);
                 stats['Affluence'] += (d.nb_participants || 0);
             });
-
-            // Normalisation des données pour le radar (échelle 0-10)
             const radarData = [
                 (stats['PPT'] / total) * 10,
                 (stats['Visio'] / total) * 10,
                 (stats['Captation'] / total) * 10,
                 (stats['Traduction'] / total) * 10,
-                (stats['HF'] / (total * 2)) * 10,   // Max 2 HF
-                (stats['Filaire'] / (total * 6)) * 10, // Max 6 Filaires
-                (stats['Affluence'] / (total * 145)) * 10 // Max 145 pers
+                (stats['HF'] / (total * 2)) * 10,
+                (stats['Filaire'] / (total * 6)) * 10,
+                (stats['Affluence'] / (total * 145)) * 10
             ];
-
             if(charts.radar) charts.radar.destroy();
             charts.radar = new Chart(ctxRadar, { 
                 type: 'radar', 
