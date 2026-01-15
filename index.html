@@ -175,7 +175,7 @@
                 <canvas id="chartMonths" height="100"></canvas>
             </div>
             <div class="card-premium p-8">
-                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Popularité des Options Techniques</p>
+                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Analyse Globale (Moyenne Mensuelle)</p>
                 <canvas id="chartRadar"></canvas>
             </div>
         </div>
@@ -333,30 +333,58 @@
         }
 
         function initCharts() {
+            // GRAPHIQUE BARRES
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
             const counts = Array(12).fill(0);
             filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
             if(charts.bar) charts.bar.destroy();
             charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
             
+            // RADAR AVEC 7 AXES
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
-            const optsCount = { 'Présentation': 0, 'Visioconférence': 0, 'Captation': 0, 'Traduction': 0 };
+            const total = filteredData.length || 1;
+            const stats = { 'PPT': 0, 'Visio': 0, 'Captation': 0, 'Traduction': 0, 'HF': 0, 'Filaire': 0, 'Affluence': 0 };
+            
             filteredData.forEach(d => {
-                if(d.options_tech) d.options_tech.forEach(o => {
-                    if(o.includes('Présentation')) optsCount['Présentation']++;
-                    if(o.includes('Visioconférence')) optsCount['Visioconférence']++;
-                    if(o.includes('Captation')) optsCount['Captation']++;
-                    if(o.includes('Traduction')) optsCount['Traduction']++;
-                });
+                if(d.options_tech) {
+                    if(d.options_tech.some(o => o.includes('Présentation'))) stats['PPT']++;
+                    if(d.options_tech.some(o => o.includes('Visioconférence'))) stats['Visio']++;
+                    if(d.options_tech.some(o => o.includes('Captation'))) stats['Captation']++;
+                    if(d.options_tech.some(o => o.includes('Traduction'))) stats['Traduction']++;
+                }
+                stats['HF'] += (d.micros_hf_regie || 0);
+                stats['Filaire'] += (d.micros_filaires_scene || 0);
+                stats['Affluence'] += (d.nb_participants || 0);
             });
+
+            // Normalisation des données pour le radar (échelle 0-10)
+            const radarData = [
+                (stats['PPT'] / total) * 10,
+                (stats['Visio'] / total) * 10,
+                (stats['Captation'] / total) * 10,
+                (stats['Traduction'] / total) * 10,
+                (stats['HF'] / (total * 2)) * 10,   // Max 2 HF
+                (stats['Filaire'] / (total * 6)) * 10, // Max 6 Filaires
+                (stats['Affluence'] / (total * 145)) * 10 // Max 145 pers
+            ];
+
             if(charts.radar) charts.radar.destroy();
             charts.radar = new Chart(ctxRadar, { 
                 type: 'radar', 
                 data: { 
-                    labels: ['PPT', 'Visio', 'Captation', 'Traduction'], 
-                    datasets: [{ data: Object.values(optsCount), backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', borderWidth: 2 }] 
+                    labels: ['PPT', 'Visio', 'Captation', 'Traduction', 'Micros HF', 'M. Filaire', 'Affluence'], 
+                    datasets: [{ 
+                        data: radarData, 
+                        backgroundColor: 'rgba(127, 29, 29, 0.2)', 
+                        borderColor: '#7f1d1d', 
+                        borderWidth: 2,
+                        pointBackgroundColor: '#7f1d1d'
+                    }] 
                 },
-                options: { scales: { r: { beginAtZero: true, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+                options: { 
+                    scales: { r: { beginAtZero: true, max: 10, ticks: { display: false }, grid: { color: '#e2e8f0' } } }, 
+                    plugins: { legend: { display: false } } 
+                }
             });
         }
 
