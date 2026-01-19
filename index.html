@@ -34,7 +34,7 @@
     <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <img src="https://www.musee-armee.fr/themes/custom/museearmee/logo.svg" alt="Musée de l'Armée" class="h-14">
+                <img src="logo-musee.png" alt="Musée de l'Armée" class="h-14">
                 <div class="border-l pl-4 border-slate-200">
                     <h1 class="font-prestige text-xl text-red-900 leading-tight italic">Régie Auditorium Austerlitz</h1>
                     <p class="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400">Musée de l'Armée - Invalides</p>
@@ -78,7 +78,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Arrivée des organisateurs</label><input type="time" id="heure_orga" class="input-premium"></div>
                     <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Ouverture Public</label><input type="time" id="heure_public" class="input-premium"></div>
-                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Fin d'exploitation</label><input type="time" id="heure_fin_exploitation" class="input-premium"></div>
+                    <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Fin d'exploitation</label><input type="time" id="heure_fin_explo" class="input-premium"></div>
                     <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Participants (Max 145)</label><input type="number" id="nb_participants" class="input-premium" max="145"></div>
                 </div>
             </div>
@@ -124,6 +124,7 @@
                             <label class="flex items-center gap-2"><input type="checkbox" value="Captation"> Captation Vidéo *</label>
                             <label class="flex items-center gap-2"><input type="checkbox" value="Traduction"> Traduction Simultanée *</label>
                         </div>
+                        <p class="text-[10px] text-slate-400 italic mt-4">* Implique l’intervention de prestataires extérieurs et d’un surcoût à votre charge.</p>
                     </div>
                 </div>
             </div>
@@ -155,7 +156,9 @@
             <div class="p-6 bg-slate-200/50 rounded-2xl border-2 border-slate-200">
                 <label class="flex items-start gap-4 cursor-pointer">
                     <input type="checkbox" id="rgpd_consent" required class="mt-1 w-5 h-5 accent-red-900">
-                    <span class="text-xs text-slate-600 leading-relaxed font-medium">En soumettant ce formulaire, j'accepte que les informations saisies soient exploitées...</span>
+                    <span class="text-xs text-slate-600 leading-relaxed font-medium">
+                        En soumettant ce formulaire, j'accepte que les informations saisies soient exploitées par la régie de l'Auditorium du Musée de l'Armée dans le cadre de l'organisation technique de mon événement.
+                    </span>
                 </label>
             </div>
 
@@ -176,11 +179,20 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div class="card-premium p-8 lg:col-span-2"><canvas id="chartMonths" height="100"></canvas></div>
-            <div class="card-premium p-8"><canvas id="chartRadar"></canvas></div>
+            <div class="card-premium p-8 lg:col-span-2">
+                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Activité Annuelle</p>
+                <canvas id="chartMonths" height="100"></canvas>
+            </div>
+            <div class="card-premium p-8">
+                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Analyse Globale (Moyenne Mensuelle)</p>
+                <canvas id="chartRadar"></canvas>
+            </div>
         </div>
 
-        <div class="card-premium p-8 mb-12"><div id="calendar"></div></div>
+        <div class="card-premium p-8 mb-12">
+             <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Calendrier de Programmation (Vue Outlook)</p>
+             <div id="calendar"></div>
+        </div>
 
         <div id="admin-list" class="space-y-8"></div>
     </main>
@@ -192,6 +204,7 @@
                 <input type="email" id="adm-email" placeholder="Email" class="input-premium w-full">
                 <input type="password" id="adm-pass" placeholder="Password" class="input-premium w-full">
                 <button id="btn-auth-submit" class="w-full btn-gold py-4 rounded-full font-black uppercase text-xs">Se connecter</button>
+                <button onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-black uppercase tracking-widest">Annuler</button>
             </div>
         </div>
     </div>
@@ -213,7 +226,13 @@
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
             try {
-                // MODIFICATION : On ignore cadets_loue etc s'ils ne sont pas en base
+                let infoCadets = "";
+                if(document.getElementById('loue_cadets').value === 'oui') {
+                    infoCadets = "[SALLE CADETS LOUÉE] " + 
+                                 (document.getElementById('cadets_retrans').checked ? "Retransmission OUI" : "Retransmission NON") + 
+                                 " | Notes: " + document.getElementById('cadets_notes').value;
+                }
+
                 const payload = {
                     organisme: document.getElementById('organisme').value,
                     nom_evenement: document.getElementById('nom_evenement').value,
@@ -223,7 +242,7 @@
                     date_evenement: document.getElementById('date_evenement').value,
                     heure_orga: document.getElementById('heure_orga').value,
                     heure_public: document.getElementById('heure_public').value,
-                    heure_fin_exploitation: document.getElementById('heure_fin_exploitation').value,
+                    heure_fin_exploitation: document.getElementById('heure_fin_explo').value,
                     nb_participants: getVal('nb_participants'),
                     nb_chaises: getVal('nb_chaises'),
                     nb_tables: getVal('nb_tables'),
@@ -234,9 +253,14 @@
                 };
 
                 const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-                if (!error) { alert("Transmis !"); location.reload(); }
-                else { throw error; }
-            } catch (err) { alert("Erreur : " + err.message); }
+                if (!error) { 
+                    alert("Fiche transmise avec succès !");
+                    location.reload(); 
+                } else { throw error; }
+            } catch (err) {
+                console.error(err);
+                alert("Erreur lors de l'envoi : " + err.message);
+            }
         };
 
         document.getElementById('btn-auth-submit').onclick = async () => {
@@ -248,8 +272,9 @@
                 document.getElementById('login-modal').style.display = 'none';
                 document.getElementById('vue-client').classList.add('hidden');
                 document.getElementById('vue-admin').classList.remove('hidden');
+                document.getElementById('btn-logout').classList.remove('hidden');
                 chargerDonnees();
-            }
+            } else { alert("Erreur d'authentification."); }
         };
 
         async function chargerDonnees() {
@@ -261,9 +286,24 @@
 
         function initCalendar() {
             const calendarEl = document.getElementById('calendar');
-            const events = allData.map(d => ({ title: d.nom_evenement, start: d.date_evenement, backgroundColor: '#7f1d1d' }));
+            const events = allData.map(d => ({
+                title: d.nom_evenement,
+                start: d.date_evenement,
+                backgroundColor: '#7f1d1d',
+                borderColor: '#7f1d1d',
+                extendedProps: { id: d.id }
+            }));
             if(calendar) calendar.destroy();
-            calendar = new FullCalendar.Calendar(calendarEl, { initialView: 'dayGridMonth', locale: 'fr', events: events });
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
+                locale: 'fr',
+                events: events,
+                eventClick: (info) => {
+                    const el = document.getElementById("fiche-" + info.event.extendedProps.id);
+                    if(el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
             calendar.render();
         }
 
@@ -274,25 +314,59 @@
                 const dt = new Date(d.date_evenement);
                 return dt.getFullYear() === y && (m === "all" ? true : dt.getMonth() === parseInt(m));
             });
+            document.getElementById('stats-summary').innerText = filteredData.length + " Événements";
             renderList();
             initCharts();
+            if(calendar) calendar.gotoDate(y + "-" + (m === 'all' ? '01' : (parseInt(m)+1).toString().padStart(2,'0')) + "-01");
         }
 
         function renderList() {
             const container = document.getElementById('admin-list');
-            container.innerHTML = filteredData.map(d => `
-                <div class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
-                    <div class="p-6 bg-slate-100 flex justify-between items-center">
-                        <h4 class="font-prestige text-2xl italic">${d.nom_evenement}</h4>
-                        <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-xs font-bold uppercase">PDF</button>
+            container.innerHTML = filteredData.map(d => {
+                const mailSubject = encodeURIComponent("Documents PPT - " + d.nom_evenement);
+                const mailBody = encodeURIComponent("Bonjour,\n\nVeuillez uploader vos présentations PPT/PDF pour l'événement \"" + d.nom_evenement + "\" via ce lien sécurisé :\n\nhttps://bte633288-my.sharepoint.com/:f:/g/personal/nourdine_tadjadit_musee-armee_fr/IgDCvKE1osikSYq35v7-8bvjAbubZTV2QPUiqbgz-rybpBc\n\nCordialement,\nLa Régie.");
+                const mailLink = "mailto:" + d.contact_email + "?subject=" + mailSubject + "&body=" + mailBody;
+
+                return `
+                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
+                    <div class="p-6 bg-slate-100 flex justify-between items-center border-b">
+                        <div class="flex items-center gap-4">
+                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
+                            <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="${mailLink}" class="bg-blue-600 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase flex items-center gap-2 shadow-lg hover:bg-blue-700 transition">
+                                <i class="fa-solid fa-paper-plane"></i> Contact PPT
+                            </a>
+                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF Premium</button>
+                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
                     </div>
-                    <div class="p-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div><p class="font-bold text-red-900 border-b mb-2">CLIENT</p><p>${d.organisme}</p></div>
-                        <div><p class="font-bold text-orange-600 border-b mb-2">LOGISTIQUE</p><p>${d.nb_participants} pers. | Fin: ${d.heure_fin_exploitation}</p></div>
-                        <div><p class="font-bold text-blue-600 border-b mb-2">TECH</p><p>${d.micros_hf_regie} HF | ${d.micros_filaires_scene} Fil.</p></div>
+                    <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white">
+                        <div class="space-y-2"><p class="font-black text-red-900 uppercase italic border-b pb-2">Client</p>
+                        <p><b>${d.organisme}</b></p><p>Contact: ${d.point_contact}</p><p>${d.contact_email}</p></div>
+                        <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
+                            <p>Participants: <b>${d.nb_participants}</b></p>
+                            <div class="mt-2 text-slate-600 space-y-1">
+                                <p>Arrivée Orga: <b>${d.heure_orga || '--:--'}</b></p>
+                                <p>Ouverture Public: <b>${d.heure_public || '--:--'}</b></p>
+                                <p>Fin d'exploitation: <b>${d.heure_fin_exploitation || '--:--'}</b></p>
+                            </div>
+                        </div>
+                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Mobilier & Tech</p>
+                            <p>Mobilier: <b>${d.nb_chaises} Ch. / ${d.nb_tables} Tab.</b></p>
+                            <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p>
+                            <div class="mt-2 bg-blue-50 p-3 rounded-xl border border-blue-100">
+                                <p class="text-[9px] font-black text-blue-800 uppercase mb-1 underline">Options choisies :</p>
+                                <p class="text-blue-600 font-black">${d.options_tech && d.options_tech.length > 0 ? d.options_tech.join(' • ') : 'Aucune'}</p>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Salle des Cadets</p>
+                        <p>Vérifiez les notes client ci-dessus.</p></div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function initCharts() {
@@ -300,22 +374,49 @@
             const counts = Array(12).fill(0);
             filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d' }] } });
-
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
+            
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
+            const total = filteredData.length || 1;
+            const stats = { 'PPT': 0, 'Visio': 0, 'Captation': 0, 'Traduction': 0, 'HF': 0, 'Filaire': 0, 'Affluence': 0 };
+            filteredData.forEach(d => {
+                if(d.options_tech) {
+                    if(d.options_tech.some(o => o.includes('Présentation'))) stats['PPT']++;
+                    if(d.options_tech.some(o => o.includes('Visioconférence'))) stats['Visio']++;
+                    if(d.options_tech.some(o => o.includes('Captation'))) stats['Captation']++;
+                    if(d.options_tech.some(o => o.includes('Traduction'))) stats['Traduction']++;
+                }
+                stats['HF'] += (d.micros_hf_regie || 0);
+                stats['Filaire'] += (d.micros_filaires_scene || 0);
+                stats['Affluence'] += (d.nb_participants || 0);
+            });
+            const radarData = [
+                (stats['PPT'] / total) * 10, (stats['Visio'] / total) * 10, (stats['Captation'] / total) * 10,
+                (stats['Traduction'] / total) * 10, (stats['HF'] / (total * 2 || 2)) * 10, (stats['Filaire'] / (total * 6 || 6)) * 10,
+                (stats['Affluence'] / (total * 145 || 145)) * 10
+            ];
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['PPT', 'Visio', 'Captation', 'Trad', 'HF', 'Fil', 'Affluence'], datasets: [{ data: [5,5,5,5,5,5,5], backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d' }] } });
+            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['PPT', 'Visio', 'Captation', 'Traduction', 'Micros HF', 'M. Filaire', 'Affluence'], datasets: [{ data: radarData, backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', borderWidth: 2, pointBackgroundColor: '#7f1d1d' }] }, options: { scales: { r: { beginAtZero: true, max: 10, ticks: { display: false }, grid: { color: '#e2e8f0' } } }, plugins: { legend: { display: false } } } });
         }
 
         window.genererPDF = function(id) {
             const d = filteredData.find(item => item.id === id);
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text(`FICHE TECHNIQUE : ${d.nom_evenement}`, 20, 20);
-            doc.autoTable({ startY: 30, body: [["Organisme", d.organisme], ["Date", d.date_evenement], ["Fin", d.heure_fin_exploitation]] });
-            doc.save(`FT_${d.nom_evenement}.pdf`);
+            doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 45, 'F');
+            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
+            const rows = [
+                ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
+                ["Arrivée Orga", d.heure_orga], ["Ouverture Public", d.heure_public], ["Fin d'exploitation", d.heure_fin_exploitation],
+                ["Affluence", d.nb_participants + " pers."], ["Mobilier", d.nb_chaises + " Ch., " + d.nb_tables + " Tab."],
+                ["Audiovisuel", d.micros_hf_regie + " HF, " + d.micros_filaires_scene + " Fil"],
+                ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune']
+            ];
+            doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [127, 29, 29] } });
+            doc.save("FT_" + d.nom_evenement + ".pdf");
         };
-        
+
+        async function supprimerLigne(id) { if(confirm("Supprimer ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
     </script>
 </body>
