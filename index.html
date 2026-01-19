@@ -300,7 +300,7 @@
             const m = document.getElementById('filter-month').value;
             filteredData = allData.filter(d => {
                 const dt = new Date(d.date_evenement);
-                return dt.getFullYear() === y && (m === \"all\" ? true : dt.getMonth() === parseInt(m));
+                return dt.getFullYear() === y && (m === "all" ? true : dt.getMonth() === parseInt(m));
             });
             document.getElementById('stats-summary').innerText = `${filteredData.length} Événements`;
             renderList();
@@ -316,42 +316,42 @@
                 const mailLink = `mailto:${d.contact_email}?subject=${mailSubject}&body=${mailBody}`;
 
                 return `
-                <div id=\"fiche-${d.id}\" class=\"card-premium overflow-hidden border-t-8 border-red-900 shadow-xl\">
-                    <div class=\"p-6 bg-slate-100 flex justify-between items-center border-b\">
-                        <div class=\"flex items-center gap-4\">
-                            <span class=\"bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase italic\">${d.date_evenement}</span>
-                            <h4 class=\"font-prestige text-2xl text-slate-800 italic\">${d.nom_evenement}</h4>
+                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
+                    <div class="p-6 bg-slate-100 flex justify-between items-center border-b">
+                        <div class="flex items-center gap-4">
+                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
+                            <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
-                        <div class=\"flex gap-3\">
-                            <a href=\"${mailLink}\" class=\"bg-blue-600 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase flex items-center gap-2 shadow-lg hover:bg-blue-700 transition\">
-                                <i class=\"fa-solid fa-paper-plane\"></i> Contact PPT
+                        <div class="flex gap-3">
+                            <a href="${mailLink}" class="bg-blue-600 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase flex items-center gap-2 shadow-lg hover:bg-blue-700 transition">
+                                <i class="fa-solid fa-paper-plane"></i> Contact PPT
                             </a>
-                            <button onclick=\"genererPDF('${d.id}')\" class=\"bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase\">PDF Premium</button>
-                            <button onclick=\"supprimerLigne('${d.id}')\" class=\"text-red-600 border border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition\"><i class=\"fa-solid fa-trash-can\"></i></button>
+                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF Premium</button>
+                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
-                    <div class=\"p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white\">
-                        <div class=\"space-y-2\"><p class=\"font-black text-red-900 uppercase italic border-b pb-2\">Client</p>
+                    <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white">
+                        <div class="space-y-2"><p class="font-black text-red-900 uppercase italic border-b pb-2">Client</p>
                         <p><b>${d.organisme}</b></p><p>Contact: ${d.point_contact}</p><p>${d.contact_email}</p></div>
-                        <div class=\"space-y-2\"><p class=\"font-black text-orange-600 uppercase italic border-b pb-2\">Logistique</p>
+                        <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
                             <p>Participants: <b>${d.nb_participants}</b></p>
-                            <div class=\"mt-2 text-slate-600 space-y-1\">
+                            <div class="mt-2 text-slate-600 space-y-1">
                                 <p>Arrivée Orga: <b>${d.heure_orga || '--:--'}</b></p>
                                 <p>Ouverture Public: <b>${d.heure_public || '--:--'}</b></p>
                                 <p>Fin d'exploitation: <b>${d.heure_fin_exploitation || '--:--'}</b></p>
                             </div>
                         </div>
-                        <div class=\"space-y-2\"><p class=\"font-black text-blue-600 uppercase italic border-b pb-2\">Mobilier & Tech</p>
+                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Mobilier & Tech</p>
                             <p>Mobilier: <b>${d.nb_chaises} Ch. / ${d.nb_tables} Tab.</b></p>
                             <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p>
-                            <div class=\"mt-2 bg-blue-50 p-3 rounded-xl border border-blue-100\">
-                                <p class=\"text-[9px] font-black text-blue-800 uppercase mb-1 underline\">Options choisies :</p>
-                                <p class=\"text-blue-600 font-black\">${d.options_tech && d.options_tech.length > 0 ? d.options_tech.join(' • ') : 'Aucune'}</p>
+                            <div class="mt-2 bg-blue-50 p-3 rounded-xl border border-blue-100">
+                                <p class="text-[9px] font-black text-blue-800 uppercase mb-1 underline">Options choisies :</p>
+                                <p class="text-blue-600 font-black">${d.options_tech && d.options_tech.length > 0 ? d.options_tech.join(' • ') : 'Aucune'}</p>
                             </div>
                         </div>
-                        <div class=\"bg-amber-50 p-4 rounded-2xl border border-amber-100\"><p class=\"font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2\">Salle des Cadets</p>
+                        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Salle des Cadets</p>
                             <p>Louée: <b>${d.cadets_loue ? 'OUI' : 'NON'}</b></p>
-                            <p>Retrans: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p><p class=\"mt-2 italic text-amber-900\">${d.cadets_notes || ''}</p></div>
+                            <p>Retrans: <b>${d.cadets_retransmission ? 'OUI' : 'NON'}</b></p><p class="mt-2 italic text-amber-900">${d.cadets_notes || ''}</p></div>
                     </div>
                 </div>
             `; }).join('');
@@ -391,19 +391,19 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 45, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text(\"FICHE TECHNIQUE RÉGIE\", 20, 28);
+            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
             const rows = [
-                [\"Organisme\", d.organisme], [\"Événement\", d.nom_evenement], [\"Date\", d.date_evenement],
-                [\"Arrivée Orga\", d.heure_orga], [\"Ouverture Public\", d.heure_public], [\"Fin d'exploitation\", d.heure_fin_exploitation],
-                [\"Affluence\", `${d.nb_participants} pers.`], [\"Mobilier\", `${d.nb_chaises} Ch., ${d.nb_tables} Tab.`],
-                [\"Audiovisuel\", `${d.micros_hf_regie} HF, ${d.micros_filaires_scene} Fil`],
-                [\"Options Tech\", (d.options_tech || []).join(', ') || 'Aucune']
+                ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
+                ["Arrivée Orga", d.heure_orga], ["Ouverture Public", d.heure_public], ["Fin d'exploitation", d.heure_fin_exploitation],
+                ["Affluence", `${d.nb_participants} pers.`], ["Mobilier", `${d.nb_chaises} Ch., ${d.nb_tables} Tab.`],
+                ["Audiovisuel", `${d.micros_hf_regie} HF, ${d.micros_filaires_scene} Fil`],
+                ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune']
             ];
             doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [127, 29, 29] } });
             doc.save(`FT_${d.nom_evenement}.pdf`);
         };
 
-        async function supprimerLigne(id) { if(confirm(\"Supprimer ?\")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
+        async function supprimerLigne(id) { if(confirm("Supprimer ?")) { await _supa.from('demandes_auditorium').delete().eq('id', id); chargerDonnees(); } }
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
     </script>
 </body>
