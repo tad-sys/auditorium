@@ -28,19 +28,21 @@
         .fc-button-primary { background-color: #1a2c4c !important; border: none !important; text-transform: uppercase; font-size: 0.7rem !important; font-weight: bold !important; border-radius: 20px !important; }
         .fc-event { cursor: pointer; border: none !important; padding: 2px 5px; }
 
-        /* AJOUT DE L'EFFET FONDU POUR LE LOGO */
-        .logo-container {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+        /* EFFET FONDU LOGO */
+        .logo-container { display: inline-flex; align-items: center; justify-content: center; overflow: hidden; }
+        .logo-faded { 
+            mask-image: radial-gradient(circle, black 50%, transparent 100%); 
+            -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%); 
+            object-fit: contain; 
         }
 
-        .logo-faded {
-            mask-image: radial-gradient(ellipse, black 20%, transparent 95%);
-            -webkit-mask-image: radial-gradient(circle, black 20%, transparent 95%);
-            object-fit: contain;
+        /* POINTS LUMINEUX (ADMIN) */
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; position: relative; }
+        .status-dot::after {
+            content: ''; position: absolute; inset: -4px; border-radius: 50%;
+            background: inherit; opacity: 0.4; animation: pulse 2s infinite;
         }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.4; } 70% { transform: scale(2.5); opacity: 0; } 100% { transform: scale(1); opacity: 0; } }
     </style>
 </head>
 <body class="pb-20">
@@ -196,13 +198,13 @@
                 <canvas id="chartMonths" height="100"></canvas>
             </div>
             <div class="card-premium p-8">
-                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Analyse Globale (Moyenne Mensuelle)</p>
+                <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Analyse Globale</p>
                 <canvas id="chartRadar"></canvas>
             </div>
         </div>
 
         <div class="card-premium p-8 mb-12">
-             <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Calendrier de Programmation (Vue Outlook)</p>
+             <p class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest italic">Calendrier de Programmation</p>
              <div id="calendar"></div>
         </div>
 
@@ -266,14 +268,9 @@
                 };
 
                 const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-                if (!error) { 
-                    alert("Fiche transmise avec succès !");
-                    location.reload(); 
-                } else { throw error; }
-            } catch (err) {
-                console.error(err);
-                alert("Erreur lors de l'envoi : " + err.message);
-            }
+                if (!error) { alert("Fiche transmise !"); location.reload(); }
+                else { throw error; }
+            } catch (err) { alert("Erreur : " + err.message); }
         };
 
         document.getElementById('btn-auth-submit').onclick = async () => {
@@ -309,7 +306,6 @@
             if(calendar) calendar.destroy();
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
                 locale: 'fr',
                 events: events,
                 eventClick: (info) => {
@@ -330,55 +326,53 @@
             document.getElementById('stats-summary').innerText = filteredData.length + " Événements";
             renderList();
             initCharts();
-            if(calendar) calendar.gotoDate(y + "-" + (m === 'all' ? '01' : (parseInt(m)+1).toString().padStart(2,'0')) + "-01");
+        }
+
+        // FONCTION DE CALCUL DU CODE COULEUR
+        function getStatusColor(dateStr) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const eventDate = new Date(dateStr);
+            eventDate.setHours(0,0,0,0);
+            
+            const diffTime = eventDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) return "#22c55e"; // Passé -> VERT
+            if (diffDays === 0) return "#ef4444"; // Aujourd'hui -> ROUGE
+            if (diffDays <= 7) return "#f97316"; // <= 7j -> ORANGE
+            return "#eab308"; // >= 7j (puisque le cas <=7 est traité avant) -> JAUNE
         }
 
         function renderList() {
             const container = document.getElementById('admin-list');
             container.innerHTML = filteredData.map(d => {
-                const mailSubject = encodeURIComponent("Documents PPT - " + d.nom_evenement);
-                const mailBody = encodeURIComponent("Bonjour,\n\nVeuillez uploader vos présentations PPT/PDF pour l'événement \"" + d.nom_evenement + "\" via ce lien sécurisé :\n\nhttps://bte633288-my.sharepoint.com/:f:/g/personal/nourdine_tadjadit_musee-armee_fr/IgDCvKE1osikSYq35v7-8bvjAbubZTV2QPUiqbgz-rybpBc\n\nCordialement,\nLa Régie.");
-                const mailLink = "mailto:" + d.contact_email + "?subject=" + mailSubject + "&body=" + mailBody;
+                const color = getStatusColor(d.date_evenement);
+                const mailLink = "mailto:" + d.contact_email + "?subject=PPT&body=Lien...";
 
                 return `
-                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-[#1a2c4c] shadow-xl">
+                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-[#1a2c4c]">
                     <div class="p-6 bg-slate-100 flex justify-between items-center border-b">
-                        <div class="flex items-center gap-4">
-                            <span class="bg-[#1a2c4c] text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
+                        <div class="flex items-center gap-6">
+                            <div class="flex items-center gap-3">
+                                <span class="status-dot" style="background: ${color}"></span>
+                                <span class="bg-[#1a2c4c] text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
+                            </div>
                             <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
                         <div class="flex gap-3">
-                            <a href="${mailLink}" class="bg-blue-600 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase flex items-center gap-2 shadow-lg hover:bg-blue-700 transition">
-                                <i class="fa-solid fa-paper-plane"></i> Contact PPT
-                            </a>
-                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF Premium</button>
-                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 border border-red-100 p-3 rounded-full hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
+                            <a href="${mailLink}" class="bg-blue-600 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">Contact PPT</a>
+                            <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF</button>
+                            <button onclick="supprimerLigne('${d.id}')" class="text-red-600 p-3"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                     <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white">
-                        <div class="space-y-2"><p class="font-black text-[#1a2c4c] uppercase italic border-b pb-2">Client</p>
-                        <p><b>${d.organisme}</b></p><p>Contact: ${d.point_contact}</p><p>${d.contact_email}</p></div>
-                        <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
-                            <p>Participants: <b>${d.nb_participants}</b></p>
-                            <div class="mt-2 text-slate-600 space-y-1">
-                                <p>Arrivée Orga: <b>${d.heure_orga || '--:--'}</b></p>
-                                <p>Ouverture Public: <b>${d.heure_public || '--:--'}</b></p>
-                                <p>Fin d'exploitation: <b>${d.heure_fin_exploitation || '--:--'}</b></p>
-                            </div>
-                        </div>
-                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Mobilier & Tech</p>
-                            <p>Mobilier: <b>${d.nb_chaises} Ch. / ${d.nb_tables} Tab.</b></p>
-                            <p>Micros: <b>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</b></p>
-                            <div class="mt-2 bg-blue-50 p-3 rounded-xl border border-blue-100">
-                                <p class="text-[9px] font-black text-blue-800 uppercase mb-1 underline">Options choisies :</p>
-                                <p class="text-blue-600 font-black">${d.options_tech && d.options_tech.length > 0 ? d.options_tech.join(' • ') : 'Aucune'}</p>
-                            </div>
-                        </div>
-                        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Salle des Cadets</p>
-                        <p>${d.remarques || 'Aucune information enregistrée.'}</p></div>
+                        <div class="space-y-2"><p class="font-black text-[#1a2c4c] uppercase italic border-b pb-2">Client</p><p><b>${d.organisme}</b></p><p>${d.point_contact}</p></div>
+                        <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p><p>Public: ${d.nb_participants}</p><p>Fin: ${d.heure_fin_exploitation || '--:--'}</p></div>
+                        <div class="space-y-2"><p class="font-black text-blue-600 uppercase italic border-b pb-2">Mobilier & Tech</p><p>${d.nb_chaises} Ch. / ${d.nb_tables} Tab.</p><p>${d.micros_hf_regie} HF / ${d.micros_filaires_scene} Fil</p></div>
+                        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Notes</p><p>${d.remarques || '...'}</p></div>
                     </div>
-                </div>
-                `;
+                </div>`;
             }).join('');
         }
 
@@ -387,29 +381,7 @@
             const counts = Array(12).fill(0);
             filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#1a2c4c', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
-            
-            const ctxRadar = document.getElementById('chartRadar').getContext('2d');
-            const total = filteredData.length || 1;
-            const stats = { 'PPT': 0, 'Visio': 0, 'Captation': 0, 'Traduction': 0, 'HF': 0, 'Filaire': 0, 'Affluence': 0 };
-            filteredData.forEach(d => {
-                if(d.options_tech) {
-                    if(d.options_tech.some(o => o.includes('Présentation'))) stats['PPT']++;
-                    if(d.options_tech.some(o => o.includes('Visioconférence'))) stats['Visio']++;
-                    if(d.options_tech.some(o => o.includes('Captation'))) stats['Captation']++;
-                    if(d.options_tech.some(o => o.includes('Traduction'))) stats['Traduction']++;
-                }
-                stats['HF'] += (d.micros_hf_regie || 0);
-                stats['Filaire'] += (d.micros_filaires_scene || 0);
-                stats['Affluence'] += (d.nb_participants || 0);
-            });
-            const radarData = [
-                (stats['PPT'] / total) * 10, (stats['Visio'] / total) * 10, (stats['Captation'] / total) * 10,
-                (stats['Traduction'] / total) * 10, (stats['HF'] / (total * 2 || 2)) * 10, (stats['Filaire'] / (total * 6 || 6)) * 10,
-                (stats['Affluence'] / (total * 145 || 145)) * 10
-            ];
-            if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['PPT', 'Visio', 'Captation', 'Traduction', 'Micros HF', 'M. Filaire', 'Affluence'], datasets: [{ data: radarData, backgroundColor: 'rgba(26, 44, 76, 0.2)', borderColor: '#1a2c4c', borderWidth: 2, pointBackgroundColor: '#1a2c4c' }] }, options: { scales: { r: { beginAtZero: true, max: 10, ticks: { display: false }, grid: { color: '#e2e8f0' } } }, plugins: { legend: { display: false } } } });
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#1a2c4c' }] }, options: { plugins: { legend: { display: false } } } });
         }
 
         window.genererPDF = function(id) {
@@ -417,16 +389,8 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.setFillColor(26, 44, 76); doc.rect(0, 0, 210, 45, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
-            const rows = [
-                ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
-                ["Arrivée Orga", d.heure_orga], ["Ouverture Public", d.heure_public], ["Fin d'exploitation", d.heure_fin_exploitation],
-                ["Affluence", d.nb_participants + " pers."], ["Mobilier", d.nb_chaises + " Ch., " + d.nb_tables + " Tab."],
-                ["Audiovisuel", d.micros_hf_regie + " HF, " + d.micros_filaires_scene + " Fil"],
-                ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune'],
-                ["Notes Cadets", d.remarques || 'N/A']
-            ];
-            doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [26, 44, 76] } });
+            doc.setTextColor(255, 255, 255); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
+            doc.autoTable({ startY: 55, head: [['Sujet', 'Info']], body: [["Organisme", d.organisme],["Event", d.nom_evenement],["Date", d.date_evenement]] });
             doc.save("FT_" + d.nom_evenement + ".pdf");
         };
 
