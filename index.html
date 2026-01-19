@@ -28,7 +28,6 @@
         .fc-button-primary { background-color: #1a2c4c !important; border: none !important; text-transform: uppercase; font-size: 0.7rem !important; font-weight: bold !important; border-radius: 20px !important; }
         .fc-event { cursor: pointer; border: none !important; padding: 2px 5px; }
 
-        /* EFFET LOGO */
         .logo-container { display: inline-flex; align-items: center; justify-content: center; overflow: hidden; }
         .logo-faded { 
             mask-image: radial-gradient(circle, black 50%, transparent 100%); 
@@ -36,29 +35,9 @@
             object-fit: contain; 
         }
 
-        /* POINT LUMINEUX STATUT */
-        .status-indicator {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            display: inline-block;
-            position: relative;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .status-indicator.pulse::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: inherit;
-            opacity: 0.4;
-            animation: status-pulse 2s infinite;
-        }
-        @keyframes status-pulse {
-            0% { transform: scale(1); opacity: 0.4; }
-            70% { transform: scale(2.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 0; }
-        }
+        .status-indicator { width: 14px; height: 14px; border-radius: 50%; display: inline-block; position: relative; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .status-indicator.pulse::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: inherit; opacity: 0.4; animation: status-pulse 2s infinite; }
+        @keyframes status-pulse { 0% { transform: scale(1); opacity: 0.4; } 70% { transform: scale(2.5); opacity: 0; } 100% { transform: scale(1); opacity: 0; } }
     </style>
 </head>
 <body class="pb-20">
@@ -248,7 +227,6 @@
         let charts = {}, allData = [], filteredData = [], calendar = null;
         const getVal = (id) => parseInt(document.getElementById(id).value) || 0;
 
-        // ENVOI FORMULAIRE
         document.getElementById('main-form').onsubmit = async (e) => {
             e.preventDefault();
             try {
@@ -280,7 +258,6 @@
             } catch(e) { alert("Erreur"); }
         };
 
-        // CONNEXION
         document.getElementById('btn-auth-submit').onclick = async () => {
             const { error } = await _supa.auth.signInWithPassword({ 
                 email: document.getElementById('adm-email').value,
@@ -325,16 +302,14 @@
             initCharts();
         }
 
-        // LOGIQUE CODE COULEUR
         function getStatusInfo(dateStr) {
             const today = new Date(); today.setHours(0,0,0,0);
             const evDate = new Date(dateStr); evDate.setHours(0,0,0,0);
             const diffDays = Math.ceil((evDate - today) / (1000 * 60 * 60 * 24));
-
-            if (diffDays < 0) return { color: '#22c55e', pulse: false }; // Passé -> Vert
-            if (diffDays === 0) return { color: '#ef4444', pulse: true }; // Jour J -> Rouge
-            if (diffDays <= 7) return { color: '#f97316', pulse: true }; // <= 7j -> Orange
-            return { color: '#eab308', pulse: false }; // >= 7j -> Jaune
+            if (diffDays < 0) return { color: '#22c55e', pulse: false };
+            if (diffDays === 0) return { color: '#ef4444', pulse: true };
+            if (diffDays <= 7) return { color: '#f97316', pulse: true };
+            return { color: '#eab308', pulse: false };
         }
 
         function renderList() {
@@ -342,7 +317,6 @@
             container.innerHTML = filteredData.map(d => {
                 const status = getStatusInfo(d.date_evenement);
                 const mailLink = "mailto:" + d.contact_email + "?subject=PPT&body=Lien...";
-
                 return `
                 <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-[#1a2c4c]">
                     <div class="p-6 bg-slate-100 flex justify-between items-center border-b">
@@ -389,6 +363,7 @@
             }).join('');
         }
 
+        // RECTIFICATION DU RADAR POUR CALCULER LES VRAIES VALEURS
         function initCharts() {
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
             const counts = Array(12).fill(0);
@@ -396,10 +371,49 @@
             if(charts.bar) charts.bar.destroy();
             charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#1a2c4c', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
             
+            const total = filteredData.length || 1;
+            const radarMetrics = { ppt:0, visio:0, capta:0, trad:0, hf:0, fil:0, affl:0 };
+            
+            filteredData.forEach(d => {
+                if(d.options_tech) {
+                    if(d.options_tech.includes('Présentation')) radarMetrics.ppt++;
+                    if(d.options_tech.includes('Visioconférence')) radarMetrics.visio++;
+                    if(d.options_tech.includes('Captation')) radarMetrics.capta++;
+                    if(d.options_tech.includes('Traduction')) radarMetrics.trad++;
+                }
+                radarMetrics.hf += (d.micros_hf_regie || 0);
+                radarMetrics.fil += (d.micros_filaires_scene || 0);
+                radarMetrics.affl += (d.nb_participants || 0);
+            });
+
+            const radarData = [
+                (radarMetrics.ppt / total) * 10,
+                (radarMetrics.visio / total) * 10,
+                (radarMetrics.capta / total) * 10,
+                (radarMetrics.trad / total) * 10,
+                (radarMetrics.hf / (total * 2 || 2)) * 10,
+                (radarMetrics.fil / (total * 6 || 6)) * 10,
+                (radarMetrics.affl / (total * 145 || 145)) * 10
+            ];
+
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
-            const radarData = [5, 5, 5, 5, 5, 5, 5]; // Valeurs par défaut simplifiées pour l'exemple
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['PPT', 'Visio', 'Captation', 'Trad', 'HF', 'Fil', 'Affl'], datasets: [{ data: radarData, backgroundColor: 'rgba(26, 44, 76, 0.2)', borderColor: '#1a2c4c' }] }, options: { plugins: { legend: { display: false } } } });
+            charts.radar = new Chart(ctxRadar, { 
+                type: 'radar', 
+                data: { 
+                    labels: ['PPT', 'Visio', 'Captation', 'Trad', 'Micro HF', 'Fil', 'Affluence'], 
+                    datasets: [{ 
+                        data: radarData, 
+                        backgroundColor: 'rgba(26, 44, 76, 0.2)', 
+                        borderColor: '#1a2c4c',
+                        pointBackgroundColor: '#1a2c4c'
+                    }] 
+                }, 
+                options: { 
+                    scales: { r: { beginAtZero: true, max: 10, ticks: { display: false } } },
+                    plugins: { legend: { display: false } } 
+                } 
+            });
         }
 
         window.genererPDF = function(id) {
