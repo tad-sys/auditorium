@@ -18,14 +18,14 @@
         .font-prestige { font-family: 'Cinzel', serif; }
         .card-premium { background: white; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); }
         .input-premium { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 12px; transition: 0.3s; }
-        .input-premium:focus { border-color: #7f1d1d; outline: none; background: white; }
-        .btn-gold { background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%); color: white; transition: 0.3s; }
-        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(127, 29, 29, 0.4); }
+        .input-premium:focus { border-color: #1a2c4c; outline: none; background: white; }
+        .btn-gold { background: linear-gradient(135deg, #c5a059 0%, #8e6d2f 100%); color: white; transition: 0.3s; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(197, 160, 89, 0.4); }
         .hidden { display: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
         #calendar { background: white; padding: 20px; border-radius: 24px; border: none; }
         .fc-toolbar-title { font-family: 'Cinzel', serif !important; font-style: italic; font-size: 1.2rem !important; }
-        .fc-button-primary { background-color: #7f1d1d !important; border: none !important; text-transform: uppercase; font-size: 0.7rem !important; font-weight: bold !important; border-radius: 20px !important; }
+        .fc-button-primary { background-color: #1a2c4c !important; border: none !important; text-transform: uppercase; font-size: 0.7rem !important; font-weight: bold !important; border-radius: 20px !important; }
         .fc-event { cursor: pointer; border: none !important; padding: 2px 5px; }
     </style>
 </head>
@@ -36,28 +36,27 @@
             <div class="flex items-center gap-4">
                 <img src="logo-musee.png" alt="Musée de l'Armée" class="h-14">
                 <div class="border-l pl-4 border-slate-200">
-                    <h1 class="font-prestige text-xl text-red-900 leading-tight italic">Régie Auditorium Austerlitz</h1>
-                    <p class="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400">Musée de l'Armée - Invalides</p>
+                    <h1 class="font-prestige text-xl text-[#1a2c4c] leading-tight italic">Régie Auditorium Austerlitz</h1>
                 </div>
             </div>
             <div class="flex gap-4">
                 <button onclick="document.getElementById('login-modal').style.display='flex'" class="bg-slate-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-black transition shadow-xl">Espace Régisseur</button>
-                <button id="btn-logout" class="hidden bg-red-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase" onclick="handleLogout()">Déconnexion</button>
+                <button id="btn-logout" class="hidden bg-[#1a2c4c] text-white px-6 py-3 rounded-full text-xs font-bold uppercase" onclick="handleLogout()">Déconnexion</button>
             </div>
         </div>
     </nav>
 
     <main id="vue-client" class="max-w-4xl mx-auto mt-16 px-6">
         <div class="text-center mb-16">
-            <span class="bg-red-100 text-red-900 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Demande de réservation</span>
+            <span class="bg-blue-50 text-[#1a2c4c] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Demande de réservation</span>
             <h2 class="text-5xl font-prestige text-slate-900 mt-4 italic">Fiche technique auditorium Austerlitz</h2>
-            <div class="w-24 h-1 bg-red-900 mx-auto mt-6 rounded-full"></div>
+            <div class="w-24 h-1 bg-[#c5a059] mx-auto mt-6 rounded-full"></div>
         </div>
 
         <form id="main-form" class="space-y-12">
             <div class="card-premium p-10">
                 <div class="flex items-center gap-4 mb-8">
-                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-red-900">01</span>
+                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-[#1a2c4c]">01</span>
                     <h3 class="text-xl font-prestige italic">Informations Générales</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -72,7 +71,7 @@
 
             <div class="card-premium p-10">
                 <div class="flex items-center gap-4 mb-8">
-                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-red-900">02</span>
+                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-[#1a2c4c]">02</span>
                     <h3 class="text-xl font-prestige italic">Horaires & Affluence</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -85,19 +84,19 @@
 
             <div class="card-premium p-10">
                 <div class="flex items-center gap-4 mb-8">
-                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-red-900">03</span>
+                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-[#1a2c4c]">03</span>
                     <h3 class="text-xl font-prestige italic">Espaces & Mobilier</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="space-y-4">
-                        <p class="text-[11px] font-black uppercase text-red-900 italic">Lieux d'accueil</p>
+                        <p class="text-[11px] font-black uppercase text-[#1a2c4c] italic">Lieux d'accueil</p>
                         <div id="acc_list" class="grid grid-cols-1 gap-2">
                             <label class="flex items-center gap-3"><input type="checkbox" value="Salle Turenne"> Salle Turenne</label>
                             <label class="flex items-center gap-3"><input type="checkbox" value="Sas Auditorium"> Sas auditorium</label>
                         </div>
                     </div>
                     <div class="space-y-4">
-                        <p class="text-[11px] font-black uppercase text-red-900 italic">Mobilier supplémentaire</p>
+                        <p class="text-[11px] font-black uppercase text-[#1a2c4c] italic">Mobilier supplémentaire</p>
                         <div class="flex flex-col gap-3">
                             <div class="flex items-center gap-4"><input type="number" id="nb_chaises" class="input-premium w-20" max="6" value="0"> <span>Chaises (Max 6)</span></div>
                             <div class="flex items-center gap-4"><input type="number" id="nb_tables" class="input-premium w-20" max="3" value="0"> <span>Tables (Max 3)</span></div>
@@ -108,7 +107,7 @@
 
             <div class="card-premium p-10">
                 <div class="flex items-center gap-4 mb-8">
-                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-red-900">04</span>
+                    <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-[#1a2c4c]">04</span>
                     <h3 class="text-xl font-prestige italic">Audio-Visuel</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -117,7 +116,7 @@
                         <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Micros Filaires (Max 6)</label><input type="number" id="micros_filaires" class="input-premium" max="6" value="0"></div>
                     </div>
                     <div class="space-y-3">
-                        <p class="text-[11px] font-black uppercase text-red-900 italic">Options Techniques</p>
+                        <p class="text-[11px] font-black uppercase text-[#1a2c4c] italic">Options Techniques</p>
                         <div id="tech_opts" class="grid grid-cols-1 gap-2">
                             <label class="flex items-center gap-2"><input type="checkbox" value="Présentation"> Présentation (PPT)</label>
                             <label class="flex items-center gap-2"><input type="checkbox" value="Visioconférence"> Visioconférence</label>
@@ -146,7 +145,7 @@
                         <p class="font-bold text-amber-900 uppercase text-xs tracking-widest">Configuration Salle des Cadets</p>
                         <label class="flex items-center gap-4 p-4 bg-amber-50 rounded-xl cursor-pointer">
                             <input type="checkbox" id="cadets_retrans" class="w-6 h-6 accent-amber-600">
-                            <span class="font-bold text-amber-900 text-sm">Besoin de retransmission vers les Cadets ?</span>
+                            <span class="font-bold text-amber-900 text-sm">Besoin de retransmission vers la salle des Cadets ?</span>
                         </label>
                         <textarea id="cadets_notes" class="input-premium w-full h-24" placeholder="Notes complémentaires pour la salle des Cadets..."></textarea>
                     </div>
@@ -155,7 +154,7 @@
 
             <div class="p-6 bg-slate-200/50 rounded-2xl border-2 border-slate-200">
                 <label class="flex items-start gap-4 cursor-pointer">
-                    <input type="checkbox" id="rgpd_consent" required class="mt-1 w-5 h-5 accent-red-900">
+                    <input type="checkbox" id="rgpd_consent" required class="mt-1 w-5 h-5 accent-[#1a2c4c]">
                     <span class="text-xs text-slate-600 leading-relaxed font-medium">
                         En soumettant ce formulaire, j'accepte que les informations saisies soient exploitées par la régie de l'Auditorium du Musée de l'Armée dans le cadre de l'organisation technique de mon événement.
                     </span>
@@ -228,6 +227,7 @@
             try {
                 let infoCadets = "";
                 if(document.getElementById('loue_cadets').value === 'oui') {
+                    // MODIFICATION ICI : On enregistre explicitement l'état de la retransmission
                     infoCadets = "[SALLE CADETS LOUÉE] " + 
                                  (document.getElementById('cadets_retrans').checked ? "Retransmission OUI" : "Retransmission NON") + 
                                  " | Notes: " + document.getElementById('cadets_notes').value;
@@ -249,7 +249,9 @@
                     micros_hf_regie: getVal('micros_hf'),
                     micros_filaires_scene: getVal('micros_filaires'),
                     lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
-                    options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value)
+                    options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value),
+                    // On envoie le texte consolidé incluant la retransmission dans le champ de notes de la base
+                    remarques: infoCadets 
                 };
 
                 const { error } = await _supa.from('demandes_auditorium').insert([payload]);
@@ -289,8 +291,8 @@
             const events = allData.map(d => ({
                 title: d.nom_evenement,
                 start: d.date_evenement,
-                backgroundColor: '#7f1d1d',
-                borderColor: '#7f1d1d',
+                backgroundColor: '#1a2c4c',
+                borderColor: '#1a2c4c',
                 extendedProps: { id: d.id }
             }));
             if(calendar) calendar.destroy();
@@ -328,10 +330,10 @@
                 const mailLink = "mailto:" + d.contact_email + "?subject=" + mailSubject + "&body=" + mailBody;
 
                 return `
-                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-red-900 shadow-xl">
+                <div id="fiche-${d.id}" class="card-premium overflow-hidden border-t-8 border-[#1a2c4c] shadow-xl">
                     <div class="p-6 bg-slate-100 flex justify-between items-center border-b">
                         <div class="flex items-center gap-4">
-                            <span class="bg-red-900 text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
+                            <span class="bg-[#1a2c4c] text-white px-5 py-2 rounded-full font-black text-xs uppercase italic">${d.date_evenement}</span>
                             <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
                         <div class="flex gap-3">
@@ -343,7 +345,7 @@
                         </div>
                     </div>
                     <div class="p-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-[12px] bg-white">
-                        <div class="space-y-2"><p class="font-black text-red-900 uppercase italic border-b pb-2">Client</p>
+                        <div class="space-y-2"><p class="font-black text-[#1a2c4c] uppercase italic border-b pb-2">Client</p>
                         <p><b>${d.organisme}</b></p><p>Contact: ${d.point_contact}</p><p>${d.contact_email}</p></div>
                         <div class="space-y-2"><p class="font-black text-orange-600 uppercase italic border-b pb-2">Logistique</p>
                             <p>Participants: <b>${d.nb_participants}</b></p>
@@ -362,7 +364,7 @@
                             </div>
                         </div>
                         <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100"><p class="font-black text-amber-800 uppercase italic border-b border-amber-200 pb-2">Salle des Cadets</p>
-                        <p>Vérifiez les notes client ci-dessus.</p></div>
+                        <p>${d.remarques || 'Aucune information enregistrée.'}</p></div>
                     </div>
                 </div>
                 `;
@@ -374,7 +376,7 @@
             const counts = Array(12).fill(0);
             filteredData.forEach(d => counts[new Date(d.date_evenement).getMonth()]++);
             if(charts.bar) charts.bar.destroy();
-            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#7f1d1d', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
+            charts.bar = new Chart(ctxBar, { type: 'bar', data: { labels: ['J','F','M','A','M','J','J','A','S','O','N','D'], datasets: [{ data: counts, backgroundColor: '#1a2c4c', borderRadius: 8 }] }, options: { plugins: { legend: { display: false } } } });
             
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
             const total = filteredData.length || 1;
@@ -396,23 +398,24 @@
                 (stats['Affluence'] / (total * 145 || 145)) * 10
             ];
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['PPT', 'Visio', 'Captation', 'Traduction', 'Micros HF', 'M. Filaire', 'Affluence'], datasets: [{ data: radarData, backgroundColor: 'rgba(127, 29, 29, 0.2)', borderColor: '#7f1d1d', borderWidth: 2, pointBackgroundColor: '#7f1d1d' }] }, options: { scales: { r: { beginAtZero: true, max: 10, ticks: { display: false }, grid: { color: '#e2e8f0' } } }, plugins: { legend: { display: false } } } });
+            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['PPT', 'Visio', 'Captation', 'Traduction', 'Micros HF', 'M. Filaire', 'Affluence'], datasets: [{ data: radarData, backgroundColor: 'rgba(26, 44, 76, 0.2)', borderColor: '#1a2c4c', borderWidth: 2, pointBackgroundColor: '#1a2c4c' }] }, options: { scales: { r: { beginAtZero: true, max: 10, ticks: { display: false }, grid: { color: '#e2e8f0' } } }, plugins: { legend: { display: false } } } });
         }
 
         window.genererPDF = function(id) {
             const d = filteredData.find(item => item.id === id);
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.setFillColor(127, 29, 29); doc.rect(0, 0, 210, 45, 'F');
+            doc.setFillColor(26, 44, 76); doc.rect(0, 0, 210, 45, 'F');
             doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
             const rows = [
                 ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
                 ["Arrivée Orga", d.heure_orga], ["Ouverture Public", d.heure_public], ["Fin d'exploitation", d.heure_fin_exploitation],
                 ["Affluence", d.nb_participants + " pers."], ["Mobilier", d.nb_chaises + " Ch., " + d.nb_tables + " Tab."],
                 ["Audiovisuel", d.micros_hf_regie + " HF, " + d.micros_filaires_scene + " Fil"],
-                ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune']
+                ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune'],
+                ["Notes Cadets", d.remarques || 'N/A']
             ];
-            doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [127, 29, 29] } });
+            doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [26, 44, 76] } });
             doc.save("FT_" + d.nom_evenement + ".pdf");
         };
 
