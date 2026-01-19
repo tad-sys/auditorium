@@ -27,12 +27,6 @@
         .fc-toolbar-title { font-family: 'Cinzel', serif !important; font-style: italic; font-size: 1.2rem !important; }
         .fc-button-primary { background-color: #1a2c4c !important; border: none !important; text-transform: uppercase; font-size: 0.7rem !important; font-weight: bold !important; border-radius: 20px !important; }
         .fc-event { cursor: pointer; border: none !important; padding: 2px 5px; }
-        
-        /* Effet de fondu sur les contours du logo */
-        .logo-faded {
-            mask-image: radial-gradient(circle, black 60%, rgba(0,0,0,0) 95%);
-            -webkit-mask-image: radial-gradient(circle, black 60%, rgba(0,0,0,0) 95%);
-        }
     </style>
 </head>
 <body class="pb-20">
@@ -40,7 +34,7 @@
     <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
             <div class="flex items-center">
-                <img src="logo-musee.png" alt="Musée de l'Armée" class="h-20 w-auto object-contain logo-faded">
+                <img src="logo-musee.png" alt="Musée de l'Armée" class="h-20 w-auto object-contain">
             </div>
             <div class="flex gap-4">
                 <button onclick="document.getElementById('login-modal').style.display='flex'" class="bg-slate-900 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-black transition shadow-xl">Espace Régisseur</button>
