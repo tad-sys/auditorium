@@ -431,4 +431,11 @@
         function handleLogout() { _supa.auth.signOut(); location.reload(); }
     </script>
 </body>
+    <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(() => console.log("Service Worker enregistré"))
+    .catch(err => console.log("Erreur Service Worker :", err));
+}
+</script>
 </html>
