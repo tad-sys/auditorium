@@ -79,7 +79,6 @@
                     <div class="flex flex-col gap-2"><label class="text-[11px] font-black uppercase text-slate-500">Date</label><input type="date" id="date_evenement" required class="input-premium"></div>
                 </div>
             </div>
-
             <div class="card-premium p-10">
                 <div class="flex items-center gap-4 mb-8">
                     <span class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-black text-[#1a2c4c]">02</span>
@@ -161,7 +160,6 @@
                     </div>
                 </div>
             </div>
-
             <button type="submit" class="w-full py-6 rounded-full btn-gold font-black uppercase tracking-widest text-sm shadow-2xl">Envoyer la fiche</button>
         </form>
     </main>
@@ -185,20 +183,11 @@
                 </select>
             </div>
         </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div class="card-premium p-8 lg:col-span-2">
-                <canvas id="chartMonths" height="100"></canvas>
-            </div>
-            <div class="card-premium p-8">
-                <canvas id="chartRadar"></canvas>
-            </div>
+            <div class="card-premium p-8 lg:col-span-2"><canvas id="chartMonths" height="100"></canvas></div>
+            <div class="card-premium p-8"><canvas id="chartRadar"></canvas></div>
         </div>
-
-        <div class="card-premium p-8 mb-12">
-            <div id="calendar"></div>
-        </div>
-
+        <div class="card-premium p-8 mb-12"><div id="calendar"></div></div>
         <div id="admin-list" class="space-y-8"></div>
     </main>
 
@@ -208,7 +197,7 @@
             <div class="space-y-6">
                 <input type="email" id="adm-email" placeholder="Email" class="input-premium w-full">
                 <input type="password" id="adm-pass" placeholder="Password" class="input-premium w-full">
-                <button id="btn-auth-submit" class="w-full btn-gold py-4 rounded-full font-black uppercase text-xs">Se connecter</button>
+                <button onclick="handleLoginSubmit()" class="w-full btn-gold py-4 rounded-full font-black uppercase text-xs">Se connecter</button>
                 <button onclick="document.getElementById('login-modal').style.display='none'" class="w-full text-slate-400 text-[10px] font-black uppercase tracking-widest">Annuler</button>
             </div>
         </div>
@@ -218,60 +207,22 @@
         const S_URL = 'https://hecyorhhyidlfdluelit.supabase.co';
         const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlY3lvcmhoeWlkbGZkbHVlbGl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTI3MDAsImV4cCI6MjA4MjU2ODcwMH0.KloEAEbI1hgP1yR4vU2in4QVgg4AkBqrTtisPb2fdes';
         const _supa = supabase.createClient(S_URL, S_KEY);
-        
-        function toggleCadets(val) {
-            const section = document.getElementById('section-cadets');
-            if(val === 'oui') section.classList.remove('hidden');
-            else section.classList.add('hidden');
-        }
 
-        let charts = {}, allData = [], filteredData = [], calendar = null;
-        const getVal = (id) => parseInt(document.getElementById(id).value) || 0;
-
-        document.getElementById('main-form').onsubmit = async (e) => {
-            e.preventDefault();
-            try {
-                let infoCadets = "";
-                if(document.getElementById('loue_cadets').value === 'oui') {
-                    infoCadets = "[CADETS] " + (document.getElementById('cadets_retrans').checked ? "Retransmission" : "Pas de retrans") + " | " + document.getElementById('cadets_notes').value;
-                }
-                const payload = {
-                    organisme: document.getElementById('organisme').value,
-                    nom_evenement: document.getElementById('nom_evenement').value,
-                    point_contact: document.getElementById('point_contact').value,
-                    contact_email: document.getElementById('contact_email').value,
-                    contact_tel: document.getElementById('contact_tel').value,
-                    date_evenement: document.getElementById('date_evenement').value,
-                    heure_orga: document.getElementById('heure_orga').value,
-                    heure_public: document.getElementById('heure_public').value,
-                    heure_fin_exploitation: document.getElementById('heure_fin_explo').value,
-                    nb_participants: getVal('nb_participants'),
-                    nb_chaises: getVal('nb_chaises'),
-                    nb_tables: getVal('nb_tables'),
-                    micros_hf_regie: getVal('micros_hf'),
-                    micros_filaires_scene: getVal('micros_filaires'),
-                    lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
-                    options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value),
-                    remarques: infoCadets
-                };
-                const { error } = await _supa.from('demandes_auditorium').insert([payload]);
-                if(!error) { alert("Transmis !"); location.reload(); }
-            } catch(e) { alert("Erreur"); }
-        };
-
-        document.getElementById('btn-auth-submit').onclick = async () => {
-            const { error } = await _supa.auth.signInWithPassword({ 
-                email: document.getElementById('adm-email').value,
-                password: document.getElementById('adm-pass').value
-            });
-            if (!error) { 
+        // --- AUTHENTIFICATION CORRIGÉE ---
+        async function handleLoginSubmit() {
+            const email = document.getElementById('adm-email').value;
+            const password = document.getElementById('adm-pass').value;
+            const { error } = await _supa.auth.signInWithPassword({ email, password });
+            if (!error) {
                 document.getElementById('login-modal').style.display = 'none';
                 document.getElementById('vue-client').classList.add('hidden');
                 document.getElementById('vue-admin').classList.remove('hidden');
                 document.getElementById('btn-logout').classList.remove('hidden');
                 chargerDonnees();
+            } else {
+                alert("Erreur de connexion : " + error.message);
             }
-        };
+        }
 
         async function chargerDonnees() {
             const { data } = await _supa.from('demandes_auditorium').select('*').order('date_evenement');
@@ -280,45 +231,10 @@
             applyGlobalFilter();
         }
 
-        function initCalendar() {
-            const calendarEl = document.getElementById('calendar');
-            const events = allData.map(d => ({ title: d.nom_evenement, start: d.date_evenement, extendedProps: { id: d.id } }));
-            if(calendar) calendar.destroy();
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', locale: 'fr', events: events,
-                eventClick: (info) => { document.getElementById("fiche-" + info.event.extendedProps.id).scrollIntoView({ behavior: 'smooth' }); }
-            });
-            calendar.render();
-        }
-
-        function applyGlobalFilter() {
-            const y = parseInt(document.getElementById('filter-year').value);
-            const m = document.getElementById('filter-month').value;
-            filteredData = allData.filter(d => {
-                const dt = new Date(d.date_evenement);
-                return dt.getFullYear() === y && (m === "all" ? true : dt.getMonth() === parseInt(m));
-            });
-            document.getElementById('stats-summary').innerText = filteredData.length + " Événements";
-            renderList();
-            initCharts();
-        }
-
-        function getStatusInfo(dateStr) {
-            const today = new Date(); today.setHours(0,0,0,0);
-            const evDate = new Date(dateStr); evDate.setHours(0,0,0,0);
-            const diffDays = Math.ceil((evDate - today) / (1000 * 60 * 60 * 24));
-            if (diffDays < 0) return { color: '#22c55e', pulse: false };
-            if (diffDays === 0) return { color: '#ef4444', pulse: true };
-            if (diffDays <= 7) return { color: '#f97316', pulse: true };
-            return { color: '#eab308', pulse: false };
-        }
-
         function renderList() {
             const container = document.getElementById('admin-list');
             container.innerHTML = filteredData.map(d => {
                 const status = getStatusInfo(d.date_evenement);
-                
-                // MISE À JOUR DU LIEN MAIL AVEC SHAREPOINT
                 const subject = encodeURIComponent("Dépôt de votre présentation - " + d.nom_evenement);
                 const body = encodeURIComponent("Bonjour,\n\nMerci de bien vouloir déposer votre présentation (PPT) via le lien sécurisé suivant :\nhttps://bte633288-my.sharepoint.com/:f:/g/personal/nourdine_tadjadit_musee-armee_fr/IgDCvKE1osikSYq35v7-8bvjAbubZTV2QPUiqbgz-rybpBc\n\nCordialement,\nLa Régie.");
                 const mailLink = `mailto:${d.contact_email}?subject=${subject}&body=${body}`;
@@ -333,7 +249,12 @@
                             </div>
                             <h4 class="font-prestige text-2xl text-slate-800 italic">${d.nom_evenement}</h4>
                         </div>
-                        <div class="flex gap-3">
+                        <div class="flex items-center gap-3">
+                            <button onclick="togglePPT('${d.id}', ${d.ppt_recu})" 
+                                    class="px-4 py-3 rounded-full text-[10px] font-black uppercase transition-all duration-300 ${d.ppt_recu ? 'bg-green-500 text-white' : 'bg-white text-slate-400 border-2 border-slate-200'}">
+                                <i class="fa-solid ${d.ppt_recu ? 'fa-check-circle' : 'fa-circle-question'} mr-1"></i>
+                                ${d.ppt_recu ? 'PPT REÇU' : 'PPT ATTENDU'}
+                            </button>
                             <a href="${mailLink}" class="bg-blue-600 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase shadow-lg hover:bg-blue-700 transition">Contact PPT</a>
                             <button onclick="genererPDF('${d.id}')" class="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase">PDF Premium</button>
                             <button onclick="supprimerLigne('${d.id}')" class="text-red-600 p-3"><i class="fa-solid fa-trash-can"></i></button>
@@ -369,6 +290,90 @@
             }).join('');
         }
 
+        async function togglePPT(id, currentStatus) {
+            try {
+                const { error } = await _supa.from('demandes_auditorium').update({ ppt_recu: !currentStatus }).eq('id', id);
+                if (error) throw error;
+                const item = allData.find(d => d.id === id);
+                if(item) item.ppt_recu = !currentStatus;
+                applyGlobalFilter();
+            } catch (err) { alert("Erreur de mise à jour"); }
+        }
+
+        // --- Le reste des fonctions (initialisation, filtres, graphiques, PDF, etc.) ---
+        let allData = [], filteredData = [], charts = {}, calendar = null;
+        const getVal = (id) => parseInt(document.getElementById(id).value) || 0;
+        
+        function toggleCadets(val) {
+            const section = document.getElementById('section-cadets');
+            if(val === 'oui') section.classList.remove('hidden');
+            else section.classList.add('hidden');
+        }
+
+        document.getElementById('main-form').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                let infoCadets = "";
+                if(document.getElementById('loue_cadets').value === 'oui') {
+                    infoCadets = "[CADETS] " + (document.getElementById('cadets_retrans').checked ? "Retransmission" : "Pas de retrans") + " | " + document.getElementById('cadets_notes').value;
+                }
+                const payload = {
+                    organisme: document.getElementById('organisme').value,
+                    nom_evenement: document.getElementById('nom_evenement').value,
+                    point_contact: document.getElementById('point_contact').value,
+                    contact_email: document.getElementById('contact_email').value,
+                    contact_tel: document.getElementById('contact_tel').value,
+                    date_evenement: document.getElementById('date_evenement').value,
+                    heure_orga: document.getElementById('heure_orga').value,
+                    heure_public: document.getElementById('heure_public').value,
+                    heure_fin_exploitation: document.getElementById('heure_fin_explo').value,
+                    nb_participants: getVal('nb_participants'),
+                    nb_chaises: getVal('nb_chaises'),
+                    nb_tables: getVal('nb_tables'),
+                    micros_hf_regie: getVal('micros_hf'),
+                    micros_filaires_scene: getVal('micros_filaires'),
+                    lieux_accueil: Array.from(document.querySelectorAll('#acc_list input:checked')).map(i => i.value),
+                    options_tech: Array.from(document.querySelectorAll('#tech_opts input:checked')).map(i => i.value),
+                    remarques: infoCadets
+                };
+                const { error } = await _supa.from('demandes_auditorium').insert([payload]);
+                if(!error) { alert("Transmis !"); location.reload(); }
+            } catch(e) { alert("Erreur"); }
+        };
+
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            const events = allData.map(d => ({ title: d.nom_evenement, start: d.date_evenement, extendedProps: { id: d.id } }));
+            if(calendar) calendar.destroy();
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', locale: 'fr', events: events,
+                eventClick: (info) => { document.getElementById("fiche-" + info.event.extendedProps.id).scrollIntoView({ behavior: 'smooth' }); }
+            });
+            calendar.render();
+        }
+
+        function applyGlobalFilter() {
+            const y = parseInt(document.getElementById('filter-year').value);
+            const m = document.getElementById('filter-month').value;
+            filteredData = allData.filter(d => {
+                const dt = new Date(d.date_evenement);
+                return dt.getFullYear() === y && (m === "all" ? true : dt.getMonth() === parseInt(m));
+            });
+            document.getElementById('stats-summary').innerText = filteredData.length + " Événements";
+            renderList();
+            initCharts();
+        }
+
+        function getStatusInfo(dateStr) {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const evDate = new Date(dateStr); evDate.setHours(0,0,0,0);
+            const diffDays = Math.ceil((evDate - today) / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) return { color: '#22c55e', pulse: false };
+            if (diffDays === 0) return { color: '#ef4444', pulse: true };
+            if (diffDays <= 7) return { color: '#f97316', pulse: true };
+            return { color: '#eab308', pulse: false };
+        }
+
         function initCharts() {
             const ctxBar = document.getElementById('chartMonths').getContext('2d');
             const counts = Array(12).fill(0);
@@ -389,28 +394,10 @@
                 radarMetrics.fil += (d.micros_filaires_scene || 0);
                 radarMetrics.affl += (d.nb_participants || 0);
             });
-            const radarData = [
-                (radarMetrics.ppt / total) * 10,
-                (radarMetrics.visio / total) * 10,
-                (radarMetrics.capta / total) * 10,
-                (radarMetrics.trad / total) * 10,
-                (radarMetrics.hf / (total * 2 || 2)) * 10,
-                (radarMetrics.fil / (total * 6 || 6)) * 10,
-                (radarMetrics.affl / (total * 145 || 145)) * 10
-            ];
+            const radarData = [ (radarMetrics.ppt / total) * 10, (radarMetrics.visio / total) * 10, (radarMetrics.capta / total) * 10, (radarMetrics.trad / total) * 10, (radarMetrics.hf / (total * 2 || 2)) * 10, (radarMetrics.fil / (total * 6 || 6)) * 10, (radarMetrics.affl / (total * 145 || 145)) * 10 ];
             const ctxRadar = document.getElementById('chartRadar').getContext('2d');
             if(charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(ctxRadar, { 
-                type: 'radar', 
-                data: { 
-                    labels: ['PPT', 'Visio', 'Captation', 'Trad', 'Micro HF', 'Fil', 'Affluence'], 
-                    datasets: [{ data: radarData, backgroundColor: 'rgba(26, 44, 76, 0.2)', borderColor: '#1a2c4c', pointBackgroundColor: '#1a2c4c' }] 
-                }, 
-                options: { 
-                    scales: { r: { beginAtZero: true, max: 10, ticks: { display: false } } },
-                    plugins: { legend: { display: false } } 
-                } 
-            });
+            charts.radar = new Chart(ctxRadar, { type: 'radar', data: { labels: ['PPT', 'Visio', 'Captation', 'Trad', 'Micro HF', 'Fil', 'Affluence'], datasets: [{ data: radarData, backgroundColor: 'rgba(26, 44, 76, 0.2)', borderColor: '#1a2c4c', pointBackgroundColor: '#1a2c4c' }] }, options: { scales: { r: { beginAtZero: true, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
         }
 
         window.genererPDF = function(id) {
@@ -419,14 +406,7 @@
             const doc = new jsPDF();
             doc.setFillColor(26, 44, 76); doc.rect(0, 0, 210, 45, 'F');
             doc.setTextColor(255, 255, 255); doc.setFontSize(22); doc.text("FICHE TECHNIQUE RÉGIE", 20, 28);
-            const rows = [
-                ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement],
-                ["Arrivée Orga", d.heure_orga], ["Ouverture Public", d.heure_public], ["Fin d'exploitation", d.heure_fin_exploitation],
-                ["Affluence", d.nb_participants + " pers."], ["Mobilier", d.nb_chaises + " Ch., " + d.nb_tables + " Tab."],
-                ["Audiovisuel", d.micros_hf_regie + " HF, " + d.micros_filaires_scene + " Fil"],
-                ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune'],
-                ["Notes Cadets", d.remarques || 'N/A']
-            ];
+            const rows = [ ["Organisme", d.organisme], ["Événement", d.nom_evenement], ["Date", d.date_evenement], ["Arrivée Orga", d.heure_orga], ["Ouverture Public", d.heure_public], ["Fin d'exploitation", d.heure_fin_exploitation], ["Affluence", d.nb_participants + " pers."], ["Mobilier", d.nb_chaises + " Ch., " + d.nb_tables + " Tab."], ["Audiovisuel", d.micros_hf_regie + " HF, " + d.micros_filaires_scene + " Fil"], ["Options Tech", (d.options_tech || []).join(', ') || 'Aucune'], ["Notes Cadets", d.remarques || 'N/A'] ];
             doc.autoTable({ startY: 55, head: [['Sujet', 'Informations']], body: rows, theme: 'grid', headStyles: { fillColor: [26, 44, 76] } });
             doc.save("FT_" + d.nom_evenement + ".pdf");
         };
